@@ -8,6 +8,7 @@ RUN go build -o main .
 FROM alpine:latest
 WORKDIR /app
 RUN apk add --no-cache ca-certificates
-COPY --from=builder /app/main .
+COPY --from=builder /app/main /app/main
+RUN chmod +x /app/main
 EXPOSE 8080
 CMD ["./main"]
