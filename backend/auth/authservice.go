@@ -35,17 +35,54 @@ func getJWTSecret() []byte {
 func AuthenticateUser(username, password string, db *gorm.DB) bool {
 	/*
 		Autentica al usuario verificando su nombre de usuario y contraseña en la base de datos.
-		Si la autenticación es exitosa, devuelve true; de lo contrario, devuelve false.
+		Si la autenticación es exitosa y la cuenta está activa, devuelve true; de lo contrario, devuelve false.
+		Las cuentas con status != active (inactive/blocked) se bloquean en el login.
 	*/
 	var user UserModel
 	result := db.Where("username = ?", username).First(&user)
 	if result.Error != nil {
 		return false
 	}
+	// Bloquear login si la cuenta no está activa (soft-delete ya filtra DeletedAt).
+	if NormalizeStatus(user.Status) != StatusActive {
+		return false
+	}
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
 		return false
 	}
 	return true
+}
+
+// AuthError define errores tipados para login bloqueado.
+var (
+	ErrAccountInactive = errors.New("cuenta desactivada")
+	ErrAccountBlocked  = errors.New("cuenta bloqueada")
+)
+
+func AuthenticateUserDetailed(username, password string, db *gorm.DB) (bool, string) {
+	/*
+		Variante detallada que distingue motivo de bloqueo para responder 403.
+		Retorna (ok, motivo) donde motivo es "", "inactive" o "blocked".
+	*/
+	var user UserModel
+	result := db.Where("username = ?", username).First(&user)
+	if result.Error != nil {
+		return false, ""
+	}
+	status := NormalizeStatus(user.Status)
+	if status == StatusInactive {
+		return false, StatusInactive
+	}
+	if status == StatusBlocked {
+		return false, StatusBlocked
+	}
+	if status != StatusActive {
+		return false, status
+	}
+	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
+		return false, ""
+	}
+	return true, ""
 }
 
 func GetUserID(username string, db *gorm.DB) (uint, error) {
@@ -76,13 +113,19 @@ func CreateSession(userID uint, db *gorm.DB, rdb *redis.Client) (string, error) 
 		Crea un JWT para el usuario autenticado, lo almacena en Redis con expiración
 		automática (sessionTTL) y devuelve el token firmado. El cliente debe enviarlo
 		en el header Authorization ("Bearer <token>") en las siguientes peticiones.
+		Implementa patrón multi-sesión: guarda tanto session:<jwt> -> username como
+		índice invertido user_sessions:<username> (Sorted Set con score=exp).
 	*/
 	var user UserModel
 	if err := db.First(&user, userID).Error; err != nil {
 		return "", errors.New("usuario no encontrado")
 	}
+	if NormalizeStatus(user.Status) != StatusActive {
+		return "", errors.New("cuenta no activa")
+	}
 
 	now := time.Now()
+	exp := now.Add(sessionTTL)
 	claims := Claims{
 		Username: user.Username,
 		UserID:   userID,
@@ -91,7 +134,7 @@ func CreateSession(userID uint, db *gorm.DB, rdb *redis.Client) (string, error) 
 			Subject:   fmt.Sprint(userID),
 			ID:        uuid.NewString(),
 			IssuedAt:  jwt.NewNumericDate(now),
-			ExpiresAt: jwt.NewNumericDate(now.Add(sessionTTL)),
+			ExpiresAt: jwt.NewNumericDate(exp),
 		},
 	}
 
@@ -105,6 +148,15 @@ func CreateSession(userID uint, db *gorm.DB, rdb *redis.Client) (string, error) 
 	if err := rdb.Set(ctx, "session:"+signedToken, user.Username, sessionTTL).Err(); err != nil {
 		return "", errors.New("no se pudo guardar la sesión en Redis: " + err.Error())
 	}
+	// Índice invertido multi-sesión: user_sessions:<username> Sorted Set score=expUnix
+	zKey := "user_sessions:" + user.Username
+	if err := rdb.ZAdd(ctx, zKey, redis.Z{Score: float64(exp.Unix()), Member: signedToken}).Err(); err != nil {
+		// Limpiar la clave principal si falla el índice
+		_ = rdb.Del(ctx, "session:"+signedToken).Err()
+		return "", errors.New("no se pudo indexar la sesión en Redis: " + err.Error())
+	}
+	// Asegurar expiración del índice (ligeramente mayor que TTL para permitir limpieza perezosa)
+	_ = rdb.Expire(ctx, zKey, sessionTTL+time.Hour).Err()
 
 	return signedToken, nil
 }
@@ -158,14 +210,77 @@ func DeleteSession(tokenString string, rdb *redis.Client) error {
 	/*
 		Invalida un token de sesión (cierre de sesión) eliminándolo de Redis.
 		Es idempotente: no retorna error si el token ya no existe.
+		Limpia tanto session:<jwt> como el índice user_sessions:<username>.
 	*/
 	if tokenString == "" {
 		return errors.New("token vacío")
+	}
+	// Intentar obtener username para limpiar índice invertido (best-effort).
+	// Si ya expiró, Get fallará y solo se hace Del de la clave principal.
+	if username, err := rdb.Get(ctx, "session:"+tokenString).Result(); err == nil && username != "" {
+		_ = rdb.ZRem(ctx, "user_sessions:"+username, tokenString).Err()
+	} else {
+		// Fallback: si no está en Redis, decodificar JWT sin validar para extraer username y limpiar índice.
+		claims := &Claims{}
+		if _, err := jwt.ParseWithClaims(tokenString, claims, func(t *jwt.Token) (interface{}, error) {
+			return getJWTSecret(), nil
+		}); err == nil && claims.Username != "" {
+			_ = rdb.ZRem(ctx, "user_sessions:"+claims.Username, tokenString).Err()
+		}
 	}
 	if err := rdb.Del(ctx, "session:"+tokenString).Err(); err != nil {
 		return errors.New("no se pudo eliminar la sesión: " + err.Error())
 	}
 	return nil
+}
+
+// RevokeAllSessionsForUser revoca todas las sesiones activas de un usuario (multi-sesión).
+func RevokeAllSessionsForUser(username string, rdb *redis.Client) (int, error) {
+	zKey := "user_sessions:" + username
+	tokens, err := rdb.ZRange(ctx, zKey, 0, -1).Result()
+	if err != nil && err != redis.Nil {
+		return 0, err
+	}
+	if len(tokens) == 0 {
+		return 0, nil
+	}
+	pipe := rdb.Pipeline()
+	for _, t := range tokens {
+		pipe.Del(ctx, "session:"+t)
+	}
+	pipe.Del(ctx, zKey)
+	_, err = pipe.Exec(ctx)
+	if err != nil {
+		return 0, err
+	}
+	return len(tokens), nil
+}
+
+// ListSessionsForUser lista los JWT activos de un usuario, purgando expirados perezosamente.
+func ListSessionsForUser(username string, rdb *redis.Client) ([]string, error) {
+	zKey := "user_sessions:" + username
+	// Purga expirados por score
+	now := float64(time.Now().Unix())
+	_ = rdb.ZRemRangeByScore(ctx, zKey, "-inf", fmt.Sprint(now)).Err()
+	// Filtrar solo tokens cuya clave session:<jwt> aún existe (por si TTL expiró antes que ZSet)
+	members, err := rdb.ZRange(ctx, zKey, 0, -1).Result()
+	if err != nil {
+		if err == redis.Nil {
+			return []string{}, nil
+		}
+		return nil, err
+	}
+	active := make([]string, 0, len(members))
+	for _, t := range members {
+		exists, _ := rdb.Exists(ctx, "session:"+t).Result()
+		if exists == 1 {
+			active = append(active, t)
+		} else {
+			// Limpieza perezosa: remover huérfano
+			_ = rdb.ZRem(ctx, zKey, t).Err()
+		}
+	}
+	return active, nil
 }
 
 // RevokeSession es un alias de DeleteSession para el endpoint /revoke-session.

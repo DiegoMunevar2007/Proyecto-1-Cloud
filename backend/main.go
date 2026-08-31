@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 
+	"github.com/DiegoMunevar2007/Proyecto-1-Cloud.git/admin"
 	"github.com/DiegoMunevar2007/Proyecto-1-Cloud.git/auth"
 	"github.com/DiegoMunevar2007/Proyecto-1-Cloud.git/utils"
 	"github.com/gin-gonic/gin"
@@ -59,13 +60,14 @@ func main() {
 	db := initPostgresDB()
 	rdb := initRedisClient()
 
-	if err := db.AutoMigrate(&auth.UserModel{}); err != nil {
-		panic("No se pudo migrar el esquema de autenticación: " + err.Error())
+	if err := db.AutoMigrate(&auth.UserModel{}, &admin.AuditLog{}); err != nil {
+		panic("No se pudo migrar el esquema: " + err.Error())
 	}
 
 	// Inicializar el enrutador Gin
 	router := SetupRouter(db, rdb)
 	auth.SetupAuthRoutes(router, db, rdb)
+	admin.SetupAdminRoutes(router, db, rdb)
 
 	// Iniciar el servidor
 	if err := router.Run(":8080"); err != nil {

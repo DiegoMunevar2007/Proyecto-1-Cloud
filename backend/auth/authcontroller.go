@@ -68,7 +68,16 @@ func SetupAuthRoutes(router *gin.Engine, db *gorm.DB, rdb *redis.Client) {
 				c.JSON(400, gin.H{"error": "Solicitud inválida"})
 				return
 			}
-			if !AuthenticateUser(request.Username, request.Password, db) {
+			ok, reason := AuthenticateUserDetailed(request.Username, request.Password, db)
+			if !ok {
+				if reason == StatusInactive {
+					c.JSON(403, gin.H{"error": "Cuenta desactivada. Contacte al administrador"})
+					return
+				}
+				if reason == StatusBlocked {
+					c.JSON(403, gin.H{"error": "Cuenta bloqueada. Contacte al administrador"})
+					return
+				}
 				c.JSON(401, gin.H{"error": "Nombre de usuario o contraseña incorrectos"})
 				return
 			}
@@ -79,6 +88,11 @@ func SetupAuthRoutes(router *gin.Engine, db *gorm.DB, rdb *redis.Client) {
 			}
 			token, err := CreateSession(userID, db, rdb)
 			if err != nil {
+				// Si la cuenta no está activa, CreateSession puede fallar también
+				if strings.Contains(err.Error(), "no activa") {
+					c.JSON(403, gin.H{"error": "Cuenta no activa. Contacte al administrador"})
+					return
+				}
 				c.JSON(500, gin.H{"error": "No fue posible iniciar sesión: " + err.Error()})
 				return
 			}
