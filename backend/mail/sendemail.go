@@ -2,15 +2,13 @@ package mail
 
 import (
 	"net/smtp"
+
+	"github.com/DiegoMunevar2007/Proyecto-1-Cloud.git/utils"
 )
 
 func SendEmail(to, subject, body string) error {
 	// Configuración del servidor SMTP
-	smtpHost := "smtp.gmail.com"
-	smtpPort := "587"
-	smtpUser := "algo@algo.com"
-	smtpPass := "contrasenia"
-
+	smtpHost, smtpPort, smtpUser := utils.GetSMTPConfig()
 	// Configuración del mensaje
 	msg := "From: " + smtpUser + "\r\n" +
 		"To: " + to + "\r\n" +
@@ -20,8 +18,7 @@ func SendEmail(to, subject, body string) error {
 		body
 
 	// Autenticación y envío del correo
-	auth := smtp.PlainAuth("", smtpUser, smtpPass, smtpHost)
-	err := smtp.SendMail(smtpHost+":"+smtpPort, auth, smtpUser, []string{to}, []byte(msg))
+	err := smtp.SendMail(smtpHost+":"+smtpPort, nil, smtpUser, []string{to}, []byte(msg))
 	if err != nil {
 		return err
 	}

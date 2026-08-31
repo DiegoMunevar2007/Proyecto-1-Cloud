@@ -5,7 +5,9 @@ import (
 
 	"github.com/DiegoMunevar2007/Proyecto-1-Cloud.git/admin"
 	"github.com/DiegoMunevar2007/Proyecto-1-Cloud.git/auth"
+	"github.com/DiegoMunevar2007/Proyecto-1-Cloud.git/courses"
 	"github.com/DiegoMunevar2007/Proyecto-1-Cloud.git/utils"
+	"github.com/adjust/rmq/v5"
 	"github.com/gin-gonic/gin"
 	"github.com/redis/go-redis/v9"
 	"gorm.io/driver/postgres"
@@ -55,12 +57,20 @@ func initRedisClient() *redis.Client {
 	return rdb
 }
 
+func initQueue() rmq.Connection {
+	redisOptions := utils.GetRedisOptions()
+	errChan := make(chan error, 1)
+	conn, err := rmq.OpenConnection("Queue", "tcp", redisOptions.Addr, redisOptions.DB, errChan)
+	if err != nil {
+		panic(err)
+	}
+	return conn
+}
 func main() {
 	// Inicializar conexión a la base de datos
 	db := initPostgresDB()
 	rdb := initRedisClient()
-
-	if err := db.AutoMigrate(&auth.UserModel{}, &admin.AuditLog{}); err != nil {
+	if err := db.AutoMigrate(&auth.UserModel{}, &admin.AuditLog{}, &courses.Course{}); err != nil {
 		panic("No se pudo migrar el esquema: " + err.Error())
 	}
 

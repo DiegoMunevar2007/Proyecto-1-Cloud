@@ -44,3 +44,11 @@ func GetRedisOptions() *redis.Options {
 		DB:       db,
 	}
 }
+
+func GetSMTPConfig() (host, port, user string) {
+	// Obtiene la configuración del servidor SMTP desde variables de entorno.
+	host = GetEnv("SMTP_HOST", "mailpit")
+	port = GetEnv("SMTP_PORT", "1025")
+	user = GetEnv("SMTP_USER", "prueba@test.com")
+	return host, port, user
+}
