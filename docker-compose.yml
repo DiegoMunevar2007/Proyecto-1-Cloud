@@ -30,7 +30,7 @@ services:
     container_name: mailpit
     restart: unless-stopped
     volumes:
-      - ./data:/data
+      - mailpit_data:/data
     ports:
       - 8025:8025
       - 1025:1025
@@ -63,6 +63,8 @@ services:
         condition: service_healthy
       redis:
         condition: service_started
+      s3:
+        condition: service_started
     ports:
       - "8080:8080"
     env_file:
@@ -76,9 +78,50 @@ services:
       REDIS_ADDR: redis:6379
       REDIS_PASSWORD: ""
       JWT_SECRET: ${JWT_SECRET:-dev-jwt-secret-change-in-prod}
+      S3_ENDPOINT: s3:9000
+      S3_PUBLIC_ENDPOINT: http://localhost:9000
+      S3_ACCESS_KEY: minioadmin
+      S3_SECRET_KEY: minioadmin
+      S3_USE_SSL: "false"
+      S3_REGION: us-east-1
+      CDN_BASE_URL: ""
+      SMTP_HOST: mailpit
+      SMTP_PORT: 1025
     command: [ "./main" ]
+  worker:
+    build:
+      context: ./backend
+      dockerfile: worker/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      s3:
+        condition: service_started
+    env_file:
+      - .env
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: mydb
+      REDIS_ADDR: redis:6379
+      REDIS_PASSWORD: ""
+      S3_ENDPOINT: s3:9000
+      S3_PUBLIC_ENDPOINT: http://localhost:9000
+      S3_ACCESS_KEY: minioadmin
+      S3_SECRET_KEY: minioadmin
+      S3_USE_SSL: "false"
+      S3_REGION: us-east-1
+      WORKER_CONCURRENCY: 10
+    command: [ "./worker" ]
+    # Escalamiento horizontal (stateless, idempotente): docker compose up --scale worker=2
 
 volumes:
   postgres_data:
   redis_data:
   s3_data:
+  mailpit_data:
