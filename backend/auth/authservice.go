@@ -316,13 +316,31 @@ func RegisterUser(username string, email string, password string, role string, d
 		return "Error al crear el usuario: " + err.Error(), 500
 	}
 
-	if err := SendVerificationCode(username, email, rdb); err != nil {
+	if err := SendVerificationCode(username, email, db, rdb); err != nil {
 		return "Usuario " + username + " registrado, pero error al enviar el correo de verificación: " + err.Error(), 201
 	}
 	return "Usuario " + username + " registrado exitosamente con rol " + role, 201
 }
 
-func SendVerificationCode(username string, email string, rdb *redis.Client) error {
+// ErrAlreadyVerified indica que el usuario ya completó la verificación.
+var ErrAlreadyVerified = errors.New("usuario ya verificado")
+
+// ErrUserNotFound indica que el usuario no existe.
+var ErrUserNotFound = errors.New("usuario no encontrado")
+
+func SendVerificationCode(username string, email string, db *gorm.DB, rdb *redis.Client) error {
+	// No reenviar códigos a cuentas ya verificadas ni a usuarios inexistentes.
+	var user UserModel
+	if err := db.Where("username = ?", username).First(&user).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return ErrUserNotFound
+		}
+		return errors.New("Error al buscar el usuario: " + err.Error())
+	}
+	if user.IsVerified {
+		return ErrAlreadyVerified
+	}
+
 	// Generar un código de verificación de 6 dígitos para el usuario recién registrado
 	verificationCode := uuid.New().String()[:6] // Tomamos los primeros 6 caracteres del UUID como código de verificación
 

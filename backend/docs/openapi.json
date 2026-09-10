@@ -1,0 +1,3745 @@
+{
+    "components": {
+        "schemas": {
+            "admin.AuditListResponse": {
+                "properties": {
+                    "limit": {
+                        "example": 20,
+                        "type": "integer"
+                    },
+                    "logs": {
+                        "items": {
+                            "$ref": "#/components/schemas/admin.AuditLogResponse"
+                        },
+                        "type": "array",
+                        "uniqueItems": false
+                    },
+                    "page": {
+                        "example": 1,
+                        "type": "integer"
+                    },
+                    "total": {
+                        "example": 15,
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "admin.AuditLogResponse": {
+                "properties": {
+                    "action": {
+                        "example": "role_change",
+                        "type": "string"
+                    },
+                    "actor_id": {
+                        "example": 1,
+                        "type": "integer"
+                    },
+                    "actor_username": {
+                        "example": "admin1",
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "example": "2026-09-10T02:00:00Z",
+                        "type": "string"
+                    },
+                    "detail": {
+                        "example": "rol cambiado de student a professor",
+                        "type": "string"
+                    },
+                    "id": {
+                        "example": 1,
+                        "type": "integer"
+                    },
+                    "ip": {
+                        "example": "172.18.0.1",
+                        "type": "string"
+                    },
+                    "target_user_id": {
+                        "example": 5,
+                        "type": "integer"
+                    },
+                    "target_username": {
+                        "example": "profe1",
+                        "type": "string"
+                    },
+                    "user_agent": {
+                        "example": "Mozilla/5.0",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "admin.RevokeSessionsResponse": {
+                "properties": {
+                    "count": {
+                        "example": 2,
+                        "type": "integer"
+                    },
+                    "message": {
+                        "example": "Sesiones revocadas",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "admin.RoleUpdateRequest": {
+                "properties": {
+                    "role": {
+                        "example": "professor",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "admin.SessionTokenRequest": {
+                "properties": {
+                    "token": {
+                        "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "admin.SessionsResponse": {
+                "properties": {
+                    "count": {
+                        "example": 2,
+                        "type": "integer"
+                    },
+                    "sessions": {
+                        "items": {
+                            "type": "string"
+                        },
+                        "type": "array",
+                        "uniqueItems": false
+                    },
+                    "username": {
+                        "example": "estudiante1",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "admin.StatsResponse": {
+                "properties": {
+                    "active": {
+                        "example": 90,
+                        "type": "integer"
+                    },
+                    "admins_active": {
+                        "example": 2,
+                        "type": "integer"
+                    },
+                    "blocked": {
+                        "example": 3,
+                        "type": "integer"
+                    },
+                    "inactive": {
+                        "example": 7,
+                        "type": "integer"
+                    },
+                    "total": {
+                        "example": 100,
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "admin.StatusUpdateRequest": {
+                "properties": {
+                    "status": {
+                        "example": "inactive",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "admin.UserDetailResponse": {
+                "properties": {
+                    "user": {
+                        "$ref": "#/components/schemas/auth.UserResponse"
+                    }
+                },
+                "type": "object"
+            },
+            "admin.UserListResponse": {
+                "properties": {
+                    "limit": {
+                        "example": 20,
+                        "type": "integer"
+                    },
+                    "page": {
+                        "example": 1,
+                        "type": "integer"
+                    },
+                    "total": {
+                        "example": 42,
+                        "type": "integer"
+                    },
+                    "users": {
+                        "items": {
+                            "$ref": "#/components/schemas/auth.UserResponse"
+                        },
+                        "type": "array",
+                        "uniqueItems": false
+                    }
+                },
+                "type": "object"
+            },
+            "admin.UserMessageResponse": {
+                "properties": {
+                    "message": {
+                        "example": "Rol actualizado correctamente",
+                        "type": "string"
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/auth.UserResponse"
+                    }
+                },
+                "type": "object"
+            },
+            "auth.LoginRequest": {
+                "properties": {
+                    "password": {
+                        "example": "ClaveSegura123",
+                        "type": "string"
+                    },
+                    "username": {
+                        "example": "estudiante1",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "auth.LoginResponse": {
+                "properties": {
+                    "message": {
+                        "example": "Autenticación exitosa",
+                        "type": "string"
+                    },
+                    "token": {
+                        "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+                        "type": "string"
+                    },
+                    "username": {
+                        "example": "estudiante1",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "auth.MeResponse": {
+                "properties": {
+                    "role": {
+                        "example": "student",
+                        "type": "string"
+                    },
+                    "username": {
+                        "example": "estudiante1",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "auth.RegisterRequest": {
+                "properties": {
+                    "email": {
+                        "example": "estudiante1@ejemplo.com",
+                        "type": "string"
+                    },
+                    "password": {
+                        "example": "ClaveSegura123",
+                        "type": "string"
+                    },
+                    "role": {
+                        "example": "student",
+                        "type": "string"
+                    },
+                    "username": {
+                        "example": "estudiante1",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "auth.ResendVerificationRequest": {
+                "properties": {
+                    "email": {
+                        "example": "estudiante1@ejemplo.com",
+                        "type": "string"
+                    },
+                    "username": {
+                        "example": "estudiante1",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "auth.ResetPasswordRequest": {
+                "properties": {
+                    "code": {
+                        "example": "a1b2c3",
+                        "type": "string"
+                    },
+                    "new_password": {
+                        "example": "NuevaClave123",
+                        "type": "string"
+                    },
+                    "username": {
+                        "example": "estudiante1",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "auth.TokenRequest": {
+                "properties": {
+                    "token": {
+                        "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "auth.UserResponse": {
+                "properties": {
+                    "created_at": {
+                        "example": "2026-09-10T02:00:00Z",
+                        "type": "string"
+                    },
+                    "email": {
+                        "example": "estudiante1@ejemplo.com",
+                        "type": "string"
+                    },
+                    "id": {
+                        "example": 1,
+                        "type": "integer"
+                    },
+                    "is_verified": {
+                        "example": true,
+                        "type": "boolean"
+                    },
+                    "role": {
+                        "example": "student",
+                        "type": "string"
+                    },
+                    "status": {
+                        "example": "active",
+                        "type": "string"
+                    },
+                    "updated_at": {
+                        "example": "2026-09-10T02:00:00Z",
+                        "type": "string"
+                    },
+                    "username": {
+                        "example": "estudiante1",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "courses.Course": {
+                "properties": {
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "created_by_id": {
+                        "type": "integer"
+                    },
+                    "current_version": {
+                        "$ref": "#/components/schemas/courses.CourseVersion"
+                    },
+                    "current_version_id": {
+                        "type": "integer"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "integer"
+                    },
+                    "slug": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "thumbnail_key": {
+                        "type": "string"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "courses.CourseCreatedResponse": {
+                "properties": {
+                    "course": {
+                        "$ref": "#/components/schemas/courses.Course"
+                    },
+                    "version": {
+                        "$ref": "#/components/schemas/courses.CourseVersion"
+                    }
+                },
+                "type": "object"
+            },
+            "courses.CourseDetailResponse": {
+                "properties": {
+                    "course": {
+                        "$ref": "#/components/schemas/courses.Course"
+                    },
+                    "version": {
+                        "$ref": "#/components/schemas/courses.CourseVersion"
+                    }
+                },
+                "type": "object"
+            },
+            "courses.CourseVersion": {
+                "properties": {
+                    "course_id": {
+                        "type": "integer"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "integer"
+                    },
+                    "is_immutable": {
+                        "type": "boolean"
+                    },
+                    "min_required_pct": {
+                        "type": "integer"
+                    },
+                    "modules": {
+                        "items": {
+                            "$ref": "#/components/schemas/courses.Module"
+                        },
+                        "type": "array",
+                        "uniqueItems": false
+                    },
+                    "number": {
+                        "type": "integer"
+                    },
+                    "published_at": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "courses.CoursesResponse": {
+                "properties": {
+                    "courses": {
+                        "items": {
+                            "$ref": "#/components/schemas/courses.Course"
+                        },
+                        "type": "array",
+                        "uniqueItems": false
+                    },
+                    "limit": {
+                        "example": 20,
+                        "type": "integer"
+                    },
+                    "page": {
+                        "example": 1,
+                        "type": "integer"
+                    },
+                    "total": {
+                        "example": 12,
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "courses.CreateCourseRequest": {
+                "properties": {
+                    "description": {
+                        "example": "Curso inicial de programación en Go",
+                        "type": "string"
+                    },
+                    "min_required_pct": {
+                        "example": 80,
+                        "type": "integer"
+                    },
+                    "slug": {
+                        "example": "introduccion-a-go",
+                        "type": "string"
+                    },
+                    "thumbnail_key": {
+                        "example": "thumbs/intro-go.png",
+                        "type": "string"
+                    },
+                    "title": {
+                        "example": "Introducción a Go",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "courses.CreateModuleRequest": {
+                "properties": {
+                    "description": {
+                        "example": "Variables, tipos y funciones",
+                        "type": "string"
+                    },
+                    "title": {
+                        "example": "Módulo 1: Fundamentos",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "courses.CreateUnitRequest": {
+                "properties": {
+                    "description": {
+                        "example": "Declaración y uso de variables",
+                        "type": "string"
+                    },
+                    "title": {
+                        "example": "Unidad 1: Variables",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "courses.DownloadURLResponse": {
+                "properties": {
+                    "hls": {
+                        "example": true,
+                        "type": "boolean"
+                    },
+                    "url": {
+                        "example": "http://localhost:9000/hls/550e8400/index.m3u8",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "courses.Module": {
+                "properties": {
+                    "course_version_id": {
+                        "type": "integer"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "integer"
+                    },
+                    "position": {
+                        "type": "integer"
+                    },
+                    "stable_id": {
+                        "type": "string"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "units": {
+                        "items": {
+                            "$ref": "#/components/schemas/courses.Unit"
+                        },
+                        "type": "array",
+                        "uniqueItems": false
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "courses.ModuleEnvelope": {
+                "properties": {
+                    "module": {
+                        "$ref": "#/components/schemas/courses.Module"
+                    }
+                },
+                "type": "object"
+            },
+            "courses.OrderedIDsRequest": {
+                "properties": {
+                    "ordered_ids": {
+                        "example": [
+                            3,
+                            1,
+                            2
+                        ],
+                        "items": {
+                            "type": "integer"
+                        },
+                        "type": "array",
+                        "uniqueItems": false
+                    }
+                },
+                "type": "object"
+            },
+            "courses.PublishResponse": {
+                "properties": {
+                    "message": {
+                        "example": "versión publicada",
+                        "type": "string"
+                    },
+                    "version": {
+                        "$ref": "#/components/schemas/courses.CourseVersion"
+                    }
+                },
+                "type": "object"
+            },
+            "courses.Resource": {
+                "properties": {
+                    "allow_download": {
+                        "type": "boolean"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "external_url": {
+                        "type": "string"
+                    },
+                    "hls_key": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "integer"
+                    },
+                    "is_required": {
+                        "type": "boolean"
+                    },
+                    "is_visible": {
+                        "type": "boolean"
+                    },
+                    "markdown_body": {
+                        "type": "string"
+                    },
+                    "mime_type": {
+                        "type": "string"
+                    },
+                    "object_key": {
+                        "type": "string"
+                    },
+                    "position": {
+                        "type": "integer"
+                    },
+                    "processing_status": {
+                        "type": "string"
+                    },
+                    "size_bytes": {
+                        "type": "integer"
+                    },
+                    "stable_id": {
+                        "type": "string"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string"
+                    },
+                    "unit_id": {
+                        "type": "integer"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "courses.ResourceEnvelope": {
+                "properties": {
+                    "resource": {
+                        "$ref": "#/components/schemas/courses.Resource"
+                    }
+                },
+                "type": "object"
+            },
+            "courses.ResourceInput": {
+                "properties": {
+                    "allow_download": {
+                        "example": false,
+                        "type": "boolean"
+                    },
+                    "external_url": {
+                        "example": "https://ejemplo.com/recurso",
+                        "type": "string"
+                    },
+                    "is_required": {
+                        "example": true,
+                        "type": "boolean"
+                    },
+                    "is_visible": {
+                        "example": true,
+                        "type": "boolean"
+                    },
+                    "markdown_body": {
+                        "example": "# Variables en Go",
+                        "type": "string"
+                    },
+                    "mime_type": {
+                        "example": "video/mp4",
+                        "type": "string"
+                    },
+                    "size_bytes": {
+                        "example": 52428800,
+                        "type": "integer"
+                    },
+                    "title": {
+                        "example": "Lección 1: Variables",
+                        "type": "string"
+                    },
+                    "type": {
+                        "example": "text",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "courses.Unit": {
+                "properties": {
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "integer"
+                    },
+                    "module_id": {
+                        "type": "integer"
+                    },
+                    "position": {
+                        "type": "integer"
+                    },
+                    "resources": {
+                        "items": {
+                            "$ref": "#/components/schemas/courses.Resource"
+                        },
+                        "type": "array",
+                        "uniqueItems": false
+                    },
+                    "stable_id": {
+                        "type": "string"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "courses.UnitEnvelope": {
+                "properties": {
+                    "unit": {
+                        "$ref": "#/components/schemas/courses.Unit"
+                    }
+                },
+                "type": "object"
+            },
+            "courses.UnpublishResponse": {
+                "properties": {
+                    "course": {
+                        "$ref": "#/components/schemas/courses.Course"
+                    },
+                    "message": {
+                        "example": "curso despublicado temporalmente",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "courses.UpdateCourseRequest": {
+                "properties": {
+                    "description": {
+                        "example": "Nueva descripción",
+                        "type": "string"
+                    },
+                    "thumbnail_key": {
+                        "example": "thumbs/intro-go-v2.png",
+                        "type": "string"
+                    },
+                    "title": {
+                        "example": "Introducción a Go v2",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "courses.UploadURLRequest": {
+                "properties": {
+                    "mime_type": {
+                        "example": "video/mp4",
+                        "type": "string"
+                    },
+                    "object_key": {
+                        "example": "videos/leccion-1.mp4",
+                        "type": "string"
+                    },
+                    "size_bytes": {
+                        "example": 52428800,
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "courses.UploadURLResponse": {
+                "properties": {
+                    "resource": {
+                        "$ref": "#/components/schemas/courses.Resource"
+                    },
+                    "task_id": {
+                        "example": "transcode-550e8400-e29b-41d4-a716-446655440000",
+                        "type": "string"
+                    },
+                    "upload_url": {
+                        "example": "http://localhost:9000/originals/videos/leccion-1.mp4?X-Amz-Algorithm=...",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "courses.ValidateResponse": {
+                "properties": {
+                    "errors": {
+                        "items": {
+                            "type": "string"
+                        },
+                        "type": "array",
+                        "uniqueItems": false
+                    },
+                    "valid": {
+                        "example": true,
+                        "type": "boolean"
+                    }
+                },
+                "type": "object"
+            },
+            "courses.VersionEnvelope": {
+                "properties": {
+                    "version": {
+                        "$ref": "#/components/schemas/courses.CourseVersion"
+                    }
+                },
+                "type": "object"
+            },
+            "main.HealthResponse": {
+                "properties": {
+                    "message": {
+                        "example": "Error al conectar con Redis",
+                        "type": "string"
+                    },
+                    "status": {
+                        "example": "ok",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "utils.ErrorResponse": {
+                "properties": {
+                    "error": {
+                        "example": "Se requieren username, email y password",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "utils.MessageResponse": {
+                "properties": {
+                    "message": {
+                        "example": "Operación exitosa",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "BearerAuth": {
+                "description": "Token JWT de sesión. Formato: `Bearer \u003ctoken\u003e`.",
+                "in": "header",
+                "name": "Authorization",
+                "type": "apiKey"
+            }
+        }
+    },
+    "info": {
+        "description": "API REST del monolito modular: identidad y sesiones, administración y auditoría, autoría de cursos versionados y carga multimedia con procesamiento asíncrono a HLS.\nAutenticación con JWT revocable: iniciar sesión en /auth/login y enviar `Authorization: Bearer \u003ctoken\u003e`.",
+        "title": "Plataforma MOOC - API",
+        "version": "1.0"
+    },
+    "externalDocs": {
+        "description": "",
+        "url": ""
+    },
+    "paths": {
+        "/admin/audit": {
+            "get": {
+                "description": "Registros inmutables de acciones administrativas, filtrables por actor, objetivo, acción y rango de fechas.",
+                "parameters": [
+                    {
+                        "description": "Bearer \u003ctoken de admin\u003e",
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Filtro por actor (username)",
+                        "in": "query",
+                        "name": "actor",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Filtro por usuario objetivo",
+                        "in": "query",
+                        "name": "target",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Filtro por acción",
+                        "in": "query",
+                        "name": "action",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Desde (fecha)",
+                        "in": "query",
+                        "name": "from",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Hasta (fecha)",
+                        "in": "query",
+                        "name": "to",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Página (base 1)",
+                        "in": "query",
+                        "name": "page",
+                        "schema": {
+                            "default": 1,
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "description": "Resultados por página (máx 100)",
+                        "in": "query",
+                        "name": "limit",
+                        "schema": {
+                            "default": 20,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/admin.AuditListResponse"
+                                }
+                            }
+                        },
+                        "description": "Registros de auditoría"
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Error interno"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Listar auditoría",
+                "tags": [
+                    "Administración"
+                ]
+            }
+        },
+        "/admin/sessions": {
+            "delete": {
+                "description": "Revoca el token indicado (cuerpo o query) con registro en auditoría.",
+                "parameters": [
+                    {
+                        "description": "Bearer \u003ctoken de admin\u003e",
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Token a revocar (alternativo)",
+                        "in": "query",
+                        "name": "token",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/admin.SessionTokenRequest",
+                                "summary": "request",
+                                "description": "Token a revocar (o query param token)"
+                            }
+                        }
+                    },
+                    "description": "Token a revocar (o query param token)"
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.MessageResponse"
+                                }
+                            }
+                        },
+                        "description": "Sesión revocada"
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Falta el token a revocar"
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Error interno"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Revocar una sesión",
+                "tags": [
+                    "Administración"
+                ]
+            }
+        },
+        "/admin/stats": {
+            "get": {
+                "description": "Totales de usuarios por estado y administradores activos.",
+                "parameters": [
+                    {
+                        "description": "Bearer \u003ctoken de admin\u003e",
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/admin.StatsResponse"
+                                }
+                            }
+                        },
+                        "description": "Estadísticas"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Estadísticas",
+                "tags": [
+                    "Administración"
+                ]
+            }
+        },
+        "/admin/users": {
+            "get": {
+                "description": "Lista paginada de usuarios con búsqueda por texto, filtros por rol, estado y verificación.",
+                "parameters": [
+                    {
+                        "description": "Bearer \u003ctoken de admin\u003e",
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Búsqueda en username y email",
+                        "in": "query",
+                        "name": "search",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Filtro por rol (student, professor, admin)",
+                        "in": "query",
+                        "name": "role",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Filtro por estado (active, inactive, blocked)",
+                        "in": "query",
+                        "name": "status",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Filtro por verificación",
+                        "in": "query",
+                        "name": "verified",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "description": "Página (base 1)",
+                        "in": "query",
+                        "name": "page",
+                        "schema": {
+                            "default": 1,
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "description": "Resultados por página (máx 100)",
+                        "in": "query",
+                        "name": "limit",
+                        "schema": {
+                            "default": 20,
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "description": "Orden: columna y dirección (ej. username asc)",
+                        "in": "query",
+                        "name": "sort",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/admin.UserListResponse"
+                                }
+                            }
+                        },
+                        "description": "Listado de usuarios"
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "No autenticado"
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Se requiere rol admin"
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Error interno"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Listar usuarios",
+                "tags": [
+                    "Administración"
+                ]
+            }
+        },
+        "/admin/users/{id}": {
+            "delete": {
+                "description": "Soft delete con auditoría y revocación de sesiones. Protege al último administrador activo.",
+                "parameters": [
+                    {
+                        "description": "Bearer \u003ctoken de admin\u003e",
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "ID del usuario",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.MessageResponse"
+                                }
+                            }
+                        },
+                        "description": "Usuario eliminado (soft delete)"
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "ID inválido"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Usuario no encontrado"
+                    },
+                    "409": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "No se puede dejar el sistema sin administrador"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Eliminar usuario",
+                "tags": [
+                    "Administración"
+                ]
+            },
+            "get": {
+                "description": "Retorna la representación pública de un usuario (sin contraseña).",
+                "parameters": [
+                    {
+                        "description": "Bearer \u003ctoken de admin\u003e",
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "ID del usuario",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/admin.UserDetailResponse"
+                                }
+                            }
+                        },
+                        "description": "Usuario encontrado"
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "ID inválido"
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "No autenticado"
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Se requiere rol admin"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Usuario no encontrado"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Obtener usuario",
+                "tags": [
+                    "Administración"
+                ]
+            }
+        },
+        "/admin/users/{id}/restore": {
+            "post": {
+                "description": "Revierte el soft delete de un usuario, con registro en auditoría.",
+                "parameters": [
+                    {
+                        "description": "Bearer \u003ctoken de admin\u003e",
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "ID del usuario",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/admin.UserMessageResponse"
+                                }
+                            }
+                        },
+                        "description": "Usuario restaurado"
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "ID inválido"
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Error interno"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Restaurar usuario",
+                "tags": [
+                    "Administración"
+                ]
+            }
+        },
+        "/admin/users/{id}/role": {
+            "put": {
+                "description": "Actualiza el rol de un usuario y registra la acción en auditoría. No permite degradar al último administrador activo.",
+                "parameters": [
+                    {
+                        "description": "Bearer \u003ctoken de admin\u003e",
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "ID del usuario",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/admin.RoleUpdateRequest",
+                                "summary": "request",
+                                "description": "Nuevo rol"
+                            }
+                        }
+                    },
+                    "description": "Nuevo rol",
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/admin.UserMessageResponse"
+                                }
+                            }
+                        },
+                        "description": "Rol actualizado"
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "ID inválido, rol inválido o falta el campo"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Usuario no encontrado"
+                    },
+                    "409": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "No se puede dejar el sistema sin administrador"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Cambiar rol",
+                "tags": [
+                    "Administración"
+                ]
+            }
+        },
+        "/admin/users/{id}/sessions": {
+            "delete": {
+                "description": "Elimina todos los tokens activos de un usuario, con registro en auditoría.",
+                "parameters": [
+                    {
+                        "description": "Bearer \u003ctoken de admin\u003e",
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "ID del usuario",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/admin.RevokeSessionsResponse"
+                                }
+                            }
+                        },
+                        "description": "Sesiones revocadas"
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "ID inválido"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Usuario no encontrado"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Revocar sesiones",
+                "tags": [
+                    "Administración"
+                ]
+            },
+            "get": {
+                "description": "Retorna los JWT activos de un usuario, purgando expirados perezosamente.",
+                "parameters": [
+                    {
+                        "description": "Bearer \u003ctoken de admin\u003e",
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "ID del usuario",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/admin.SessionsResponse"
+                                }
+                            }
+                        },
+                        "description": "Sesiones activas"
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "ID inválido"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Usuario no encontrado"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Listar sesiones",
+                "tags": [
+                    "Administración"
+                ]
+            }
+        },
+        "/admin/users/{id}/status": {
+            "patch": {
+                "description": "Actualiza el estado (active, inactive, blocked) con auditoría. Desactivar o bloquear revoca todas las sesiones. Protege al último admin activo.",
+                "parameters": [
+                    {
+                        "description": "Bearer \u003ctoken de admin\u003e",
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "ID del usuario",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/admin.StatusUpdateRequest",
+                                "summary": "request",
+                                "description": "Nuevo estado"
+                            }
+                        }
+                    },
+                    "description": "Nuevo estado",
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/admin.UserMessageResponse"
+                                }
+                            }
+                        },
+                        "description": "Estado actualizado"
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "ID inválido, estado inválido o falta el campo"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Usuario no encontrado"
+                    },
+                    "409": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "No se puede dejar el sistema sin administrador"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Cambiar estado",
+                "tags": [
+                    "Administración"
+                ]
+            }
+        },
+        "/auth/login": {
+            "post": {
+                "description": "Verifica las credenciales y retorna un token JWT de 24 horas para el header Authorization.",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/auth.LoginRequest",
+                                "summary": "request",
+                                "description": "Credenciales"
+                            }
+                        }
+                    },
+                    "description": "Credenciales",
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/auth.LoginResponse"
+                                }
+                            }
+                        },
+                        "description": "Autenticación exitosa"
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Solicitud inválida"
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Credenciales incorrectas"
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Cuenta desactivada o bloqueada"
+                    }
+                },
+                "summary": "Iniciar sesión",
+                "tags": [
+                    "Autenticación"
+                ]
+            }
+        },
+        "/auth/logout": {
+            "post": {
+                "description": "Invalida el token de la petición actual. Es idempotente.",
+                "parameters": [
+                    {
+                        "description": "Bearer \u003ctoken\u003e",
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.MessageResponse"
+                                }
+                            }
+                        },
+                        "description": "Sesión cerrada"
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Token inválido o ausente"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Cerrar sesión",
+                "tags": [
+                    "Autenticación"
+                ]
+            }
+        },
+        "/auth/me": {
+            "get": {
+                "description": "Retorna el username y rol asociados al token de la petición.",
+                "parameters": [
+                    {
+                        "description": "Bearer \u003ctoken\u003e",
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/auth.MeResponse"
+                                }
+                            }
+                        },
+                        "description": "Perfil de la sesión"
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Token inválido o ausente"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Perfil de la sesión",
+                "tags": [
+                    "Autenticación"
+                ]
+            }
+        },
+        "/auth/register": {
+            "post": {
+                "description": "Registra un estudiante o administrador de forma pública. Crear un profesor requiere el token de un administrador.",
+                "parameters": [
+                    {
+                        "description": "Bearer \u003ctoken\u003e (obligatorio solo para rol professor)",
+                        "in": "header",
+                        "name": "Authorization",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/auth.RegisterRequest",
+                                "summary": "request",
+                                "description": "Datos de registro"
+                            }
+                        }
+                    },
+                    "description": "Datos de registro",
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.MessageResponse"
+                                }
+                            }
+                        },
+                        "description": "Usuario registrado"
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Solicitud inválida o rol inválido"
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Token de administrador inválido"
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Se requiere administrador para crear profesores"
+                    },
+                    "409": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Usuario o correo ya en uso"
+                    }
+                },
+                "summary": "Registrar usuario",
+                "tags": [
+                    "Autenticación"
+                ]
+            }
+        },
+        "/auth/resend-verification": {
+            "post": {
+                "description": "Genera un nuevo código de verificación y lo envía al correo indicado. Solo para cuentas pendientes de verificación.",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/auth.ResendVerificationRequest",
+                                "summary": "request",
+                                "description": "Usuario y correo"
+                            }
+                        }
+                    },
+                    "description": "Usuario y correo",
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.MessageResponse"
+                                }
+                            }
+                        },
+                        "description": "Código reenviado"
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Solicitud inválida"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Usuario no encontrado"
+                    },
+                    "409": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Usuario ya verificado"
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "No se pudo enviar el correo"
+                    }
+                },
+                "summary": "Reenviar verificación",
+                "tags": [
+                    "Autenticación"
+                ]
+            }
+        },
+        "/auth/reset-password": {
+            "post": {
+                "description": "Valida el código de recuperación y guarda la nueva contraseña (hasheada con bcrypt).",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/auth.ResetPasswordRequest",
+                                "summary": "request",
+                                "description": "Usuario, código y nueva contraseña"
+                            }
+                        }
+                    },
+                    "description": "Usuario, código y nueva contraseña",
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.MessageResponse"
+                                }
+                            }
+                        },
+                        "description": "Contraseña restablecida"
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Solicitud inválida"
+                    }
+                },
+                "summary": "Restablecer contraseña",
+                "tags": [
+                    "Autenticación"
+                ]
+            }
+        },
+        "/auth/revoke-session": {
+            "post": {
+                "description": "Elimina de Redis el token indicado en el cuerpo o en el header Authorization. No requiere autenticación (uso en pruebas).",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/auth.TokenRequest",
+                                "summary": "request",
+                                "description": "Token a revocar (o header Authorization)"
+                            }
+                        }
+                    },
+                    "description": "Token a revocar (o header Authorization)"
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.MessageResponse"
+                                }
+                            }
+                        },
+                        "description": "Sesión revocada"
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Falta el token a revocar"
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "No se pudo revocar la sesión"
+                    }
+                },
+                "summary": "Revocar una sesión",
+                "tags": [
+                    "Autenticación"
+                ]
+            }
+        },
+        "/auth/send-recovery-code": {
+            "get": {
+                "description": "Genera un código de recuperación válido por 10 minutos y lo envía al correo del usuario.",
+                "parameters": [
+                    {
+                        "description": "Nombre de usuario",
+                        "in": "query",
+                        "name": "username",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Correo (informativo)",
+                        "in": "query",
+                        "name": "email",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.MessageResponse"
+                                }
+                            }
+                        },
+                        "description": "Código enviado"
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Solicitud inválida"
+                    }
+                },
+                "summary": "Solicitar recuperación",
+                "tags": [
+                    "Autenticación"
+                ]
+            }
+        },
+        "/auth/verify": {
+            "get": {
+                "description": "Activa la cuenta recién registrada con el código de verificación de 6 caracteres.",
+                "parameters": [
+                    {
+                        "description": "Nombre de usuario",
+                        "in": "query",
+                        "name": "username",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Código de verificación",
+                        "in": "query",
+                        "name": "code",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.MessageResponse"
+                                }
+                            }
+                        },
+                        "description": "Usuario verificado"
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Solicitud inválida o código incorrecto"
+                    }
+                },
+                "summary": "Verificar cuenta",
+                "tags": [
+                    "Autenticación"
+                ]
+            }
+        },
+        "/courses": {
+            "get": {
+                "description": "Catálogo público con búsqueda y filtros. Solo incluye cursos publicados.",
+                "parameters": [
+                    {
+                        "description": "Búsqueda en título y descripción",
+                        "in": "query",
+                        "name": "search",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Página (base 1)",
+                        "in": "query",
+                        "name": "page",
+                        "schema": {
+                            "default": 1,
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "description": "Resultados por página (máx 100)",
+                        "in": "query",
+                        "name": "limit",
+                        "schema": {
+                            "default": 20,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/courses.CoursesResponse"
+                                }
+                            }
+                        },
+                        "description": "Catálogo paginado"
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Error interno"
+                    }
+                },
+                "summary": "Catálogo de cursos",
+                "tags": [
+                    "Cursos"
+                ]
+            },
+            "post": {
+                "description": "Crea el curso (borrador) con su versión 1 draft. Requiere rol professor o admin.",
+                "parameters": [
+                    {
+                        "description": "Bearer \u003ctoken\u003e",
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/courses.CreateCourseRequest",
+                                "summary": "request",
+                                "description": "Metadatos del curso"
+                            }
+                        }
+                    },
+                    "description": "Metadatos del curso",
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/courses.CourseCreatedResponse"
+                                }
+                            }
+                        },
+                        "description": "Curso creado"
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Título requerido"
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "No autenticado"
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Se requiere professor o admin"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Crear curso",
+                "tags": [
+                    "Cursos"
+                ]
+            }
+        },
+        "/courses/{id}": {
+            "get": {
+                "description": "Si el curso está publicado es público; si es borrador requiere ser el autor o admin.",
+                "parameters": [
+                    {
+                        "description": "ID del curso",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "description": "Bearer \u003ctoken\u003e (obligatorio para borradores)",
+                        "in": "header",
+                        "name": "Authorization",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/courses.CourseDetailResponse"
+                                }
+                            }
+                        },
+                        "description": "Curso con su versión y árbol"
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "ID inválido"
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Token inválido"
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Curso no publicado"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "No encontrado"
+                    }
+                },
+                "summary": "Detalle de curso",
+                "tags": [
+                    "Cursos"
+                ]
+            },
+            "put": {
+                "description": "Edita título, descripción o miniatura. Un curso publicado debe despublicarse primero (MVP).",
+                "parameters": [
+                    {
+                        "description": "Bearer \u003ctoken\u003e",
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "ID del curso",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/courses.UpdateCourseRequest",
+                                "summary": "request",
+                                "description": "Campos a actualizar"
+                            }
+                        }
+                    },
+                    "description": "Campos a actualizar",
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/courses.CourseCreatedResponse"
+                                }
+                            }
+                        },
+                        "description": "Curso actualizado (envuelve course)"
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "ID inválido"
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Sin permiso"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "No encontrado"
+                    },
+                    "409": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Curso publicado (despublicar primero)"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Editar curso",
+                "tags": [
+                    "Cursos"
+                ]
+            }
+        },
+        "/courses/{id}/modules": {
+            "post": {
+                "description": "Agrega un módulo al final del borrador editable del curso.",
+                "parameters": [
+                    {
+                        "description": "Bearer \u003ctoken\u003e",
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "ID del curso",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/courses.CreateModuleRequest",
+                                "summary": "request",
+                                "description": "Datos del módulo"
+                            }
+                        }
+                    },
+                    "description": "Datos del módulo",
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/courses.ModuleEnvelope"
+                                }
+                            }
+                        },
+                        "description": "Módulo creado"
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Título requerido"
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Sin permiso"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "No encontrado"
+                    },
+                    "409": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Curso publicado o versión inmutable"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Agregar módulo",
+                "tags": [
+                    "Cursos"
+                ]
+            }
+        },
+        "/courses/{id}/modules/reorder": {
+            "post": {
+                "description": "Asigna posiciones 1-based según el orden de IDs recibido, en transacción.",
+                "parameters": [
+                    {
+                        "description": "Bearer \u003ctoken\u003e",
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "ID del curso",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/courses.OrderedIDsRequest",
+                                "summary": "request",
+                                "description": "IDs en el orden deseado"
+                            }
+                        }
+                    },
+                    "description": "IDs en el orden deseado",
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.MessageResponse"
+                                }
+                            }
+                        },
+                        "description": "Orden actualizado"
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "ordered_ids requerido o módulo inexistente"
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Sin permiso"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "No encontrado"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Reordenar módulos",
+                "tags": [
+                    "Cursos"
+                ]
+            }
+        },
+        "/courses/{id}/publish": {
+            "post": {
+                "description": "Valida y publica el borrador: la versión se vuelve inmutable y pasa a ser la vigente.",
+                "parameters": [
+                    {
+                        "description": "Bearer \u003ctoken\u003e",
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "ID del curso",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/courses.PublishResponse"
+                                }
+                            }
+                        },
+                        "description": "Versión publicada"
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Validación fallida (ver errores)"
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Sin permiso"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "No encontrado"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Publicar curso",
+                "tags": [
+                    "Cursos"
+                ]
+            }
+        },
+        "/courses/{id}/unpublish": {
+            "post": {
+                "description": "La edición de un curso publicado exige despublicarlo temporalmente durante el MVP.",
+                "parameters": [
+                    {
+                        "description": "Bearer \u003ctoken\u003e",
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "ID del curso",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/courses.UnpublishResponse"
+                                }
+                            }
+                        },
+                        "description": "Curso despublicado"
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Sin permiso"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "No encontrado"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Despublicar curso",
+                "tags": [
+                    "Cursos"
+                ]
+            }
+        },
+        "/courses/{id}/validate": {
+            "get": {
+                "description": "Verifica metadatos, estructura mínima, criterios de aprobación y disponibilidad de recursos visibles.",
+                "parameters": [
+                    {
+                        "description": "Bearer \u003ctoken\u003e",
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "ID del curso",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/courses.ValidateResponse"
+                                }
+                            }
+                        },
+                        "description": "Resultado de validación"
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "No autenticado"
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Se requiere professor o admin"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Validar publicación",
+                "tags": [
+                    "Cursos"
+                ]
+            }
+        },
+        "/courses/{id}/versions": {
+            "post": {
+                "description": "Clona módulos, unidades y recursos preservando los stable_id para conservar el progreso.",
+                "parameters": [
+                    {
+                        "description": "Bearer \u003ctoken\u003e",
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "ID del curso",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/courses.VersionEnvelope"
+                                }
+                            }
+                        },
+                        "description": "Borrador creado"
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Ya existe un borrador"
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Sin permiso"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "No encontrado"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Crear borrador de actualización",
+                "tags": [
+                    "Cursos"
+                ]
+            }
+        },
+        "/health": {
+            "get": {
+                "description": "Verifica la conectividad con PostgreSQL y Redis. Usado por Docker healthchecks y monitoreo.",
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/main.HealthResponse"
+                                }
+                            }
+                        },
+                        "description": "Servicio y dependencias Saludables"
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/main.HealthResponse"
+                                }
+                            }
+                        },
+                        "description": "Alguna dependencia falló"
+                    }
+                },
+                "summary": "Salud del servicio",
+                "tags": [
+                    "Operación"
+                ]
+            }
+        },
+        "/modules/{id}/units": {
+            "post": {
+                "description": "Agrega una unidad al final del módulo indicado.",
+                "parameters": [
+                    {
+                        "description": "Bearer \u003ctoken\u003e",
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "ID del módulo",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/courses.CreateUnitRequest",
+                                "summary": "request",
+                                "description": "Datos de la unidad"
+                            }
+                        }
+                    },
+                    "description": "Datos de la unidad",
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/courses.UnitEnvelope"
+                                }
+                            }
+                        },
+                        "description": "Unidad creada"
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Título requerido"
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Sin permiso"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "No encontrado"
+                    },
+                    "409": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Versión inmutable"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Agregar unidad",
+                "tags": [
+                    "Cursos"
+                ]
+            }
+        },
+        "/modules/{id}/units/reorder": {
+            "post": {
+                "description": "Asigna posiciones 1-based según el orden de IDs recibido, en transacción.",
+                "parameters": [
+                    {
+                        "description": "Bearer \u003ctoken\u003e",
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "ID del módulo",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/courses.OrderedIDsRequest",
+                                "summary": "request",
+                                "description": "IDs en el orden deseado"
+                            }
+                        }
+                    },
+                    "description": "IDs en el orden deseado",
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.MessageResponse"
+                                }
+                            }
+                        },
+                        "description": "Orden actualizado"
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "ordered_ids requerido o unidad inexistente"
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Sin permiso"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "No encontrado"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Reordenar unidades",
+                "tags": [
+                    "Cursos"
+                ]
+            }
+        },
+        "/resources/{id}": {
+            "put": {
+                "description": "Actualiza los campos indicados; los no enviados conservan su valor. Solo en versión borrador.",
+                "parameters": [
+                    {
+                        "description": "Bearer \u003ctoken\u003e",
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "ID del recurso",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/courses.ResourceInput",
+                                "summary": "request",
+                                "description": "Campos a actualizar"
+                            }
+                        }
+                    },
+                    "description": "Campos a actualizar",
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/courses.ResourceEnvelope"
+                                }
+                            }
+                        },
+                        "description": "Recurso actualizado"
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Datos inválidos"
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Sin permiso"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "No encontrado"
+                    },
+                    "409": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Versión inmutable"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Editar recurso",
+                "tags": [
+                    "Cursos"
+                ]
+            }
+        },
+        "/resources/{id}/download-url": {
+            "get": {
+                "description": "Verifica propiedad o inscripción y curso publicado con recurso visible. Si hay HLS listo retorna su URL pública; si no, una URL firmada de 15 min.",
+                "parameters": [
+                    {
+                        "description": "Bearer \u003ctoken\u003e",
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "ID del recurso",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/courses.DownloadURLResponse"
+                                }
+                            }
+                        },
+                        "description": "URL de consumo"
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Sin derecho de acceso"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Recurso no encontrado"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "URL de descarga",
+                "tags": [
+                    "Cursos"
+                ]
+            }
+        },
+        "/resources/{id}/upload-url": {
+            "post": {
+                "description": "Genera una URL prefirmada PUT válida 24h para carga directa a objetos. En video/audio encola transcodificación HLS idempotente (header Idempotency-Key recomendado).",
+                "parameters": [
+                    {
+                        "description": "Bearer \u003ctoken\u003e",
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Clave de idempotencia (se genera una por defecto)",
+                        "in": "header",
+                        "name": "Idempotency-Key",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "ID del recurso",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/courses.UploadURLRequest",
+                                "summary": "request",
+                                "description": "Objeto destino y metadatos"
+                            }
+                        }
+                    },
+                    "description": "Objeto destino y metadatos",
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/courses.UploadURLResponse"
+                                }
+                            }
+                        },
+                        "description": "URL prefirmada y tarea creada"
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "object_key requerido"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Recurso no encontrado"
+                    },
+                    "501": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Almacenamiento/cola no configurados"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "URL de subida",
+                "tags": [
+                    "Cursos"
+                ]
+            }
+        },
+        "/units/{id}/resources": {
+            "post": {
+                "description": "Tipos: text, image, video, audio, pdf, slides, file, iframe, link, quiz. Video/audio quedan en processing pending hasta el transcode.",
+                "parameters": [
+                    {
+                        "description": "Bearer \u003ctoken\u003e",
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "ID de la unidad",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/courses.ResourceInput",
+                                "summary": "request",
+                                "description": "Datos del recurso"
+                            }
+                        }
+                    },
+                    "description": "Datos del recurso",
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/courses.ResourceEnvelope"
+                                }
+                            }
+                        },
+                        "description": "Recurso creado"
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Tipo o datos inválidos"
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Sin permiso"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "No encontrado"
+                    },
+                    "409": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Versión inmutable"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Agregar recurso",
+                "tags": [
+                    "Cursos"
+                ]
+            }
+        },
+        "/units/{id}/resources/reorder": {
+            "post": {
+                "description": "Asigna posiciones 1-based según el orden de IDs recibido, en transacción.",
+                "parameters": [
+                    {
+                        "description": "Bearer \u003ctoken\u003e",
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "ID de la unidad",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/courses.OrderedIDsRequest",
+                                "summary": "request",
+                                "description": "IDs en el orden deseado"
+                            }
+                        }
+                    },
+                    "description": "IDs en el orden deseado",
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.MessageResponse"
+                                }
+                            }
+                        },
+                        "description": "Orden actualizado"
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "ordered_ids requerido o recurso inexistente"
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Sin permiso"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "No encontrado"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Reordenar recursos",
+                "tags": [
+                    "Cursos"
+                ]
+            }
+        }
+    },
+    "openapi": "3.1.0",
+    "servers": [
+        {
+            "url": "localhost:8080"
+        }
+    ]
+}

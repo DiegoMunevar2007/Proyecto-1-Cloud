@@ -221,15 +221,15 @@ func AddUnit(db *gorm.DB, moduleID uint, userID uint, role, title, description s
 
 // ResourceInput es la entrada para crear/actualizar recursos.
 type ResourceInput struct {
-	Type          string `json:"type"`
-	Title         string `json:"title"`
-	IsVisible     *bool  `json:"is_visible"`
-	IsRequired    *bool  `json:"is_required"`
-	AllowDownload bool   `json:"allow_download"`
-	MarkdownBody  string `json:"markdown_body"`
-	ExternalURL   string `json:"external_url"`
-	MimeType      string `json:"mime_type"`
-	SizeBytes     int64  `json:"size_bytes"`
+	Type          string `json:"type" example:"text"`
+	Title         string `json:"title" example:"Lección 1: Variables"`
+	IsVisible     *bool  `json:"is_visible" example:"true"`
+	IsRequired    *bool  `json:"is_required" example:"true"`
+	AllowDownload bool   `json:"allow_download" example:"false"`
+	MarkdownBody  string `json:"markdown_body" example:"# Variables en Go"`
+	ExternalURL   string `json:"external_url" example:"https://ejemplo.com/recurso"`
+	MimeType      string `json:"mime_type" example:"video/mp4"`
+	SizeBytes     int64  `json:"size_bytes" example:"52428800"`
 }
 
 func validateResourceInput(in ResourceInput) error {
