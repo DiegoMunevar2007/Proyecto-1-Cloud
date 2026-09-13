@@ -3,10 +3,7 @@ package queue
 import "encoding/json"
 
 // Tipos de tareas asynq. La API publica, el worker consume.
-const (
-	TypeMediaTranscode = "media:transcode"
-	TypeMediaProbe     = "media:probe"
-)
+const TypeMediaTranscode = "media:transcode"
 
 // TranscodePayload es el payload para transcodificar un recurso a HLS.
 type TranscodePayload struct {
@@ -15,12 +12,6 @@ type TranscodePayload struct {
 	MimeType   string `json:"mime_type"`
 	// IdempotencyKey evita salidas repetidas ante entregas duplicadas.
 	IdempotencyKey string `json:"idempotency_key"`
-}
-
-// Encode serializa el payload a JSON.
-func Encode(v interface{}) []byte {
-	b, _ := json.Marshal(v)
-	return b
 }
 
 // DecodeTranscode deserializa un payload de transcodificación.

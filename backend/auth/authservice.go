@@ -2,8 +2,10 @@ package auth
 
 import (
 	"context"
+	"crypto/rand"
 	"errors"
 	"fmt"
+	"math/big"
 	"time"
 
 	"github.com/DiegoMunevar2007/Proyecto-1-Cloud.git/mail"
@@ -32,69 +34,37 @@ func getJWTSecret() []byte {
 	return []byte(utils.GetJWTSecret())
 }
 
-func AuthenticateUser(username, password string, db *gorm.DB) bool {
-	/*
-		Autentica al usuario verificando su nombre de usuario y contraseña en la base de datos.
-		Si la autenticación es exitosa y la cuenta está activa, devuelve true; de lo contrario, devuelve false.
-		Las cuentas con status != active (inactive/blocked) se bloquean en el login.
-	*/
-	var user UserModel
-	result := db.Where("username = ?", username).First(&user)
-	if result.Error != nil {
-		return false
-	}
-	// Bloquear login si la cuenta no está activa (soft-delete ya filtra DeletedAt).
-	if NormalizeStatus(user.Status) != StatusActive {
-		return false
-	}
-	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
-		return false
-	}
-	return true
-}
-
 // AuthError define errores tipados para login bloqueado.
 var (
 	ErrAccountInactive = errors.New("cuenta desactivada")
 	ErrAccountBlocked  = errors.New("cuenta bloqueada")
 )
 
-func AuthenticateUserDetailed(username, password string, db *gorm.DB) (bool, string) {
+func AuthenticateUserDetailed(username, password string, db *gorm.DB) (userID uint, reason string, ok bool) {
 	/*
-		Variante detallada que distingue motivo de bloqueo para responder 403.
-		Retorna (ok, motivo) donde motivo es "", "inactive" o "blocked".
+		Autentica al usuario y distingue el motivo de bloqueo para responder 403.
+		Retorna (userID, motivo, ok) donde motivo es "", "inactive" o "blocked".
+		En éxito evita una segunda consulta: el ID sale de la misma fila.
 	*/
 	var user UserModel
 	result := db.Where("username = ?", username).First(&user)
 	if result.Error != nil {
-		return false, ""
+		return 0, "", false
 	}
 	status := NormalizeStatus(user.Status)
 	if status == StatusInactive {
-		return false, StatusInactive
+		return 0, StatusInactive, false
 	}
 	if status == StatusBlocked {
-		return false, StatusBlocked
+		return 0, StatusBlocked, false
 	}
 	if status != StatusActive {
-		return false, status
+		return 0, status, false
 	}
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
-		return false, ""
+		return 0, "", false
 	}
-	return true, ""
-}
-
-func GetUserID(username string, db *gorm.DB) (uint, error) {
-	/*
-		Obtiene el ID del usuario a partir de su nombre de usuario.
-		Devuelve un error si el usuario no existe.
-	*/
-	var user UserModel
-	if err := db.Where("username = ?", username).First(&user).Error; err != nil {
-		return 0, err
-	}
-	return user.ID, nil
+	return user.ID, "", true
 }
 
 func hashPassword(password string) string {
@@ -196,16 +166,6 @@ func ResolveSessionTokenWithRole(tokenString string, rdb *redis.Client) (string,
 	return username, claims.Role, nil
 }
 
-func ResolveSessionToken(tokenString string, rdb *redis.Client) (string, error) {
-	/*
-		Valida un JWT verificando firma, expiración y existencia en Redis.
-		Si es válido devuelve el username; en caso contrario retorna error genérico.
-		Wrapper sobre ResolveSessionTokenWithRole para compatibilidad.
-	*/
-	username, _, err := ResolveSessionTokenWithRole(tokenString, rdb)
-	return username, err
-}
-
 func DeleteSession(tokenString string, rdb *redis.Client) error {
 	/*
 		Invalida un token de sesión (cierre de sesión) eliminándolo de Redis.
@@ -283,12 +243,6 @@ func ListSessionsForUser(username string, rdb *redis.Client) ([]string, error) {
 	return active, nil
 }
 
-// RevokeSession es un alias de DeleteSession para el endpoint /revoke-session.
-// Se expone sin RequireAuth solo para pruebas, según lo solicitado.
-func RevokeSession(tokenString string, rdb *redis.Client) error {
-	return DeleteSession(tokenString, rdb)
-}
-
 func RegisterUser(username string, email string, password string, role string, db *gorm.DB, rdb *redis.Client) (string, int) {
 	/*
 		Registra un nuevo usuario con el rol especificado. Valida el rol,
@@ -328,6 +282,27 @@ var ErrAlreadyVerified = errors.New("usuario ya verificado")
 // ErrUserNotFound indica que el usuario no existe.
 var ErrUserNotFound = errors.New("usuario no encontrado")
 
+// newCode genera un código numérico de 6 dígitos con crypto/rand.
+func newCode() string {
+	n, err := rand.Int(rand.Reader, big.NewInt(1000000))
+	if err != nil {
+		return fmt.Sprintf("%06d", time.Now().UnixNano()%1000000)
+	}
+	return fmt.Sprintf("%06d", n.Int64())
+}
+
+// storeAndSendCode guarda el código en Redis (10 min) y lo envía por correo.
+func storeAndSendCode(username, email, redisPrefix, subject, bodyPrefix string, rdb *redis.Client) (string, error) {
+	code := newCode()
+	if err := rdb.Set(ctx, redisPrefix+username, code, 10*time.Minute).Err(); err != nil {
+		return "", errors.New("error al guardar el código: " + err.Error())
+	}
+	if err := mail.SendEmail(email, subject, "Hola "+username+", \n\n"+bodyPrefix+code); err != nil {
+		return "", errors.New("error al enviar el correo: " + err.Error())
+	}
+	return code, nil
+}
+
 func SendVerificationCode(username string, email string, db *gorm.DB, rdb *redis.Client) error {
 	// No reenviar códigos a cuentas ya verificadas ni a usuarios inexistentes.
 	var user UserModel
@@ -342,20 +317,8 @@ func SendVerificationCode(username string, email string, db *gorm.DB, rdb *redis
 	}
 
 	// Generar un código de verificación de 6 dígitos para el usuario recién registrado
-	verificationCode := uuid.New().String()[:6] // Tomamos los primeros 6 caracteres del UUID como código de verificación
-
-	// Guardar el código de verificación en Redis con un tiempo de expiración de 10 minutos
-	err := rdb.Set(ctx, "verification:"+username, verificationCode, 10*time.Minute).Err()
-	if err != nil {
-		return errors.New("Error al guardar el código de verificación: " + err.Error())
-	}
-
-	// Enviar el correo con el código de verificación
-	err = mail.SendEmail(email, "Verificación de cuenta", "Hola "+username+", \n\nEste es tu código de verificación: "+verificationCode)
-	if err != nil {
-		return errors.New("Error al enviar el correo de verificación: " + err.Error())
-	}
-	return nil
+	_, err := storeAndSendCode(username, email, "verification:", "Verificación de cuenta", "Este es tu código de verificación: ", rdb)
+	return err
 }
 
 func VerifyUser(username string, verificationCode string, db *gorm.DB, rdb *redis.Client) error {
@@ -400,19 +363,8 @@ func RecoverPassword(username string, db *gorm.DB, rdb *redis.Client) error {
 		return errors.New("usuario no encontrado")
 	}
 
-	recoveryCode := uuid.New().String()[:6] // Tomamos los primeros 6 caracteres del UUID como código de recuperación
-
-	err := rdb.Set(ctx, "recovery:"+username, recoveryCode, 10*time.Minute).Err()
-	if err != nil {
-		return errors.New("error al guardar el código de recuperación: " + err.Error())
-	}
-
-	err = mail.SendEmail(user.Email, "Recuperación de contraseña", "Hola "+username+", \n\nEste es tu código de recuperación: "+recoveryCode)
-	if err != nil {
-		return errors.New("error al enviar el correo de recuperación: " + err.Error())
-	}
-
-	return nil
+	_, err := storeAndSendCode(username, user.Email, "recovery:", "Recuperación de contraseña", "Este es tu código de recuperación: ", rdb)
+	return err
 }
 
 func ResetPassword(username string, recoveryCode string, newPassword string, db *gorm.DB, rdb *redis.Client) error {

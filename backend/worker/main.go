@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"time"
 
 	"github.com/DiegoMunevar2007/Proyecto-1-Cloud.git/courses"
 	"github.com/DiegoMunevar2007/Proyecto-1-Cloud.git/queue"
@@ -14,6 +15,18 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
+
+// retryDelay es el backoff exponencial de reintentos (DLQ tras MaxRetry): 30s, 2m, 8m.
+func retryDelay(n int, _ error, _ *asynq.Task) time.Duration {
+	switch n {
+	case 1:
+		return 30 * time.Second
+	case 2:
+		return 2 * time.Minute
+	default:
+		return 8 * time.Minute
+	}
+}
 
 func main() {
 	redisOpt := asynq.RedisClientOpt{
@@ -56,7 +69,7 @@ func main() {
 			"media":   6,
 			"default": 3,
 		},
-		RetryDelayFunc: queue.RetryDelayFunc(),
+		RetryDelayFunc: retryDelay,
 		ErrorHandler: asynq.ErrorHandlerFunc(func(ctx context.Context, task *asynq.Task, err error) {
 			// Tras agotar reintentos asynq archiva (DLQ) y reporta aquí: emitir alerta observable.
 			retried, _ := asynq.GetRetryCount(ctx)

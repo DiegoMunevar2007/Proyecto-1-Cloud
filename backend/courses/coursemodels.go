@@ -14,52 +14,12 @@ const (
 	CourseStatusUnpublished = "unpublished"
 )
 
-var validCourseStatus = map[string]bool{
-	CourseStatusDraft:       true,
-	CourseStatusPublished:   true,
-	CourseStatusUnpublished: true,
-}
-
-// NormalizeCourseStatus normaliza el estado del curso; vacío -> draft.
-func NormalizeCourseStatus(s string) string {
-	s = strings.TrimSpace(strings.ToLower(s))
-	if s == "" {
-		return CourseStatusDraft
-	}
-	return s
-}
-
-// IsValidCourseStatus verifica si el estado es permitido.
-func IsValidCourseStatus(s string) bool {
-	return validCourseStatus[s]
-}
-
 // Estados de versión.
 const (
 	VersionStatusDraft     = "draft"
 	VersionStatusPublished = "published"
 	VersionStatusArchived  = "archived"
 )
-
-var validVersionStatus = map[string]bool{
-	VersionStatusDraft:     true,
-	VersionStatusPublished: true,
-	VersionStatusArchived:  true,
-}
-
-// NormalizeVersionStatus normaliza el estado de versión; vacío -> draft.
-func NormalizeVersionStatus(s string) string {
-	s = strings.TrimSpace(strings.ToLower(s))
-	if s == "" {
-		return VersionStatusDraft
-	}
-	return s
-}
-
-// IsValidVersionStatus verifica si el estado de versión es permitido.
-func IsValidVersionStatus(s string) bool {
-	return validVersionStatus[s]
-}
 
 // Tipos de recurso admitidos en el MVP.
 const (
@@ -112,19 +72,6 @@ const (
 	ProcessingReady      = "ready"
 	ProcessingFailed     = "failed"
 )
-
-var validProcessingStatus = map[string]bool{
-	ProcessingNone:       true,
-	ProcessingPending:    true,
-	ProcessingProcessing: true,
-	ProcessingReady:      true,
-	ProcessingFailed:     true,
-}
-
-// IsValidProcessingStatus verifica si el estado de procesamiento es permitido.
-func IsValidProcessingStatus(s string) bool {
-	return validProcessingStatus[s]
-}
 
 // Course es el agregado raíz de autoría.
 type Course struct {

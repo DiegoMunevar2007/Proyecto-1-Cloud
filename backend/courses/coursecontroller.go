@@ -35,11 +35,6 @@ type Handler struct {
 	RDB *redis.Client
 }
 
-// NewHandler crea un Handler de cursos.
-func NewHandler(db *gorm.DB, rdb *redis.Client) *Handler {
-	return &Handler{DB: db, RDB: rdb}
-}
-
 func currentUser(db *gorm.DB, c *gin.Context) (uint, string) {
 	username := c.GetString("username")
 	role := auth.NormalizeRole(c.GetString("role"))
@@ -67,7 +62,7 @@ func writeErr(c *gin.Context, err error) {
 
 // SetupCourseRoutes registra las rutas de autoría y catálogo (sin versionamiento de API).
 func SetupCourseRoutes(router *gin.Engine, db *gorm.DB, rdb *redis.Client) {
-	h := NewHandler(db, rdb)
+	h := &Handler{DB: db, RDB: rdb}
 	requireAuth := auth.RequireAuth(rdb)
 	requireAuthor := auth.RequireRole(rdb, auth.RoleProfessor, auth.RoleAdmin)
 

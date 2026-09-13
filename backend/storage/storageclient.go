@@ -119,18 +119,8 @@ func (c *Client) PublicURL(bucket, objectKey string) string {
 	return fmt.Sprintf("%s/%s/%s", strings.TrimSuffix(endpoint, "/"), bucket, objectKey)
 }
 
-// Stat retorna metadatos del objeto (para verificar integridad/MIME real).
-func (c *Client) Stat(bucket, objectKey string) (minio.ObjectInfo, error) {
-	return c.mc.StatObject(context.Background(), bucket, objectKey, minio.StatObjectOptions{})
-}
-
 // DownloadToFile descarga un objeto a un archivo local (uso del worker).
 func (c *Client) DownloadToFile(bucket, objectKey, destPath string) error {
-	obj, err := c.mc.GetObject(context.Background(), bucket, objectKey, minio.GetObjectOptions{})
-	if err != nil {
-		return err
-	}
-	defer obj.Close()
 	return c.mc.FGetObject(context.Background(), bucket, objectKey, destPath, minio.GetObjectOptions{})
 }
 

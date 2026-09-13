@@ -23,11 +23,6 @@ type Handler struct {
 	RDB *redis.Client
 }
 
-// NewHandler crea un Handler administrativo.
-func NewHandler(db *gorm.DB, rdb *redis.Client) *Handler {
-	return &Handler{DB: db, RDB: rdb}
-}
-
 func actorFromContext(c *gin.Context) Actor {
 	return Actor{
 		Username:  c.GetString("username"),
@@ -38,7 +33,7 @@ func actorFromContext(c *gin.Context) Actor {
 
 // SetupAdminRoutes registra las rutas administrativas (solo rol admin).
 func SetupAdminRoutes(router *gin.Engine, db *gorm.DB, rdb *redis.Client) {
-	h := NewHandler(db, rdb)
+	h := &Handler{DB: db, RDB: rdb}
 	admin := router.Group("/admin", auth.RequireRole(rdb, auth.RoleAdmin))
 	{
 		// Gestión de usuarios
@@ -98,7 +93,11 @@ func (h *Handler) ListUsers(c *gin.Context) {
 		c.JSON(500, gin.H{"error": "No se pudo listar usuarios: " + err.Error()})
 		return
 	}
-	c.JSON(200, gin.H{"users": ToUserResponses(users), "total": total, "page": f.Page, "limit": f.Limit})
+	out := make([]auth.UserResponse, 0, len(users))
+	for _, u := range users {
+		out = append(out, auth.ToUserResponse(u))
+	}
+	c.JSON(200, gin.H{"users": out, "total": total, "page": f.Page, "limit": f.Limit})
 }
 
 // GetUser obtiene un usuario por su ID.
@@ -382,7 +381,7 @@ func (h *Handler) RevokeSessions(c *gin.Context) {
 func (h *Handler) RevokeOne(c *gin.Context) {
 	var req SessionTokenRequest
 	_ = c.ShouldBind(&req)
-	token := strings.TrimSpace(req.Token)
+	token := auth.RequestToken(c, req.Token)
 	if token == "" {
 		token = c.Query("token")
 	}

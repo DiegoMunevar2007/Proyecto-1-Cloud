@@ -15,14 +15,9 @@ type Handler struct {
 	RDB *redis.Client
 }
 
-// NewHandler crea un Handler de autenticación.
-func NewHandler(db *gorm.DB, rdb *redis.Client) *Handler {
-	return &Handler{DB: db, RDB: rdb}
-}
-
 // SetupAuthRoutes registra las rutas de autenticación en el enrutador Gin.
 func SetupAuthRoutes(router *gin.Engine, db *gorm.DB, rdb *redis.Client) {
-	h := NewHandler(db, rdb)
+	h := &Handler{DB: db, RDB: rdb}
 	authGroup := router.Group("/auth")
 	{
 		authGroup.POST("/register", h.Register)
@@ -71,7 +66,7 @@ func (h *Handler) Register(c *gin.Context) {
 
 	// Solo professor requiere autorización de admin; student y admin son públicos (curso).
 	if requestedRole == RoleProfessor {
-		token := bearerToken(c)
+		token := BearerToken(c)
 		if token == "" {
 			c.JSON(403, gin.H{"error": "Se requiere autenticación de administrador para crear un profesor"})
 			return
@@ -109,7 +104,7 @@ func (h *Handler) Login(c *gin.Context) {
 		c.JSON(400, gin.H{"error": "Solicitud inválida"})
 		return
 	}
-	ok, reason := AuthenticateUserDetailed(request.Username, request.Password, h.DB)
+	userID, reason, ok := AuthenticateUserDetailed(request.Username, request.Password, h.DB)
 	if !ok {
 		if reason == StatusInactive {
 			c.JSON(403, gin.H{"error": "Cuenta desactivada. Contacte al administrador"})
@@ -119,11 +114,6 @@ func (h *Handler) Login(c *gin.Context) {
 			c.JSON(403, gin.H{"error": "Cuenta bloqueada. Contacte al administrador"})
 			return
 		}
-		c.JSON(401, gin.H{"error": "Nombre de usuario o contraseña incorrectos"})
-		return
-	}
-	userID, err := GetUserID(request.Username, h.DB)
-	if err != nil {
 		c.JSON(401, gin.H{"error": "Nombre de usuario o contraseña incorrectos"})
 		return
 	}
@@ -188,16 +178,12 @@ func (h *Handler) RevokeSession(c *gin.Context) {
 	var request TokenRequest
 	// ShouldBind no falla si el body está vacío, por eso se tolera error.
 	_ = c.ShouldBind(&request)
-	token := strings.TrimSpace(request.Token)
-	if token == "" {
-		// Fallback: intentar extraer del header Authorization
-		token = bearerToken(c)
-	}
+	token := RequestToken(c, request.Token)
 	if token == "" {
 		c.JSON(400, gin.H{"error": "Se requiere el token a revocar (campo 'token' o header Authorization)"})
 		return
 	}
-	if err := RevokeSession(token, h.RDB); err != nil {
+	if err := DeleteSession(token, h.RDB); err != nil {
 		c.JSON(500, gin.H{"error": "No se pudo revocar la sesión: " + err.Error()})
 		return
 	}

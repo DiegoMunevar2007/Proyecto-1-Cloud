@@ -1,6 +1,7 @@
 package queue
 
 import (
+	"encoding/json"
 	"time"
 
 	"github.com/DiegoMunevar2007/Proyecto-1-Cloud.git/utils"
@@ -9,8 +10,7 @@ import (
 
 // Client publica trabajos a Redis vía asynq.
 type Client struct {
-	inspector *asynq.Inspector
-	client    *asynq.Client
+	client *asynq.Client
 }
 
 // NewClient crea un cliente asynq contra Redis.
@@ -21,8 +21,7 @@ func NewClient() *Client {
 		DB:       0,
 	}
 	return &Client{
-		client:    asynq.NewClient(redisOpt),
-		inspector: asynq.NewInspector(redisOpt),
+		client: asynq.NewClient(redisOpt),
 	}
 }
 
@@ -41,7 +40,8 @@ func (c *Client) EnqueueTranscode(p TranscodePayload, idempotencyKey string) (st
 	if idempotencyKey == "" {
 		idempotencyKey = p.IdempotencyKey
 	}
-	task := asynq.NewTask(TypeMediaTranscode, Encode(p))
+	payload, _ := json.Marshal(p)
+	task := asynq.NewTask(TypeMediaTranscode, payload)
 	opts := []asynq.Option{
 		asynq.MaxRetry(3),
 		asynq.Timeout(30 * time.Minute),

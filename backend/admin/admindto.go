@@ -79,12 +79,3 @@ type StatsResponse struct {
 	Blocked      int64 `json:"blocked" example:"3"`
 	AdminsActive int64 `json:"admins_active" example:"2"`
 }
-
-// ToUserResponses convierte una lista de modelos a su representación pública.
-func ToUserResponses(users []auth.UserModel) []auth.UserResponse {
-	out := make([]auth.UserResponse, 0, len(users))
-	for _, u := range users {
-		out = append(out, auth.ToUserResponse(u))
-	}
-	return out
-}

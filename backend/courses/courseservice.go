@@ -3,7 +3,6 @@ package courses
 import (
 	"errors"
 	"fmt"
-	"regexp"
 	"strings"
 
 	"github.com/google/uuid"
@@ -18,23 +17,25 @@ var (
 	ErrInvalidPayload = errors.New("datos inválidos")
 )
 
-var slugRe = regexp.MustCompile(`[^a-z0-9-]+`)
-
 // Slugify genera un slug URL-safe a partir del título.
 func Slugify(title string) string {
-	s := strings.TrimSpace(strings.ToLower(title))
-	s = strings.ReplaceAll(s, " ", "-")
-	s = strings.ReplaceAll(s, "_", "-")
-	s = slugRe.ReplaceAllString(s, "")
+	s := strings.Map(func(r rune) rune {
+		switch {
+		case r >= 'a' && r <= 'z', r >= '0' && r <= '9':
+			return r
+		case r >= 'A' && r <= 'Z':
+			return r + ('a' - 'A')
+		case r == ' ' || r == '_' || r == '-':
+			return '-'
+		default:
+			return -1
+		}
+	}, strings.TrimSpace(title))
 	s = strings.Trim(s, "-")
 	if s == "" {
 		s = "curso"
 	}
 	return s
-}
-
-func newStableID() string {
-	return uuid.NewString()
 }
 
 // IsOwnerOrAdmin verifica propiedad del curso o rol admin.
@@ -53,12 +54,72 @@ func getCourse(db *gorm.DB, courseID uint) (*Course, error) {
 	return &c, nil
 }
 
-func getVersion(db *gorm.DB, versionID uint) (*CourseVersion, error) {
+// mustEditable verifica propiedad, versión borrador editable y curso no publicado.
+func mustEditable(c *Course, v *CourseVersion, userID uint, role string) error {
+	if !IsOwnerOrAdmin(c, userID, role) {
+		return ErrForbidden
+	}
+	if v.IsImmutable || v.Status != VersionStatusDraft {
+		return ErrImmutable
+	}
+	if c.Status == CourseStatusPublished {
+		return ErrPublishedEdit
+	}
+	return nil
+}
+
+// versionAndCourse carga la versión y su curso.
+func versionAndCourse(db *gorm.DB, versionID uint) (*CourseVersion, *Course, error) {
 	var v CourseVersion
 	if err := db.First(&v, versionID).Error; err != nil {
-		return nil, ErrNotFound
+		return nil, nil, ErrNotFound
 	}
-	return &v, nil
+	c, err := getCourse(db, v.CourseID)
+	if err != nil {
+		return nil, nil, err
+	}
+	return &v, c, nil
+}
+
+// moduleChain carga módulo + versión + curso.
+func moduleChain(db *gorm.DB, moduleID uint) (*Module, *CourseVersion, *Course, error) {
+	var m Module
+	if err := db.First(&m, moduleID).Error; err != nil {
+		return nil, nil, nil, ErrNotFound
+	}
+	v, c, err := versionAndCourse(db, m.CourseVersionID)
+	if err != nil {
+		return nil, nil, nil, err
+	}
+	return &m, v, c, nil
+}
+
+// unitChain carga unidad + módulo + versión + curso.
+func unitChain(db *gorm.DB, unitID uint) (*Unit, *Module, *CourseVersion, *Course, error) {
+	var u Unit
+	if err := db.First(&u, unitID).Error; err != nil {
+		return nil, nil, nil, nil, ErrNotFound
+	}
+	m, v, c, err := moduleChain(db, u.ModuleID)
+	if err != nil {
+		return nil, nil, nil, nil, err
+	}
+	return &u, m, v, c, nil
+}
+
+// reorderPositions asigna posiciones 1-based según el orden de IDs recibido.
+// Actualiza directo sin cargar cada fila; RowsAffected==0 => no encontrado.
+func reorderPositions(tx *gorm.DB, model interface{}, scopeColumn string, scopeID uint, orderedIDs []uint, kind string) error {
+	for i, id := range orderedIDs {
+		res := tx.Model(model).Where("id = ? AND "+scopeColumn+" = ?", id, scopeID).Update("position", i+1)
+		if res.Error != nil {
+			return res.Error
+		}
+		if res.RowsAffected == 0 {
+			return fmt.Errorf("%w: %s %d", ErrNotFound, kind, id)
+		}
+	}
+	return nil
 }
 
 func editableVersion(db *gorm.DB, courseID uint) (*CourseVersion, error) {
@@ -169,7 +230,7 @@ func AddModule(db *gorm.DB, courseID uint, userID uint, role, title, description
 	}
 	m := &Module{
 		CourseVersionID: v.ID,
-		StableID:        newStableID(),
+		StableID:        uuid.NewString(),
 		Position:        maxPosition(db, &Module{}, "course_version_id", v.ID) + 1,
 		Title:           strings.TrimSpace(title),
 		Description:     description,
@@ -182,33 +243,19 @@ func AddModule(db *gorm.DB, courseID uint, userID uint, role, title, description
 
 // AddUnit agrega una unidad a un módulo del borrador.
 func AddUnit(db *gorm.DB, moduleID uint, userID uint, role, title, description string) (*Unit, error) {
-	var m Module
-	if err := db.First(&m, moduleID).Error; err != nil {
-		return nil, ErrNotFound
+	m, v, c, err := moduleChain(db, moduleID)
+	if err != nil {
+		return nil, err
 	}
-	var v CourseVersion
-	if err := db.First(&v, m.CourseVersionID).Error; err != nil {
-		return nil, ErrNotFound
-	}
-	var c Course
-	if err := db.First(&c, v.CourseID).Error; err != nil {
-		return nil, ErrNotFound
-	}
-	if !IsOwnerOrAdmin(&c, userID, role) {
-		return nil, ErrForbidden
-	}
-	if v.IsImmutable || v.Status != VersionStatusDraft {
-		return nil, ErrImmutable
-	}
-	if c.Status == CourseStatusPublished {
-		return nil, ErrPublishedEdit
+	if err := mustEditable(c, v, userID, role); err != nil {
+		return nil, err
 	}
 	if strings.TrimSpace(title) == "" {
 		return nil, fmt.Errorf("%w: título de unidad requerido", ErrInvalidPayload)
 	}
 	u := &Unit{
 		ModuleID:    m.ID,
-		StableID:    newStableID(),
+		StableID:    uuid.NewString(),
 		Position:    maxPosition(db, &Unit{}, "module_id", m.ID) + 1,
 		Title:       strings.TrimSpace(title),
 		Description: description,
@@ -255,30 +302,12 @@ func validateResourceInput(in ResourceInput) error {
 
 // AddResource agrega un recurso a una unidad del borrador.
 func AddResource(db *gorm.DB, unitID uint, userID uint, role string, in ResourceInput) (*Resource, error) {
-	var u Unit
-	if err := db.First(&u, unitID).Error; err != nil {
-		return nil, ErrNotFound
+	u, _, v, c, err := unitChain(db, unitID)
+	if err != nil {
+		return nil, err
 	}
-	var m Module
-	if err := db.First(&m, u.ModuleID).Error; err != nil {
-		return nil, ErrNotFound
-	}
-	var v CourseVersion
-	if err := db.First(&v, m.CourseVersionID).Error; err != nil {
-		return nil, ErrNotFound
-	}
-	var c Course
-	if err := db.First(&c, v.CourseID).Error; err != nil {
-		return nil, ErrNotFound
-	}
-	if !IsOwnerOrAdmin(&c, userID, role) {
-		return nil, ErrForbidden
-	}
-	if v.IsImmutable || v.Status != VersionStatusDraft {
-		return nil, ErrImmutable
-	}
-	if c.Status == CourseStatusPublished {
-		return nil, ErrPublishedEdit
+	if err := mustEditable(c, v, userID, role); err != nil {
+		return nil, err
 	}
 	if err := validateResourceInput(in); err != nil {
 		return nil, err
@@ -296,7 +325,7 @@ func AddResource(db *gorm.DB, unitID uint, userID uint, role string, in Resource
 	}
 	r := &Resource{
 		UnitID:           u.ID,
-		StableID:         newStableID(),
+		StableID:         uuid.NewString(),
 		Position:         maxPosition(db, &Resource{}, "unit_id", u.ID) + 1,
 		Type:             NormalizeResourceType(in.Type),
 		Title:            strings.TrimSpace(in.Title),
@@ -321,23 +350,11 @@ func UpdateResource(db *gorm.DB, resourceID uint, userID uint, role string, in R
 	if err := db.First(&r, resourceID).Error; err != nil {
 		return nil, ErrNotFound
 	}
-	var u Unit
-	if err := db.First(&u, r.UnitID).Error; err != nil {
-		return nil, ErrNotFound
+	_, _, v, c, err := unitChain(db, r.UnitID)
+	if err != nil {
+		return nil, err
 	}
-	var m Module
-	if err := db.First(&m, u.ModuleID).Error; err != nil {
-		return nil, ErrNotFound
-	}
-	var v CourseVersion
-	if err := db.First(&v, m.CourseVersionID).Error; err != nil {
-		return nil, ErrNotFound
-	}
-	var c Course
-	if err := db.First(&c, v.CourseID).Error; err != nil {
-		return nil, ErrNotFound
-	}
-	if !IsOwnerOrAdmin(&c, userID, role) {
+	if !IsOwnerOrAdmin(c, userID, role) {
 		return nil, ErrForbidden
 	}
 	if v.IsImmutable || v.Status != VersionStatusDraft {
@@ -379,91 +396,41 @@ func ReorderModules(db *gorm.DB, courseID uint, userID uint, role string, ordere
 		return err
 	}
 	return db.Transaction(func(tx *gorm.DB) error {
-		for i, id := range orderedIDs {
-			var m Module
-			if err := tx.Where("id = ? AND course_version_id = ?", id, v.ID).First(&m).Error; err != nil {
-				return fmt.Errorf("%w: módulo %d", ErrNotFound, id)
-			}
-			m.Position = i + 1
-			if err := tx.Save(&m).Error; err != nil {
-				return err
-			}
-		}
-		return nil
+		return reorderPositions(tx, &Module{}, "course_version_id", v.ID, orderedIDs, "módulo")
 	})
 }
 
 // ReorderUnits reordena unidades dentro de un módulo.
 func ReorderUnits(db *gorm.DB, moduleID uint, userID uint, role string, orderedIDs []uint) error {
-	var m Module
-	if err := db.First(&m, moduleID).Error; err != nil {
-		return ErrNotFound
+	m, v, c, err := moduleChain(db, moduleID)
+	if err != nil {
+		return err
 	}
-	var v CourseVersion
-	if err := db.First(&v, m.CourseVersionID).Error; err != nil {
-		return ErrNotFound
-	}
-	var c Course
-	if err := db.First(&c, v.CourseID).Error; err != nil {
-		return ErrNotFound
-	}
-	if !IsOwnerOrAdmin(&c, userID, role) {
+	if !IsOwnerOrAdmin(c, userID, role) {
 		return ErrForbidden
 	}
 	if v.IsImmutable {
 		return ErrImmutable
 	}
 	return db.Transaction(func(tx *gorm.DB) error {
-		for i, id := range orderedIDs {
-			var u Unit
-			if err := tx.Where("id = ? AND module_id = ?", id, m.ID).First(&u).Error; err != nil {
-				return fmt.Errorf("%w: unidad %d", ErrNotFound, id)
-			}
-			u.Position = i + 1
-			if err := tx.Save(&u).Error; err != nil {
-				return err
-			}
-		}
-		return nil
+		return reorderPositions(tx, &Unit{}, "module_id", m.ID, orderedIDs, "unidad")
 	})
 }
 
 // ReorderResources reordena recursos dentro de una unidad.
 func ReorderResources(db *gorm.DB, unitID uint, userID uint, role string, orderedIDs []uint) error {
-	var u Unit
-	if err := db.First(&u, unitID).Error; err != nil {
-		return ErrNotFound
+	u, _, v, c, err := unitChain(db, unitID)
+	if err != nil {
+		return err
 	}
-	var m Module
-	if err := db.First(&m, u.ModuleID).Error; err != nil {
-		return ErrNotFound
-	}
-	var v CourseVersion
-	if err := db.First(&v, m.CourseVersionID).Error; err != nil {
-		return ErrNotFound
-	}
-	var c Course
-	if err := db.First(&c, v.CourseID).Error; err != nil {
-		return ErrNotFound
-	}
-	if !IsOwnerOrAdmin(&c, userID, role) {
+	if !IsOwnerOrAdmin(c, userID, role) {
 		return ErrForbidden
 	}
 	if v.IsImmutable {
 		return ErrImmutable
 	}
 	return db.Transaction(func(tx *gorm.DB) error {
-		for i, id := range orderedIDs {
-			var r Resource
-			if err := tx.Where("id = ? AND unit_id = ?", id, u.ID).First(&r).Error; err != nil {
-				return fmt.Errorf("%w: recurso %d", ErrNotFound, id)
-			}
-			r.Position = i + 1
-			if err := tx.Save(&r).Error; err != nil {
-				return err
-			}
-		}
-		return nil
+		return reorderPositions(tx, &Resource{}, "unit_id", u.ID, orderedIDs, "recurso")
 	})
 }
 
@@ -493,14 +460,6 @@ func GetFullTree(db *gorm.DB, courseID uint) (*Course, *CourseVersion, error) {
 		Preload("Units.Resources", func(db *gorm.DB) *gorm.DB { return db.Order("position asc") }).
 		Find(&v.Modules).Error; err != nil {
 		return nil, nil, err
-	}
-	// Cargar unidades con recursos ya viene por preload anidado manual:
-	for i := range v.Modules {
-		for j := range v.Modules[i].Units {
-			var res []Resource
-			db.Where("unit_id = ?", v.Modules[i].Units[j].ID).Order("position asc").Find(&res)
-			v.Modules[i].Units[j].Resources = res
-		}
 	}
 	return c, &v, nil
 }
@@ -601,13 +560,9 @@ func PublishVersion(db *gorm.DB, courseID uint, userID uint, role string) (*Cour
 	if err != nil {
 		return nil, err
 	}
-	now := v.CreatedAt
-	_ = now
 	err = db.Transaction(func(tx *gorm.DB) error {
 		v.Status = VersionStatusPublished
 		v.IsImmutable = true
-		t := v.UpdatedAt
-		_ = t
 		if err := tx.Save(v).Error; err != nil {
 			return err
 		}
