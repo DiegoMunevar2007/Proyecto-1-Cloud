@@ -19,4 +19,7 @@ tests {
   const stu = res.body.users.find(u => u.username === "estudiante2");
   expect(stu, "estudiante no listado").to.exist;
   bru.setVar("userId", stu.id);
+  const profe = res.body.users.find(u => u.username === "profe1");
+  expect(profe, "profesor no listado").to.exist;
+  bru.setVar("professorId", profe.id);
 }

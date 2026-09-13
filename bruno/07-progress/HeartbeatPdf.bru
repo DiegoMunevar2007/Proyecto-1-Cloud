@@ -19,11 +19,14 @@ body:json {
     "stable_id": "{{pdfStableId}}",
     "position_sec": 0,
     "duration_sec": 0,
-    "event": "pdf_open"
+    "event": "pdf_open",
+    "page": 3,
+    "total_pages": 42
   }
 }
 
 tests {
   expect(res.status).to.equal(200);
   expect(res.body.completed).to.equal(true);
+  expect(res.body.page).to.equal(3);
 }

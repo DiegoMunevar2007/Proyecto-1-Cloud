@@ -30,6 +30,22 @@ type QuestionInput struct {
 	CorrectIndex int      `json:"correct_index"`
 }
 
+// authorQuizRead verifica propiedad o admin sin exigir borrador (lectura).
+func authorQuizRead(db *gorm.DB, quizID uint, userID uint, role string) (*Quiz, error) {
+	var q Quiz
+	if err := db.First(&q, quizID).Error; err != nil {
+		return nil, courses.ErrNotFound
+	}
+	_, c, _, err := courses.LocateResource(db, q.ResourceID)
+	if err != nil {
+		return nil, err
+	}
+	if !courses.IsOwnerOrAdmin(c, userID, role) {
+		return nil, ErrForbidden
+	}
+	return &q, nil
+}
+
 // authorQuiz carga quiz + recurso + curso verificando propiedad o admin y borrador editable.
 func authorQuiz(db *gorm.DB, quizID uint, userID uint, role string) (*Quiz, *courses.Resource, *courses.Course, error) {
 	var q Quiz
@@ -278,6 +294,59 @@ func Passed(db *gorm.DB, studentID, quizID uint, minPct int) bool {
 	var n int64
 	db.Model(&Attempt{}).Where("quiz_id = ? AND student_id = ? AND status = ? AND score >= ?", quizID, studentID, AttemptSubmitted, minPct).Count(&n)
 	return n > 0
+}
+
+// ListAttempts lista intentos del quiz (autoría), página base 1.
+func ListAttempts(db *gorm.DB, userID uint, role string, quizID uint, page, limit int) ([]Attempt, int64, error) {
+	if _, err := authorQuizRead(db, quizID, userID, role); err != nil {
+		return nil, 0, err
+	}
+	if page <= 0 {
+		page = 1
+	}
+	if limit <= 0 || limit > 100 {
+		limit = 20
+	}
+	var total int64
+	if err := db.Model(&Attempt{}).Where("quiz_id = ?", quizID).Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+	var out []Attempt
+	err := db.Where("quiz_id = ?", quizID).Order("created_at desc").Offset((page - 1) * limit).Limit(limit).Find(&out).Error
+	return out, total, err
+}
+
+// UpdateQuestion edita prompt/opciones/clave (solo borrador).
+func UpdateQuestion(db *gorm.DB, userID uint, role string, quizID, questionID uint, in QuestionInput) (*Question, error) {
+	if _, _, _, err := authorQuiz(db, quizID, userID, role); err != nil {
+		return nil, err
+	}
+	var q Question
+	if err := db.Where("id = ? AND quiz_id = ?", questionID, quizID).First(&q).Error; err != nil {
+		return nil, courses.ErrNotFound
+	}
+	if len(in.Choices) < 2 {
+		return nil, fmt.Errorf("%w: cada pregunta requiere ≥2 opciones", ErrInvalidPayload)
+	}
+	if in.CorrectIndex < 0 || in.CorrectIndex >= len(in.Choices) {
+		return nil, fmt.Errorf("%w: correct_index fuera de rango", ErrInvalidPayload)
+	}
+	choices, _ := json.Marshal(in.Choices)
+	q.Prompt = in.Prompt
+	q.Choices = string(choices)
+	q.CorrectIndex = in.CorrectIndex
+	return &q, db.Save(&q).Error
+}
+
+// DeleteQuestion elimina una pregunta (solo borrador).
+func DeleteQuestion(db *gorm.DB, userID uint, role string, quizID, questionID uint) error {
+	if _, _, _, err := authorQuiz(db, quizID, userID, role); err != nil {
+		return err
+	}
+	if err := db.Where("id = ? AND quiz_id = ?", questionID, quizID).Delete(&Question{}).Error; err != nil {
+		return err
+	}
+	return nil
 }
 
 // DeleteQuiz elimina quiz, preguntas e intentos (solo borrador editable).

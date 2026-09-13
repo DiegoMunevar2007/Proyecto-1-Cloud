@@ -34,10 +34,13 @@ type tusHandler struct {
 	Queue *queue.Client
 }
 
-// SetupRoutes monta el protocolo TUS (creation/resume/terminate) tras
-// RequireAuth. El estado vive en MinIO + Redis: el API sigue stateless.
+// SetupRoutes monta el protocolo TUS tras RequireAuth. El estado vive en MinIO + Redis: el API sigue stateless.
 func SetupRoutes(router *gin.RouterGroup, db *gorm.DB, rdb *redis.Client, q *queue.Client) error {
 	store := s3store.New(storage.BucketOriginals, newS3Service())
+	// Sidecars de tusd (.info/.part) bajo prefijo propio: el bucket expira
+	// ese prefijo por lifecycle y los objetos finales quedan limpios.
+	// No se borran al finalizar: rompería HEAD/GET post-finish del protocolo.
+	store.MetadataObjectPrefix = storage.TusMetaPrefix
 
 	composer := handler.NewStoreComposer()
 	store.UseIn(composer)

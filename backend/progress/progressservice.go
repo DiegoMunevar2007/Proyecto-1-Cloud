@@ -14,25 +14,34 @@ import (
 // ErrClientProgress indica manipulación: el cliente envió avance declarado.
 var ErrClientProgress = errors.New("el progreso lo calcula el servidor; percent/completed no se aceptan")
 
+// stableCourse resuelve recurso + curso verificando inscripción o propiedad.
+func stableCourse(db *gorm.DB, studentID uint, stableID string) (*courses.Resource, *courses.Course, error) {
+	r, err := courses.ByStableID(db, stableID)
+	if err != nil {
+		return nil, nil, err
+	}
+	_, c, _, err := courses.LocateResource(db, r.ID)
+	if err != nil {
+		return nil, nil, err
+	}
+	if !enroll.IsEnrolled(db, studentID, c.ID) && !courses.IsOwnerOrAdmin(c, studentID, "") {
+		return nil, nil, courses.ErrForbidden
+	}
+	return r, c, nil
+}
+
 // Heartbeat registra reproducción/apertura. Completed es monótono (nunca retrocede).
 func Heartbeat(db *gorm.DB, studentID uint, in HeartbeatInput) (*Progress, error) {
 	if in.Percent != nil || in.Completed != nil {
 		log.Printf("AUDIT progreso manipulado student=%d stable=%s", studentID, in.StableID)
 		return nil, ErrClientProgress
 	}
-	if in.StableID == "" || in.PositionSec < 0 || in.DurationSec < 0 {
+	if in.StableID == "" || in.PositionSec < 0 || in.DurationSec < 0 || in.Page < 0 || in.TotalPages < 0 {
 		return nil, courses.ErrInvalidPayload
 	}
-	r, err := courses.ByStableID(db, in.StableID)
+	r, _, err := stableCourse(db, studentID, in.StableID)
 	if err != nil {
 		return nil, err
-	}
-	_, c, _, err := courses.LocateResource(db, r.ID)
-	if err != nil {
-		return nil, err
-	}
-	if !enroll.IsEnrolled(db, studentID, c.ID) && !courses.IsOwnerOrAdmin(c, studentID, "") {
-		return nil, courses.ErrForbidden
 	}
 	var p Progress
 	if err := db.Where("student_id = ? AND stable_id = ?", studentID, in.StableID).First(&p).Error; err != nil {
@@ -43,6 +52,12 @@ func Heartbeat(db *gorm.DB, studentID uint, in HeartbeatInput) (*Progress, error
 	}
 	if in.DurationSec > 0 {
 		p.DurationSec = in.DurationSec
+	}
+	if in.Page > p.Page {
+		p.Page = in.Page
+	}
+	if in.TotalPages > 0 {
+		p.TotalPages = in.TotalPages
 	}
 	if !p.Completed {
 		p.Completed = complete(r.Type, p.PositionSec, p.DurationSec, in.Event)
@@ -70,6 +85,19 @@ func complete(resourceType string, position, duration int, event string) bool {
 	}
 }
 
+// Position retorna la última posición reportada (visor/reproductor),
+// incluyendo recursos no visibles ni obligatorios.
+func Position(db *gorm.DB, studentID uint, stableID string) (*Progress, error) {
+	if _, _, err := stableCourse(db, studentID, stableID); err != nil {
+		return nil, err
+	}
+	var p Progress
+	if err := db.Where("student_id = ? AND stable_id = ?", studentID, stableID).First(&p).Error; err != nil {
+		return nil, courses.ErrNotFound
+	}
+	return &p, nil
+}
+
 // CourseProgress calcula el avance sobre recursos obligatorios visibles,
 // actualiza Matricula.Status y emite la insignia al aprobar.
 func CourseProgress(db *gorm.DB, studentID, courseID uint) (*CourseProgressResponse, error) {
@@ -82,6 +110,7 @@ func CourseProgress(db *gorm.DB, studentID, courseID uint) (*CourseProgressRespo
 	}
 	total, done := 0, 0
 	allQuizPassed := true
+	positions := map[string]PositionInfo{}
 	for _, m := range tree.Modules {
 		for _, u := range m.Units {
 			for _, r := range u.Resources {
@@ -100,8 +129,11 @@ func CourseProgress(db *gorm.DB, studentID, courseID uint) (*CourseProgressRespo
 					continue
 				}
 				var p Progress
-				if db.Where("student_id = ? AND stable_id = ?", studentID, r.StableID).First(&p).Error == nil && p.Completed {
-					done++
+				if db.Where("student_id = ? AND stable_id = ?", studentID, r.StableID).First(&p).Error == nil {
+					positions[r.StableID] = PositionInfo{PositionSec: p.PositionSec, DurationSec: p.DurationSec, Page: p.Page, Completed: p.Completed}
+					if p.Completed {
+						done++
+					}
 				}
 			}
 		}
@@ -122,5 +154,5 @@ func CourseProgress(db *gorm.DB, studentID, courseID uint) (*CourseProgressRespo
 		}
 	}
 	_ = db.Model(&courses.Matricula{}).Where("student_id = ? AND course_id = ?", studentID, courseID).Update("status", status).Error
-	return &CourseProgressResponse{Total: total, Done: done, Percent: pct, Status: status, Badge: badgeCode}, nil
+	return &CourseProgressResponse{Total: total, Done: done, Percent: pct, Status: status, Badge: badgeCode, Positions: positions}, nil
 }

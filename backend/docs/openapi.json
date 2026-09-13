@@ -353,6 +353,9 @@
                     "id": {
                         "type": "integer"
                     },
+                    "image_url": {
+                        "type": "string"
+                    },
                     "issued_at": {
                         "type": "string"
                     },
@@ -371,6 +374,10 @@
                     "course_id": {
                         "example": 1,
                         "type": "integer"
+                    },
+                    "image_url": {
+                        "example": "http://localhost:9000/public/badges/default.png",
+                        "type": "string"
                     },
                     "issued_at": {
                         "example": "2026-09-10T02:00:00Z",
@@ -989,6 +996,12 @@
                         "example": 75,
                         "type": "integer"
                     },
+                    "positions": {
+                        "additionalProperties": {
+                            "$ref": "#/components/schemas/progress.PositionInfo"
+                        },
+                        "type": "object"
+                    },
                     "status": {
                         "example": "in_progress",
                         "type": "string"
@@ -1013,6 +1026,10 @@
                         "example": "playing",
                         "type": "string"
                     },
+                    "page": {
+                        "example": 7,
+                        "type": "integer"
+                    },
                     "percent": {
                         "type": "number"
                     },
@@ -1023,6 +1040,31 @@
                     "stable_id": {
                         "example": "550e8400-e29b-41d4-a716-446655440000",
                         "type": "string"
+                    },
+                    "total_pages": {
+                        "example": 42,
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "progress.PositionInfo": {
+                "properties": {
+                    "completed": {
+                        "example": true,
+                        "type": "boolean"
+                    },
+                    "duration_sec": {
+                        "example": 600,
+                        "type": "integer"
+                    },
+                    "page": {
+                        "example": 7,
+                        "type": "integer"
+                    },
+                    "position_sec": {
+                        "example": 320,
+                        "type": "integer"
                     }
                 },
                 "type": "object"
@@ -1041,6 +1083,9 @@
                     "id": {
                         "type": "integer"
                     },
+                    "page": {
+                        "type": "integer"
+                    },
                     "position_sec": {
                         "type": "integer"
                     },
@@ -1048,6 +1093,9 @@
                         "type": "string"
                     },
                     "student_id": {
+                        "type": "integer"
+                    },
+                    "total_pages": {
                         "type": "integer"
                     },
                     "updated_at": {
@@ -1064,6 +1112,41 @@
                         },
                         "type": "array",
                         "uniqueItems": false
+                    }
+                },
+                "type": "object"
+            },
+            "quiz.Attempt": {
+                "properties": {
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "expires_at": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "integer"
+                    },
+                    "quiz_id": {
+                        "type": "integer"
+                    },
+                    "score": {
+                        "type": "integer"
+                    },
+                    "started_at": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "student_id": {
+                        "type": "integer"
+                    },
+                    "submitted_at": {
+                        "type": "string"
+                    },
+                    "updated_at": {
+                        "type": "string"
                     }
                 },
                 "type": "object"
@@ -1119,6 +1202,30 @@
                 },
                 "type": "object"
             },
+            "quiz.AttemptsResponse": {
+                "properties": {
+                    "attempts": {
+                        "items": {
+                            "$ref": "#/components/schemas/quiz.Attempt"
+                        },
+                        "type": "array",
+                        "uniqueItems": false
+                    },
+                    "limit": {
+                        "example": 20,
+                        "type": "integer"
+                    },
+                    "page": {
+                        "example": 1,
+                        "type": "integer"
+                    },
+                    "total": {
+                        "example": 5,
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
             "quiz.CreateQuizRequest": {
                 "properties": {
                     "attempts_allowed": {
@@ -1162,6 +1269,14 @@
                     },
                     "quiz_id": {
                         "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "quiz.QuestionEnvelope": {
+                "properties": {
+                    "question": {
+                        "$ref": "#/components/schemas/quiz.Question"
                     }
                 },
                 "type": "object"
@@ -3058,6 +3173,14 @@
                         }
                     },
                     {
+                        "description": "Filtro por autor (created_by_id)",
+                        "in": "query",
+                        "name": "author",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
                         "description": "Página (base 1)",
                         "in": "query",
                         "name": "page",
@@ -3073,6 +3196,15 @@
                         "schema": {
                             "default": 20,
                             "type": "integer"
+                        }
+                    },
+                    {
+                        "description": "Orden: created_at|title + asc|desc",
+                        "in": "query",
+                        "name": "sort",
+                        "schema": {
+                            "default": "created_at desc",
+                            "type": "string"
                         }
                     }
                 ],
@@ -3420,6 +3552,72 @@
                 "summary": "Editar curso",
                 "tags": [
                     "Cursos"
+                ]
+            }
+        },
+        "/api/v1/courses/{id}/enrollments": {
+            "get": {
+                "description": "Solo el autor propietario o admin. Los retirados no aparecen.",
+                "parameters": [
+                    {
+                        "description": "Bearer \u003ctoken\u003e",
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "ID del curso",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/enroll.EnrollmentsResponse"
+                                }
+                            }
+                        },
+                        "description": "Inscritos"
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Sin permiso"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "No encontrado"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Inscritos del curso",
+                "tags": [
+                    "Inscripción"
                 ]
             }
         },
@@ -4400,6 +4598,72 @@
                 ]
             }
         },
+        "/api/v1/progress/position/{stable_id}": {
+            "get": {
+                "description": "Lo que el visor/reproductor necesita para continuar donde quedó, incluso en recursos no visibles.",
+                "parameters": [
+                    {
+                        "description": "Bearer \u003ctoken\u003e",
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Stable ID del recurso",
+                        "in": "path",
+                        "name": "stable_id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/progress.Progress"
+                                }
+                            }
+                        },
+                        "description": "Última posición"
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Sin inscripción"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Sin progreso registrado"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Última posición",
+                "tags": [
+                    "Progreso"
+                ]
+            }
+        },
         "/api/v1/progress/{course_id}": {
             "get": {
                 "description": "Calcula % sobre recursos obligatorios; al aprobar emite la insignia (idempotente).",
@@ -4697,6 +4961,88 @@
             }
         },
         "/api/v1/quizzes/{id}/attempts": {
+            "get": {
+                "description": "Visible para autor/admin: incluye respuestas y notas (la clave vive en las preguntas).",
+                "parameters": [
+                    {
+                        "description": "Bearer \u003ctoken\u003e",
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "ID del quiz",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "description": "Página (base 1)",
+                        "in": "query",
+                        "name": "page",
+                        "schema": {
+                            "default": 1,
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "description": "Resultados por página (máx 100)",
+                        "in": "query",
+                        "name": "limit",
+                        "schema": {
+                            "default": 20,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/quiz.AttemptsResponse"
+                                }
+                            }
+                        },
+                        "description": "Intentos"
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Sin permiso"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "No encontrado"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Intentos del quiz",
+                "tags": [
+                    "Quizzes"
+                ]
+            },
             "post": {
                 "description": "Congela un snapshot de preguntas; reintento con la misma clave retorna el mismo intento.",
                 "parameters": [
@@ -4854,6 +5200,177 @@
                     }
                 ],
                 "summary": "Agregar preguntas",
+                "tags": [
+                    "Quizzes"
+                ]
+            }
+        },
+        "/api/v1/quizzes/{id}/questions/{qid}": {
+            "delete": {
+                "description": "Los intentos existentes conservan su snapshot y siguen calificando.",
+                "parameters": [
+                    {
+                        "description": "Bearer \u003ctoken\u003e",
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "ID del quiz",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "description": "ID de la pregunta",
+                        "in": "path",
+                        "name": "qid",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.MessageResponse"
+                                }
+                            }
+                        },
+                        "description": "Pregunta eliminada"
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Sin permiso"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "No encontrado"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Eliminar pregunta",
+                "tags": [
+                    "Quizzes"
+                ]
+            },
+            "put": {
+                "description": "Actualiza prompt, opciones y clave. Los intentos ya iniciados conservan su snapshot.",
+                "parameters": [
+                    {
+                        "description": "Bearer \u003ctoken\u003e",
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "ID del quiz",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "description": "ID de la pregunta",
+                        "in": "path",
+                        "name": "qid",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/quiz.QuestionInput",
+                                "summary": "request",
+                                "description": "Pregunta"
+                            }
+                        }
+                    },
+                    "description": "Pregunta",
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/quiz.QuestionEnvelope"
+                                }
+                            }
+                        },
+                        "description": "Pregunta actualizada"
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Datos inválidos"
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Sin permiso"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "No encontrado"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Editar pregunta",
                 "tags": [
                     "Quizzes"
                 ]

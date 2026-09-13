@@ -29,6 +29,7 @@ func SetupProgressRoutes(router *gin.RouterGroup, db *gorm.DB, rdb *redis.Client
 	g := router.Group("/progress")
 	{
 		g.POST("/heartbeat", requireAuth, auth.RateLimit(10, 20), h.Heartbeat)
+		g.GET("/position/:stable_id", requireAuth, h.Position)
 		g.GET("/:course_id", requireAuth, h.Summary)
 	}
 }
@@ -66,6 +67,33 @@ func (h *Handler) Heartbeat(c *gin.Context) {
 		default:
 			c.JSON(500, gin.H{"error": err.Error()})
 		}
+		return
+	}
+	c.JSON(200, p)
+}
+
+// Position retorna la última posición reportada de un recurso.
+//
+//	@Summary	Última posición
+//	@Description	Lo que el visor/reproductor necesita para continuar donde quedó, incluso en recursos no visibles.
+//	@Tags			Progreso
+//	@Produce		json
+//	@Param			Authorization	header		string	true	"Bearer <token>"
+//	@Param			stable_id		path		string	true	"Stable ID del recurso"
+//	@Security		BearerAuth
+//	@Success		200	{object}	Progress	"Última posición"
+//	@Failure		403	{object}	utils.ErrorResponse	"Sin inscripción"
+//	@Failure		404	{object}	utils.ErrorResponse	"Sin progreso registrado"
+//	@Router			/api/v1/progress/position/{stable_id} [get]
+func (h *Handler) Position(c *gin.Context) {
+	uid, _ := auth.LookupUser(h.DB, c.GetString("username"))
+	p, err := Position(h.DB, uid, c.Param("stable_id"))
+	if err != nil {
+		if errors.Is(err, courses.ErrForbidden) {
+			c.JSON(403, gin.H{"error": "sin derecho de acceso"})
+			return
+		}
+		c.JSON(404, gin.H{"error": "sin progreso registrado"})
 		return
 	}
 	c.JSON(200, p)

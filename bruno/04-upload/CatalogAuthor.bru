@@ -1,16 +1,12 @@
 meta {
-  name: Mine
+  name: CatalogAuthor
   type: http
-  seq: 5
+  seq: 14
 }
 
 get {
-  url: {{baseUrl}}/api/v1/enrollments
-  auth: bearer
-}
-
-auth:bearer {
-  token: {{studentToken}}
+  url: {{baseUrl}}/api/v1/courses?author={{professorId}}
+  auth: none
 }
 
 tests {

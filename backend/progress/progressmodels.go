@@ -20,5 +20,7 @@ type Progress struct {
 	StableID    string    `gorm:"not null;index:idx_student_stable,unique" json:"stable_id"`
 	PositionSec int       `gorm:"not null;default:0" json:"position_sec"`
 	DurationSec int       `gorm:"not null;default:0" json:"duration_sec"`
+	Page        int       `gorm:"not null;default:0" json:"page"`
+	TotalPages  int       `gorm:"not null;default:0" json:"total_pages"`
 	Completed   bool      `gorm:"not null;default:false" json:"completed"`
 }

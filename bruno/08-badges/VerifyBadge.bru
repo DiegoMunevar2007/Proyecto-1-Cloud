@@ -13,4 +13,6 @@ tests {
   expect(res.status).to.equal(200);
   expect(res.body.valid).to.equal(true);
   expect(JSON.stringify(res.body)).to.not.contain("email");
+  expect(res.body.image_url).to.be.a("string").and.not.empty;
+  bru.setVar("badgeImage", res.body.image_url);
 }

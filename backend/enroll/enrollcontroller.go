@@ -33,6 +33,9 @@ func SetupEnrollRoutes(router *gin.RouterGroup, db *gorm.DB, rdb *redis.Client) 
 		g.POST("/:course_id/reenroll", requireAuth, h.Reenroll)
 		g.DELETE("/:course_id", requireAuth, h.Withdraw)
 	}
+	// Inscritos del curso (autor o admin). Vive aquí para no importar
+	// este paquete desde courses (ciclo).
+	router.GET("/courses/:id/enrollments", auth.RequireRole(rdb, auth.RoleProfessor, auth.RoleAdmin), h.CourseEnrollments)
 }
 
 func studentOf(h *Handler, c *gin.Context) uint {
@@ -63,6 +66,39 @@ func writeErr(c *gin.Context, err error) {
 //	@Router			/api/v1/enrollments [get]
 func (h *Handler) Mine(c *gin.Context) {
 	items, err := Mine(h.DB, studentOf(h, c))
+	if err != nil {
+		c.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(200, gin.H{"enrollments": items, "total": len(items)})
+}
+
+// CourseEnrollments lista los inscritos activos de un curso (autor o admin).
+//
+//	@Summary	Inscritos del curso
+//	@Description	Solo el autor propietario o admin. Los retirados no aparecen.
+//	@Tags			Inscripción
+//	@Produce		json
+//	@Param			Authorization	header		string	true	"Bearer <token>"
+//	@Param			id				path		int		true	"ID del curso"
+//	@Security		BearerAuth
+//	@Success		200	{object}	EnrollmentsResponse	"Inscritos"
+//	@Failure		403	{object}	utils.ErrorResponse	"Sin permiso"
+//	@Failure		404	{object}	utils.ErrorResponse	"No encontrado"
+//	@Router			/api/v1/courses/{id}/enrollments [get]
+func (h *Handler) CourseEnrollments(c *gin.Context) {
+	courseID, _ := strconv.ParseUint(c.Param("id"), 10, 32)
+	var course courses.Course
+	if err := h.DB.First(&course, uint(courseID)).Error; err != nil {
+		c.JSON(404, gin.H{"error": "no encontrado"})
+		return
+	}
+	uid, role := auth.LookupUser(h.DB, c.GetString("username"))
+	if !courses.IsOwnerOrAdmin(&course, uid, role) {
+		c.JSON(403, gin.H{"error": "sin permiso"})
+		return
+	}
+	items, err := MineByCourse(h.DB, uint(courseID))
 	if err != nil {
 		c.JSON(500, gin.H{"error": err.Error()})
 		return

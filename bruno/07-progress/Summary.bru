@@ -1,7 +1,7 @@
 meta {
   name: Summary
   type: http
-  seq: 5
+  seq: 6
 }
 
 get {
@@ -21,4 +21,8 @@ tests {
   expect(res.body.status).to.equal("approved");
   expect(res.body.badge).to.be.a("string").and.not.empty;
   bru.setVar("badgeCode", res.body.badge);
+  const textStable = bru.getVar("textStableId");
+  expect(res.body.positions[textStable].completed).to.equal(true);
+  const pdfStable = bru.getVar("pdfStableId");
+  expect(res.body.positions[pdfStable].page).to.equal(3);
 }

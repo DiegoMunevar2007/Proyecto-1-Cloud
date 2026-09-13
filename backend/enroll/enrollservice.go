@@ -61,3 +61,10 @@ func Mine(db *gorm.DB, studentID uint) ([]courses.Matricula, error) {
 	err := db.Where("student_id = ?", studentID).Order("created_at desc").Find(&out).Error
 	return out, err
 }
+
+// MineByCourse lista inscritos del curso (autor o admin; el controlador autoriza).
+func MineByCourse(db *gorm.DB, courseID uint) ([]courses.Matricula, error) {
+	var out []courses.Matricula
+	err := db.Where("course_id = ? AND inscrito = ?", courseID, true).Order("fecha_inscripcion asc").Find(&out).Error
+	return out, err
+}

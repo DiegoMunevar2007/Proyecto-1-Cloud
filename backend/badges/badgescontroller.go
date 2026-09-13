@@ -32,6 +32,7 @@ func toResponse(b *Badge) BadgeResponse {
 	return BadgeResponse{
 		Code:     b.Code,
 		CourseID: b.CourseID,
+		ImageURL: b.ImageURL,
 		IssuedAt: b.IssuedAt.Format("2006-01-02T15:04:05Z07:00"),
 		Valid:    b.RevokedAt == nil,
 	}

@@ -32,6 +32,9 @@ func SetupQuizRoutes(router *gin.RouterGroup, db *gorm.DB, rdb *redis.Client) {
 	router.POST("/quizzes/:id/questions", requireAuthor, h.AddQuestions)
 	router.GET("/quizzes/:id", requireAuthor, h.GetProfessor)
 	router.DELETE("/quizzes/:id", requireAuthor, h.Delete)
+	router.GET("/quizzes/:id/attempts", requireAuthor, h.ListAttempts)
+	router.PUT("/quizzes/:id/questions/:qid", requireAuthor, h.UpdateQuestion)
+	router.DELETE("/quizzes/:id/questions/:qid", requireAuthor, h.DeleteQuestion)
 	router.POST("/quizzes/:id/attempts", requireAuth, h.Start)
 	router.PUT("/attempts/:id", requireAuth, h.Save)
 	router.POST("/attempts/:id/submit", requireAuth, h.Submit)
@@ -167,7 +170,7 @@ func (h *Handler) AddQuestions(c *gin.Context) {
 func (h *Handler) GetProfessor(c *gin.Context) {
 	id, _ := strconv.ParseUint(c.Param("id"), 10, 32)
 	uid, role := auth.LookupUser(h.DB, c.GetString("username"))
-	q, _, _, err := authorQuiz(h.DB, uint(id), uid, role)
+	q, err := authorQuizRead(h.DB, uint(id), uid, role)
 	if err != nil {
 		writeErr(c, err)
 		return
@@ -198,6 +201,92 @@ func (h *Handler) Delete(c *gin.Context) {
 		return
 	}
 	c.JSON(200, gin.H{"message": "quiz eliminado"})
+}
+
+// ListAttempts lista intentos con notas (solo autoría).
+//
+//	@Summary	Intentos del quiz
+//	@Description	Visible para autor/admin: incluye respuestas y notas (la clave vive en las preguntas).
+//	@Tags			Quizzes
+//	@Produce		json
+//	@Param			Authorization	header		string	true	"Bearer <token>"
+//	@Param			id				path		int		true	"ID del quiz"
+//	@Param			page			query		int		false	"Página (base 1)"	default(1)
+//	@Param			limit			query		int		false	"Resultados por página (máx 100)"	default(20)
+//	@Security		BearerAuth
+//	@Success		200	{object}	AttemptsResponse	"Intentos"
+//	@Failure		403	{object}	utils.ErrorResponse	"Sin permiso"
+//	@Failure		404	{object}	utils.ErrorResponse	"No encontrado"
+//	@Router			/api/v1/quizzes/{id}/attempts [get]
+func (h *Handler) ListAttempts(c *gin.Context) {
+	id, _ := strconv.ParseUint(c.Param("id"), 10, 32)
+	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
+	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "20"))
+	uid, role := auth.LookupUser(h.DB, c.GetString("username"))
+	items, total, err := ListAttempts(h.DB, uid, role, uint(id), page, limit)
+	if err != nil {
+		writeErr(c, err)
+		return
+	}
+	c.JSON(200, gin.H{"attempts": items, "total": total, "page": page, "limit": limit})
+}
+
+// UpdateQuestion edita una pregunta (solo borrador).
+//
+//	@Summary	Editar pregunta
+//	@Description	Actualiza prompt, opciones y clave. Los intentos ya iniciados conservan su snapshot.
+//	@Tags			Quizzes
+//	@Produce		json
+//	@Param			Authorization	header		string			true	"Bearer <token>"
+//	@Param			id				path		int				true	"ID del quiz"
+//	@Param			qid				path		int				true	"ID de la pregunta"
+//	@Param			request			body		QuestionInput	true	"Pregunta"
+//	@Security		BearerAuth
+//	@Success		200	{object}	QuestionEnvelope	"Pregunta actualizada"
+//	@Failure		400	{object}	utils.ErrorResponse	"Datos inválidos"
+//	@Failure		403	{object}	utils.ErrorResponse	"Sin permiso"
+//	@Failure		404	{object}	utils.ErrorResponse	"No encontrado"
+//	@Router			/api/v1/quizzes/{id}/questions/{qid} [put]
+func (h *Handler) UpdateQuestion(c *gin.Context) {
+	id, _ := strconv.ParseUint(c.Param("id"), 10, 32)
+	qid, _ := strconv.ParseUint(c.Param("qid"), 10, 32)
+	var req QuestionInput
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(400, gin.H{"error": "pregunta requerida"})
+		return
+	}
+	uid, role := auth.LookupUser(h.DB, c.GetString("username"))
+	q, err := UpdateQuestion(h.DB, uid, role, uint(id), uint(qid), req)
+	if err != nil {
+		writeErr(c, err)
+		return
+	}
+	c.JSON(200, gin.H{"question": q})
+}
+
+// DeleteQuestion elimina una pregunta (solo borrador).
+//
+//	@Summary	Eliminar pregunta
+//	@Description	Los intentos existentes conservan su snapshot y siguen calificando.
+//	@Tags			Quizzes
+//	@Produce		json
+//	@Param			Authorization	header		string	true	"Bearer <token>"
+//	@Param			id				path		int		true	"ID del quiz"
+//	@Param			qid				path		int		true	"ID de la pregunta"
+//	@Security		BearerAuth
+//	@Success		200	{object}	utils.MessageResponse	"Pregunta eliminada"
+//	@Failure		403	{object}	utils.ErrorResponse	"Sin permiso"
+//	@Failure		404	{object}	utils.ErrorResponse	"No encontrado"
+//	@Router			/api/v1/quizzes/{id}/questions/{qid} [delete]
+func (h *Handler) DeleteQuestion(c *gin.Context) {
+	id, _ := strconv.ParseUint(c.Param("id"), 10, 32)
+	qid, _ := strconv.ParseUint(c.Param("qid"), 10, 32)
+	uid, role := auth.LookupUser(h.DB, c.GetString("username"))
+	if err := DeleteQuestion(h.DB, uid, role, uint(id), uint(qid)); err != nil {
+		writeErr(c, err)
+		return
+	}
+	c.JSON(200, gin.H{"message": "pregunta eliminada"})
 }
 
 // Start inicia o retoma el intento en borrador. Idempotente por Idempotency-Key.//

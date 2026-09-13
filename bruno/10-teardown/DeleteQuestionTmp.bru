@@ -1,11 +1,11 @@
 meta {
-  name: DeleteCourseB
+  name: DeleteQuestionTmp
   type: http
-  seq: 14
+  seq: 12
 }
 
 delete {
-  url: {{baseUrl}}/api/v1/courses/{{courseBId}}
+  url: {{baseUrl}}/api/v1/quizzes/{{tmpQuizId}}/questions/{{tmpQuestionId}}
   auth: bearer
 }
 

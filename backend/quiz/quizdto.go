@@ -51,3 +51,16 @@ type QuizDetailResponse struct {
 	Quiz      Quiz       `json:"quiz"`
 	Questions []Question `json:"questions"`
 }
+
+// AttemptsResponse lista intentos con notas (solo autoría).
+type AttemptsResponse struct {
+	Attempts []Attempt `json:"attempts"`
+	Total    int64     `json:"total" example:"5"`
+	Page     int       `json:"page" example:"1"`
+	Limit    int       `json:"limit" example:"20"`
+}
+
+// QuestionEnvelope envuelve una pregunta en la respuesta.
+type QuestionEnvelope struct {
+	Question Question `json:"question"`
+}

@@ -136,11 +136,17 @@ const treeResources = `SELECT r.id FROM resources r
 	JOIN course_versions v ON v.id = m.course_version_id
 	WHERE v.course_id = ?`
 
+// DeletedAssets es lo que el controlador debe limpiar en S3 tras el borrado DB.
+type DeletedAssets struct {
+	Originals   []string
+	HLSPrefixes []string
+}
+
 // DeleteCourse elimina el curso y todo su rastro: árbol, quizzes e intentos,
-// progreso, inscripciones e insignias. Retorna los object_keys para limpieza
+// progreso, inscripciones e insignias. Retorna assets para limpieza
 // S3 (best-effort, la hace el controlador). Las tablas de otros dominios se
 // purgan con SQL porque importar esos paquetes crearía un ciclo.
-func DeleteCourse(db *gorm.DB, courseID, userID uint, role string) ([]string, error) {
+func DeleteCourse(db *gorm.DB, courseID, userID uint, role string) (*DeletedAssets, error) {
 	c, err := getCourse(db, courseID)
 	if err != nil {
 		return nil, err
@@ -148,8 +154,12 @@ func DeleteCourse(db *gorm.DB, courseID, userID uint, role string) ([]string, er
 	if !IsOwnerOrAdmin(c, userID, role) {
 		return nil, ErrForbidden
 	}
-	var keys []string
-	db.Model(&Resource{}).Where("unit_id IN (SELECT u.id FROM units u JOIN modules m ON m.id = u.module_id JOIN course_versions v ON v.id = m.course_version_id WHERE v.course_id = ?) AND object_key <> ''", courseID).Pluck("object_key", &keys)
+	assets := &DeletedAssets{}
+	db.Model(&Resource{}).Where("unit_id IN (SELECT u.id FROM units u JOIN modules m ON m.id = u.module_id JOIN course_versions v ON v.id = m.course_version_id WHERE v.course_id = ?) AND object_key <> ''", courseID).Pluck("object_key", &assets.Originals)
+	db.Model(&Resource{}).Where("unit_id IN (SELECT u.id FROM units u JOIN modules m ON m.id = u.module_id JOIN course_versions v ON v.id = m.course_version_id WHERE v.course_id = ?) AND hls_key <> ''", courseID).Pluck("stable_id", &assets.HLSPrefixes)
+	for i := range assets.HLSPrefixes {
+		assets.HLSPrefixes[i] += "/"
+	}
 	quizIDs := `SELECT q.id FROM quizzes q WHERE q.resource_id IN (` + treeResources + `)`
 	err = db.Transaction(func(tx *gorm.DB) error {
 		// Soltar primero la versión vigente (FK courses.current_version_id).
@@ -175,7 +185,7 @@ func DeleteCourse(db *gorm.DB, courseID, userID uint, role string) ([]string, er
 		}
 		return nil
 	})
-	return keys, err
+	return assets, err
 }
 
 // DeleteResource elimina un recurso del borrador (con su objeto, best-effort

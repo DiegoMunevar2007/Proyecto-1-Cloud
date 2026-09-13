@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/DiegoMunevar2007/Proyecto-1-Cloud.git/courses"
+	"github.com/DiegoMunevar2007/Proyecto-1-Cloud.git/storage"
 	"gorm.io/gorm"
 )
 
@@ -29,7 +30,7 @@ func EnsureBadge(db *gorm.DB, studentID, courseID uint) (*Badge, error) {
 	if err := db.Where("student_id = ? AND course_id = ?", studentID, courseID).First(&b).Error; err == nil {
 		return &b, nil
 	}
-	b = Badge{StudentID: studentID, CourseID: courseID, Code: genCode(), IssuedAt: time.Now()}
+	b = Badge{StudentID: studentID, CourseID: courseID, Code: genCode(), ImageURL: storage.PublicObjectURL(storage.BucketPublic, storage.BadgeImageKey), IssuedAt: time.Now()}
 	if err := db.Create(&b).Error; err != nil {
 		// Carrera resolvida por el índice único: releer.
 		if db.Where("student_id = ? AND course_id = ?", studentID, courseID).First(&b).Error == nil {

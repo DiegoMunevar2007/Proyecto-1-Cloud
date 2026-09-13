@@ -1,7 +1,9 @@
 package storage
 
 import (
+	"bytes"
 	"context"
+	_ "embed"
 	"fmt"
 	"net/url"
 	"strings"
@@ -10,6 +12,7 @@ import (
 	"github.com/DiegoMunevar2007/Proyecto-1-Cloud.git/utils"
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
+	"github.com/minio/minio-go/v7/pkg/lifecycle"
 )
 
 // Buckets lógicos (misma instancia MinIO, prefijos/buckets separados).
@@ -18,6 +21,16 @@ const (
 	BucketHLS       = "hls"
 	BucketPublic    = "public"
 )
+
+// BadgeImageKey es la insignia estática por defecto (bucket público).
+const BadgeImageKey = "badges/default.png"
+
+// TusMetaPrefix segrega los sidecars de tusd (.info/.part): el lifecycle
+// del bucket los expira y los objetos finales quedan limpios.
+const TusMetaPrefix = "tus-meta/"
+
+//go:embed static/badge-default.png
+var defaultBadgePNG []byte
 
 // Client envuelve MinIO/S3 con URLs prefirmadas.
 type Client struct {
@@ -82,6 +95,19 @@ func NewClient() (*Client, error) {
 	publicRead := `{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Principal":{"AWS":["*"]},"Action":["s3:GetObject"],"Resource":["arn:aws:s3:::%s/*"]}]}`
 	_ = mc.SetBucketPolicy(ctx, BucketPublic, fmt.Sprintf(publicRead, BucketPublic))
 	_ = mc.SetBucketPolicy(ctx, BucketHLS, fmt.Sprintf(publicRead, BucketHLS))
+	// Insignia estática por defecto (idempotente: solo si falta).
+	if _, err := mc.StatObject(ctx, BucketPublic, BadgeImageKey, minio.StatObjectOptions{}); err != nil {
+		_, _ = mc.PutObject(ctx, BucketPublic, BadgeImageKey, bytes.NewReader(defaultBadgePNG), int64(len(defaultBadgePNG)), minio.PutObjectOptions{ContentType: "image/png"})
+	}
+	// Expiración de sidecars TUS (7 días): los uploads mandan, los restos no.
+	lc := lifecycle.NewConfiguration()
+	lc.Rules = []lifecycle.Rule{{
+		ID:         "tus-meta-expiry",
+		RuleFilter: lifecycle.Filter{Prefix: TusMetaPrefix},
+		Status:     "Enabled",
+		Expiration: lifecycle.Expiration{Days: lifecycle.ExpirationDays(7)},
+	}}
+	_ = mc.SetBucketLifecycle(ctx, BucketOriginals, lc)
 	return c, nil
 }
 
@@ -115,6 +141,15 @@ func (c *Client) PublicURL(bucket, objectKey string) string {
 	if c.useCDN {
 		return fmt.Sprintf("%s/%s/%s", c.cdnBase, bucket, objectKey)
 	}
+	return PublicObjectURL(bucket, objectKey)
+}
+
+// PublicObjectURL construye la URL pública sin cliente (para dominios
+// que no deben importar el cliente, p. ej. insignias).
+func PublicObjectURL(bucket, objectKey string) string {
+	if cdn := strings.TrimSuffix(utils.GetEnv("CDN_BASE_URL", ""), "/"); cdn != "" {
+		return fmt.Sprintf("%s/%s/%s", cdn, bucket, objectKey)
+	}
 	endpoint := utils.GetEnv("S3_PUBLIC_ENDPOINT", "http://localhost:9000")
 	return fmt.Sprintf("%s/%s/%s", strings.TrimSuffix(endpoint, "/"), bucket, objectKey)
 }
@@ -127,6 +162,27 @@ func (c *Client) DownloadToFile(bucket, objectKey, destPath string) error {
 // DeleteFile elimina un objeto (cuarentena tras hallazgo de malware).
 func (c *Client) DeleteFile(bucket, objectKey string) error {
 	return c.mc.RemoveObject(context.Background(), bucket, objectKey, minio.RemoveObjectOptions{})
+}
+
+// DeletePrefix elimina todos los objetos bajo un prefijo (p. ej. hls/<stableID>/).
+// Best-effort para cascadas de borrado; retorna el primer error.
+func (c *Client) DeletePrefix(bucket, prefix string) error {
+	ctx := context.Background()
+	objectsCh := make(chan minio.ObjectInfo)
+	go func() {
+		defer close(objectsCh)
+		for obj := range c.mc.ListObjects(ctx, bucket, minio.ListObjectsOptions{Prefix: prefix, Recursive: true}) {
+			if obj.Err == nil {
+				objectsCh <- obj
+			}
+		}
+	}()
+	for err := range c.mc.RemoveObjects(ctx, bucket, objectsCh, minio.RemoveObjectsOptions{}) {
+		if err.Err != nil {
+			return err.Err
+		}
+	}
+	return nil
 }
 
 // UploadFile sube un archivo local (uso del worker para segmentos HLS).

@@ -1,0 +1,33 @@
+meta {
+  name: AddQuestionTmp
+  type: http
+  seq: 10
+}
+
+post {
+  url: {{baseUrl}}/api/v1/quizzes/{{tmpQuizId}}/questions
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{professorToken}}
+}
+
+body:json {
+  {
+    "questions": [
+      {
+        "prompt": "¿Temporal?",
+        "choices": ["Sí", "No"],
+        "correct_index": 0
+      }
+    ]
+  }
+}
+
+tests {
+  expect(res.status).to.equal(201);
+  expect(res.body.questions).to.have.lengthOf(1);
+  bru.setVar("tmpQuestionId", res.body.questions[0].id);
+}

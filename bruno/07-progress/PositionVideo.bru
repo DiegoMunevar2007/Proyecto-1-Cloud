@@ -1,0 +1,20 @@
+meta {
+  name: PositionVideo
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{baseUrl}}/api/v1/progress/position/{{videoStableId}}
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{studentToken}}
+}
+
+tests {
+  expect(res.status).to.equal(200);
+  expect(res.body.position_sec).to.equal(540);
+  expect(res.body.duration_sec).to.equal(600);
+}

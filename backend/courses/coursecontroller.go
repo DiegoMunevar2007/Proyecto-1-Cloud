@@ -4,6 +4,7 @@ import (
 	"errors"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/DiegoMunevar2007/Proyecto-1-Cloud.git/auth"
 	"github.com/DiegoMunevar2007/Proyecto-1-Cloud.git/queue"
@@ -96,8 +97,10 @@ func SetupCourseRoutes(router *gin.RouterGroup, db *gorm.DB, rdb *redis.Client) 
 //	@Tags			Cursos
 //	@Produce		json
 //	@Param			search	query		string	false	"Búsqueda en título y descripción"
-//	@Param			page	query		int		false	"Página (base 1)"	default(1)
-//	@Param			limit	query		int		false	"Resultados por página (máx 100)"	default(20)
+//	@Param			author			query		int		false	"Filtro por autor (created_by_id)"
+//	@Param			page			query		int		false	"Página (base 1)"	default(1)
+//	@Param			limit			query		int		false	"Resultados por página (máx 100)"	default(20)
+//	@Param			sort			query		string	false	"Orden: created_at|title + asc|desc"	default(created_at desc)
 //	@Success		200		{object}	CoursesResponse	"Catálogo paginado"
 //	@Failure		500		{object}	utils.ErrorResponse	"Error interno"
 //	@Router			/api/v1/courses [get]
@@ -116,13 +119,27 @@ func (h *Handler) ListCatalog(c *gin.Context) {
 		like := "%" + search + "%"
 		q = q.Where("title ILIKE ? OR description ILIKE ?", like, like)
 	}
+	if author, _ := strconv.ParseUint(c.Query("author"), 10, 32); author > 0 {
+		q = q.Where("created_by_id = ?", uint(author))
+	}
+	sort := "created_at desc"
+	if s := c.Query("sort"); s != "" {
+		allowed := map[string]bool{"created_at": true, "title": true}
+		if parts := strings.Fields(s); len(parts) > 0 && allowed[parts[0]] {
+			order := "asc"
+			if len(parts) > 1 && strings.ToLower(parts[1]) == "desc" {
+				order = "desc"
+			}
+			sort = parts[0] + " " + order
+		}
+	}
 	var total int64
 	if err := q.Count(&total).Error; err != nil {
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
 	var items []Course
-	if err := q.Order("created_at desc").Offset((page - 1) * limit).Limit(limit).Find(&items).Error; err != nil {
+	if err := q.Order(sort).Offset((page - 1) * limit).Limit(limit).Find(&items).Error; err != nil {
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
@@ -252,14 +269,17 @@ func (h *Handler) Update(c *gin.Context) {
 func (h *Handler) Delete(c *gin.Context) {
 	id, _ := strconv.ParseUint(c.Param("id"), 10, 32)
 	uid, role := currentUser(h.DB, c)
-	keys, err := DeleteCourse(h.DB, uint(id), uid, role)
+	assets, err := DeleteCourse(h.DB, uint(id), uid, role)
 	if err != nil {
 		writeErr(c, err)
 		return
 	}
 	if storageClient != nil {
-		for _, k := range keys {
+		for _, k := range assets.Originals {
 			_ = storageClient.DeleteFile(storage.BucketOriginals, k)
+		}
+		for _, p := range assets.HLSPrefixes {
+			_ = storageClient.DeletePrefix(storage.BucketHLS, p)
 		}
 	}
 	c.JSON(200, gin.H{"message": "curso eliminado"})
@@ -599,8 +619,13 @@ func (h *Handler) DeleteResource(c *gin.Context) {
 		writeErr(c, err)
 		return
 	}
-	if storageClient != nil && r.ObjectKey != "" {
-		_ = storageClient.DeleteFile(storage.BucketOriginals, r.ObjectKey)
+	if storageClient != nil {
+		if r.ObjectKey != "" {
+			_ = storageClient.DeleteFile(storage.BucketOriginals, r.ObjectKey)
+		}
+		if r.HLSKey != "" {
+			_ = storageClient.DeletePrefix(storage.BucketHLS, r.StableID+"/")
+		}
 	}
 	c.JSON(200, gin.H{"message": "recurso eliminado"})
 }
