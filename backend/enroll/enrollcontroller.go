@@ -25,7 +25,7 @@ type Handler struct {
 // SetupEnrollRoutes registra las rutas de inscripción (estudiante autenticado).
 func SetupEnrollRoutes(router *gin.RouterGroup, db *gorm.DB, rdb *redis.Client) {
 	h := &Handler{DB: db, RDB: rdb}
-	requireAuth := auth.RequireAuth(rdb)
+	requireAuth := auth.RequireRole(rdb)
 	g := router.Group("/enrollments")
 	{
 		g.GET("", requireAuth, h.Mine)

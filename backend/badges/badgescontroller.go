@@ -23,7 +23,7 @@ type Handler struct {
 // SetupBadgesRoutes registra verificación pública y revocación admin.
 func SetupBadgesRoutes(router *gin.RouterGroup, db *gorm.DB, rdb *redis.Client) {
 	h := &Handler{DB: db, RDB: rdb}
-	router.GET("/badges", auth.RequireAuth(rdb), h.Mine)
+	router.GET("/badges", auth.RequireRole(rdb), h.Mine)
 	router.GET("/badges/:code", h.Verify)
 	router.DELETE("/badges/:id", auth.RequireRole(rdb, auth.RoleAdmin), h.Revoke)
 }

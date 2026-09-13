@@ -34,12 +34,6 @@ func getJWTSecret() []byte {
 	return []byte(utils.GetJWTSecret())
 }
 
-// AuthError define errores tipados para login bloqueado.
-var (
-	ErrAccountInactive = errors.New("cuenta desactivada")
-	ErrAccountBlocked  = errors.New("cuenta bloqueada")
-)
-
 func AuthenticateUserDetailed(username, password string, db *gorm.DB) (userID uint, reason string, ok bool) {
 	/*
 		Autentica al usuario y distingue el motivo de bloqueo para responder 403.
@@ -137,11 +131,12 @@ func ResolveSessionTokenWithRole(tokenString string, rdb *redis.Client) (string,
 		Si es válido devuelve el username y el rol; en caso contrario retorna error genérico.
 		El rol proviene del claim del JWT (firmado) para que RequireAuth siga siendo solo Redis.
 	*/
+	var errInvalid = errors.New("token de sesión inválido o expirado")
 	// 1. Verificar que exista en Redis (no revocado y no expirado por TTL).
 	username, err := rdb.Get(ctx, "session:"+tokenString).Result()
 	if err != nil {
 		if err == redis.Nil {
-			return "", "", errors.New("token de sesión inválido o expirado")
+			return "", "", errInvalid
 		}
 		return "", "", errors.New("error al consultar la sesión: " + err.Error())
 	}
@@ -155,12 +150,12 @@ func ResolveSessionTokenWithRole(tokenString string, rdb *redis.Client) (string,
 		return getJWTSecret(), nil
 	})
 	if err != nil || !parsed.Valid {
-		return "", "", errors.New("token de sesión inválido o expirado")
+		return "", "", errInvalid
 	}
 
 	// Coherencia opcional: el username del JWT debe coincidir con el de Redis.
 	if claims.Username != "" && claims.Username != username {
-		return "", "", errors.New("token de sesión inválido o expirado")
+		return "", "", errInvalid
 	}
 
 	return username, claims.Role, nil

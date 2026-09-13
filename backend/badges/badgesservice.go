@@ -1,13 +1,12 @@
 package badges
 
 import (
-	"crypto/rand"
-	"encoding/hex"
 	"errors"
 	"time"
 
 	"github.com/DiegoMunevar2007/Proyecto-1-Cloud.git/courses"
 	"github.com/DiegoMunevar2007/Proyecto-1-Cloud.git/storage"
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -16,11 +15,7 @@ var ErrNotFound = errors.New("insignia no encontrada")
 
 // genCode genera un código público de 12 hex chars (sin datos del estudiante).
 func genCode() string {
-	var b [6]byte
-	if _, err := rand.Read(b[:]); err != nil {
-		return "000000000000"
-	}
-	return hex.EncodeToString(b[:])
+	return uuid.NewString()[:12]
 }
 
 // EnsureBadge emite la insignia una sola vez (unique estudiante+curso).

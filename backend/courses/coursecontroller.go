@@ -62,7 +62,7 @@ func writeErr(c *gin.Context, err error) {
 // SetupCourseRoutes registra las rutas de autoría y catálogo (sin versionamiento de API).
 func SetupCourseRoutes(router *gin.RouterGroup, db *gorm.DB, rdb *redis.Client) {
 	h := &Handler{DB: db, RDB: rdb}
-	requireAuth := auth.RequireAuth(rdb)
+	requireAuth := auth.RequireRole(rdb)
 	requireAuthor := auth.RequireRole(rdb, auth.RoleProfessor, auth.RoleAdmin)
 
 	g := router.Group("/courses")
@@ -720,21 +720,13 @@ func (h *Handler) UploadURL(c *gin.Context) {
 //	@Router			/api/v1/resources/{id}/download-url [get]
 func (h *Handler) DownloadURL(c *gin.Context) {
 	id, _ := strconv.ParseUint(c.Param("id"), 10, 32)
-	var r Resource
-	if err := h.DB.First(&r, uint(id)).Error; err != nil {
+	r, course, _, err := LocateResource(h.DB, uint(id))
+	if err != nil {
 		writeErr(c, ErrNotFound)
 		return
 	}
-	var u Unit
-	h.DB.First(&u, r.UnitID)
-	var m Module
-	h.DB.First(&m, u.ModuleID)
-	var v CourseVersion
-	h.DB.First(&v, m.CourseVersionID)
-	var course Course
-	h.DB.First(&course, v.CourseID)
 	uid, role := currentUser(h.DB, c)
-	allowed := IsOwnerOrAdmin(&course, uid, role)
+	allowed := IsOwnerOrAdmin(course, uid, role)
 	if !allowed {
 		// Estudiante: curso publicado, recurso visible e inscripción activa.
 		if course.Status != CourseStatusPublished || !r.IsVisible {
@@ -754,7 +746,7 @@ func (h *Handler) DownloadURL(c *gin.Context) {
 	}
 	bucket := storage.BucketOriginals
 	key := r.ObjectKey
-	if r.HLSKey != "" && (r.Type == ResourceTypeVideo || r.Type == ResourceTypeAudio) {
+	if r.HLSKey != "" && IsMediaType(r.Type) {
 		bucket = storage.BucketHLS
 		key = r.HLSKey
 		c.JSON(200, gin.H{"url": storageClient.PublicURL(bucket, key), "hls": true})

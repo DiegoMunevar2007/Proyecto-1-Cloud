@@ -18,9 +18,6 @@ func SendEmail(to, subject, body string) error {
 		body
 
 	// Autenticación y envío del correo
-	err := smtp.SendMail(smtpHost+":"+smtpPort, nil, smtpUser, []string{to}, []byte(msg))
-	if err != nil {
-		return err
-	}
-	return nil
+	return smtp.SendMail(smtpHost+":"+smtpPort, nil, smtpUser, []string{to}, []byte(msg))
 }
+

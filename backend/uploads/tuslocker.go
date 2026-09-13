@@ -2,10 +2,9 @@ package uploads
 
 import (
 	"context"
-	"crypto/rand"
-	"encoding/hex"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/redis/go-redis/v9"
 	"github.com/tus/tusd/v2/pkg/handler"
 )
@@ -27,11 +26,6 @@ type RedisLocker struct {
 	RDB *redis.Client
 }
 
-// UseIn registra el locker en el composer de tusd.
-func (l *RedisLocker) UseIn(c *handler.StoreComposer) {
-	c.UseLocker(l)
-}
-
 // NewLock crea un lock desbloqueado para el upload dado.
 func (l *RedisLocker) NewLock(id string) (handler.Lock, error) {
 	return &redisLock{rdb: l.RDB, key: "tus-lock:" + id}, nil
@@ -45,11 +39,7 @@ type redisLock struct {
 }
 
 func newToken() string {
-	var b [8]byte
-	if _, err := rand.Read(b[:]); err != nil {
-		return "fallback"
-	}
-	return hex.EncodeToString(b[:])
+	return uuid.NewString()
 }
 
 // Lock adquiere el lock exclusivo (poll cada 100ms) o retorna

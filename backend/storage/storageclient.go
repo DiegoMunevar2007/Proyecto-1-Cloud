@@ -37,7 +37,6 @@ type Client struct {
 	mc         *minio.Client
 	presign    *minio.Client
 	cdnBase    string
-	useCDN     bool
 	presignTTL time.Duration
 }
 
@@ -77,7 +76,7 @@ func NewClient() (*Client, error) {
 	if err != nil {
 		return nil, err
 	}
-	c := &Client{mc: mc, presign: pc, cdnBase: cdn, useCDN: cdn != "", presignTTL: 24 * time.Hour}
+	c := &Client{mc: mc, presign: pc, cdnBase: cdn, presignTTL: 24 * time.Hour}
 	ctx := context.Background()
 	for _, b := range []string{BucketOriginals, BucketHLS, BucketPublic} {
 		exists, err := mc.BucketExists(ctx, b)
@@ -93,8 +92,9 @@ func NewClient() (*Client, error) {
 	// Buckets public (thumbnails, HLS) con lectura anónima: el control de acceso
 	// se verifica en la API antes de revelar la URL (rutas firmadas/UUID).
 	publicRead := `{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Principal":{"AWS":["*"]},"Action":["s3:GetObject"],"Resource":["arn:aws:s3:::%s/*"]}]}`
-	_ = mc.SetBucketPolicy(ctx, BucketPublic, fmt.Sprintf(publicRead, BucketPublic))
-	_ = mc.SetBucketPolicy(ctx, BucketHLS, fmt.Sprintf(publicRead, BucketHLS))
+	for _, b := range []string{BucketPublic, BucketHLS} {
+		_ = mc.SetBucketPolicy(ctx, b, fmt.Sprintf(publicRead, b))
+	}
 	// Insignia estática por defecto (idempotente: solo si falta).
 	if _, err := mc.StatObject(ctx, BucketPublic, BadgeImageKey, minio.StatObjectOptions{}); err != nil {
 		_, _ = mc.PutObject(ctx, BucketPublic, BadgeImageKey, bytes.NewReader(defaultBadgePNG), int64(len(defaultBadgePNG)), minio.PutObjectOptions{ContentType: "image/png"})
@@ -138,7 +138,7 @@ func (c *Client) PresignedGet(bucket, objectKey string, ttl time.Duration) (stri
 
 // PublicURL retorna la URL de distribución (CDN si está configurado, si no endpoint S3 público).
 func (c *Client) PublicURL(bucket, objectKey string) string {
-	if c.useCDN {
+	if c.cdnBase != "" {
 		return fmt.Sprintf("%s/%s/%s", c.cdnBase, bucket, objectKey)
 	}
 	return PublicObjectURL(bucket, objectKey)

@@ -25,7 +25,7 @@ type Handler struct {
 // SetupProgressRoutes registra las rutas de progreso (estudiante autenticado).
 func SetupProgressRoutes(router *gin.RouterGroup, db *gorm.DB, rdb *redis.Client) {
 	h := &Handler{DB: db, RDB: rdb}
-	requireAuth := auth.RequireAuth(rdb)
+	requireAuth := auth.RequireRole(rdb)
 	g := router.Group("/progress")
 	{
 		g.POST("/heartbeat", requireAuth, auth.RateLimit(10, 20), h.Heartbeat)

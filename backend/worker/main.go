@@ -29,11 +29,7 @@ func retryDelay(n int, _ error, _ *asynq.Task) time.Duration {
 }
 
 func main() {
-	redisOpt := asynq.RedisClientOpt{
-		Addr:     utils.GetEnv("REDIS_ADDR", "localhost:6379"),
-		Password: utils.GetEnv("REDIS_PASSWORD", ""),
-		DB:       0,
-	}
+	redisOpt := queue.RedisOpt()
 	concurrency, _ := strconv.Atoi(utils.GetEnv("WORKER_CONCURRENCY", "10"))
 	if concurrency <= 0 {
 		concurrency = 10

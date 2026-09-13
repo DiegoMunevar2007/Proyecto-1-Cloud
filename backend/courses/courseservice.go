@@ -257,10 +257,9 @@ func CreateCourse(db *gorm.DB, userID uint, title, slug, description, thumbnailK
 		return nil, nil, fmt.Errorf("%w: título requerido", ErrInvalidPayload)
 	}
 	if slug == "" {
-		slug = Slugify(title)
-	} else {
-		slug = Slugify(slug)
+		slug = title
 	}
+	slug = Slugify(slug)
 	if minRequiredPct <= 0 || minRequiredPct > 100 {
 		minRequiredPct = 80
 	}

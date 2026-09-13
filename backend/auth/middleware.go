@@ -8,15 +8,6 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
-func RequireAuth(rdb *redis.Client) gin.HandlerFunc {
-	/*
-		Middleware que autentica una solicitud a partir del JWT enviado
-		en el header "Authorization: Bearer <token>" (obtenido en
-		/auth/login). Sin restricción de rol: equivale a RequireRole sin roles.
-	*/
-	return RequireRole(rdb)
-}
-
 func RequireRole(rdb *redis.Client, allowedRoles ...string) gin.HandlerFunc {
 	/*
 		Middleware que autentica una solicitud y verifica que el rol del usuario

@@ -44,7 +44,7 @@ func SetupRoutes(router *gin.RouterGroup, db *gorm.DB, rdb *redis.Client, q *que
 
 	composer := handler.NewStoreComposer()
 	store.UseIn(composer)
-	(&RedisLocker{RDB: rdb}).UseIn(composer)
+	composer.UseLocker(&RedisLocker{RDB: rdb})
 
 	h := &tusHandler{DB: db, RDB: rdb, Queue: q}
 	uh, err := handler.NewUnroutedHandler(handler.Config{
@@ -62,7 +62,7 @@ func SetupRoutes(router *gin.RouterGroup, db *gorm.DB, rdb *redis.Client, q *que
 	go h.consume(uh)
 
 	g := router.Group("/uploads")
-	g.Use(auth.RequireAuth(rdb))
+	g.Use(auth.RequireRole(rdb))
 	// tusd extrae el ID del path completo: se reescribe a raíz + id.
 	g.POST("", rewrite(uh.PostFile, "/"))
 	g.HEAD("/:id", rewriteID(uh.HeadFile))
@@ -145,10 +145,8 @@ func (h *tusHandler) consume(uh *handler.UnroutedHandler) {
 // s3ObjectKey extrae la clave final del objeto del ID compuesto de
 // tusd-S3 (`<uuid>+<multipartId>`): el objeto vive bajo el uuid.
 func s3ObjectKey(uploadID string) string {
-	if i := strings.LastIndex(uploadID, "+"); i != -1 {
-		return uploadID[:i]
-	}
-	return uploadID
+	before, _, _ := strings.Cut(uploadID, "+")
+	return before
 }
 
 // finish vincula el objeto finalizado al recurso y encola el scan

@@ -142,25 +142,17 @@ func (h *MediaHandler) HandleTranscode(ctx context.Context, t *asynq.Task) error
 	}
 	playlist := filepath.Join(outDir, "index.m3u8")
 
-	var cmd *exec.Cmd
-	isAudio := strings.Contains(strings.ToLower(r.MimeType), "audio") || r.Type == courses.ResourceTypeAudio
-	if isAudio {
-		// Audio a HLS (segmentos .ts AAC).
-		cmd = exec.Command("ffmpeg", "-y", "-i", srcPath,
-			"-c:a", "aac", "-b:a", "128k",
-			"-hls_time", "6", "-hls_playlist_type", "vod",
-			"-hls_segment_filename", filepath.Join(outDir, "seg%03d.ts"),
-			playlist)
-	} else {
+	args := []string{"-y", "-i", srcPath}
+	if isAudio := strings.Contains(strings.ToLower(r.MimeType), "audio") || r.Type == courses.ResourceTypeAudio; !isAudio {
 		// Video a HLS 720p máximo, sin upscaling, conserva aspecto.
-		cmd = exec.Command("ffmpeg", "-y", "-i", srcPath,
-			"-c:v", "libx264", "-preset", "veryfast", "-crf", "23",
-			"-vf", "scale=w=-2:h='min(ih,720)'",
-			"-c:a", "aac", "-b:a", "128k",
-			"-hls_time", "6", "-hls_playlist_type", "vod",
-			"-hls_segment_filename", filepath.Join(outDir, "seg%03d.ts"),
-			playlist)
+		args = append(args, "-c:v", "libx264", "-preset", "veryfast", "-crf", "23",
+			"-vf", "scale=w=-2:h='min(ih,720)'")
 	}
+	args = append(args, "-c:a", "aac", "-b:a", "128k",
+		"-hls_time", "6", "-hls_playlist_type", "vod",
+		"-hls_segment_filename", filepath.Join(outDir, "seg%03d.ts"),
+		playlist)
+	cmd := exec.Command("ffmpeg", args...)
 	cmdCtx, cancel := context.WithTimeout(ctx, 25*time.Minute)
 	defer cancel()
 	cmd = exec.CommandContext(cmdCtx, cmd.Path, cmd.Args[1:]...)

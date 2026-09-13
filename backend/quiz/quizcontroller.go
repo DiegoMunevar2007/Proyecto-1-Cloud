@@ -27,7 +27,7 @@ type Handler struct {
 func SetupQuizRoutes(router *gin.RouterGroup, db *gorm.DB, rdb *redis.Client) {
 	h := &Handler{DB: db, RDB: rdb}
 	requireAuthor := auth.RequireRole(rdb, auth.RoleProfessor, auth.RoleAdmin)
-	requireAuth := auth.RequireAuth(rdb)
+	requireAuth := auth.RequireRole(rdb)
 	router.POST("/quizzes", requireAuthor, h.Create)
 	router.POST("/quizzes/:id/questions", requireAuthor, h.AddQuestions)
 	router.GET("/quizzes/:id", requireAuthor, h.GetProfessor)

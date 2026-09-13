@@ -44,13 +44,17 @@ type UserModel struct {
 	IsVerified bool   `gorm:"not null;default:false"`
 }
 
+func normalize(s, def string) string {
+	s = strings.TrimSpace(strings.ToLower(s))
+	if s == "" {
+		return def
+	}
+	return s
+}
+
 // NormalizeRole normaliza el rol a minúsculas sin espacios; si está vacío retorna student.
 func NormalizeRole(role string) string {
-	role = strings.TrimSpace(strings.ToLower(role))
-	if role == "" {
-		return RoleStudent
-	}
-	return role
+	return normalize(role, RoleStudent)
 }
 
 // IsValidRole verifica si el rol es uno de los permitidos.
@@ -60,11 +64,7 @@ func IsValidRole(role string) bool {
 
 // NormalizeStatus normaliza el estado a minúsculas sin espacios; si está vacío retorna active.
 func NormalizeStatus(status string) string {
-	status = strings.TrimSpace(strings.ToLower(status))
-	if status == "" {
-		return StatusActive
-	}
-	return status
+	return normalize(status, StatusActive)
 }
 
 // IsValidStatus verifica si el estado es uno de los permitidos.

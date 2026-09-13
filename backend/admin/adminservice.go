@@ -41,18 +41,12 @@ func audit(db *gorm.DB, actor Actor, action string, targetID *uint, targetUserna
 	_ = db.Create(&entry).Error
 }
 
-func countActiveAdmins(db *gorm.DB) (int64, error) {
-	var count int64
-	err := db.Model(&auth.UserModel{}).Where("role = ? AND status = ?", auth.RoleAdmin, auth.StatusActive).Count(&count).Error
-	return count, err
-}
-
 func isLastActiveAdmin(db *gorm.DB, user *auth.UserModel) (bool, error) {
 	if auth.NormalizeRole(user.Role) != auth.RoleAdmin || auth.NormalizeStatus(user.Status) != auth.StatusActive {
 		return false, nil
 	}
-	count, err := countActiveAdmins(db)
-	if err != nil {
+	var count int64
+	if err := db.Model(&auth.UserModel{}).Where("role = ? AND status = ?", auth.RoleAdmin, auth.StatusActive).Count(&count).Error; err != nil {
 		return false, err
 	}
 	return count <= 1, nil
