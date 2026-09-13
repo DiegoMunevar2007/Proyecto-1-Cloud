@@ -1,0 +1,18 @@
+meta {
+  name: ReenrollB
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{baseUrl}}/api/v1/enrollments/{{courseBId}}/reenroll
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{studentToken}}
+}
+
+tests {
+  expect(res.status).to.equal(200);
+}

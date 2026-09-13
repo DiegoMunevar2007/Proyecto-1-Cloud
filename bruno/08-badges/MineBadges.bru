@@ -1,0 +1,20 @@
+meta {
+  name: MineBadges
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/api/v1/badges
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{studentToken}}
+}
+
+tests {
+  expect(res.status).to.equal(200);
+  expect(res.body.total).to.be.above(0);
+  bru.setVar("badgeId", res.body.badges[0].id);
+}

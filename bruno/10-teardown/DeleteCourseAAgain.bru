@@ -1,0 +1,18 @@
+meta {
+  name: DeleteCourseAAgain
+  type: http
+  seq: 14
+}
+
+delete {
+  url: {{baseUrl}}/api/v1/courses/{{courseId}}
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{professorToken}}
+}
+
+tests {
+  expect(res.status).to.equal(404);
+}

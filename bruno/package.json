@@ -1,0 +1,13 @@
+{
+  "name": "mooc-bruno-e2e",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Runner CLI para la colección Bruno del MOOC (bru run --env Local)",
+  "scripts": {
+    "test": "bru run --env Local",
+    "test:fresh": "cd .. && docker compose down -v && docker compose up -d && sleep 60 && cd bruno && bru run --env Local"
+  },
+  "devDependencies": {
+    "@usebruno/cli": "^2.4.0"
+  }
+}

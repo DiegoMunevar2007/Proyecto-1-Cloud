@@ -1,0 +1,25 @@
+meta {
+  name: EnrollA
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/api/v1/enrollments
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{studentToken}}
+}
+
+body:json {
+  {
+    "course_id": {{courseId}}
+  }
+}
+
+tests {
+  expect(res.status).to.be.oneOf([200, 201]);
+}

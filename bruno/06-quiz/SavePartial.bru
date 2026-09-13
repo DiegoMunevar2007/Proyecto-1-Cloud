@@ -1,0 +1,26 @@
+meta {
+  name: SavePartial
+  type: http
+  seq: 2
+}
+
+put {
+  url: {{baseUrl}}/api/v1/attempts/{{attemptId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{studentToken}}
+}
+
+body:json {
+  {
+    "answers": {"0": 1, "1": 0}
+  }
+}
+
+tests {
+  expect(res.status).to.equal(200);
+  expect(res.body.status).to.equal("draft");
+}

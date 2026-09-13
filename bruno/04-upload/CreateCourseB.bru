@@ -1,0 +1,27 @@
+meta {
+  name: CreateCourseB
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/api/v1/courses
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{professorToken}}
+}
+
+body:json {
+  {
+    "title": "Curso Bruno Upload",
+    "description": "Curso sintético para carga directa"
+  }
+}
+
+tests {
+  expect(res.status).to.equal(201);
+  bru.setVar("courseBId", res.body.course.id);
+}

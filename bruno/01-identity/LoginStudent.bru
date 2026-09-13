@@ -1,0 +1,24 @@
+meta {
+  name: LoginStudent
+  type: http
+  seq: 15
+}
+
+post {
+  url: {{baseUrl}}/api/v1/auth/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "username": "{{studentUser}}",
+    "password": "{{studentPass}}"
+  }
+}
+
+tests {
+  expect(res.status).to.equal(200);
+  expect(res.body.token).to.be.a("string").and.not.empty;
+  bru.setVar("studentToken", res.body.token);
+}

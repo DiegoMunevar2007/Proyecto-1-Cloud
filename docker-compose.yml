@@ -69,6 +69,12 @@ services:
     volumes:
       - s3_data:/data
 
+  clamav:
+    image: clamav/clamav:stable
+    restart: unless-stopped
+    volumes:
+      - clamav_data:/var/lib/clamav
+
   backend:
     build:
       context: ./backend
@@ -104,10 +110,13 @@ services:
         condition: service_started
       s3:
         condition: service_started
+      clamav:
+        condition: service_started
     env_file:
       - .env
     environment:
       <<: *common-env
+      CLAMAV_HOST: clamav:3310
       WORKER_CONCURRENCY: 10
     command: [ "./worker" ]
     # Escalamiento horizontal (stateless, idempotente): docker compose up --scale worker=2
@@ -116,4 +125,5 @@ volumes:
   postgres_data:
   redis_data:
   s3_data:
+  clamav_data:
   mailpit_data:

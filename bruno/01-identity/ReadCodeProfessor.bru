@@ -1,0 +1,17 @@
+meta {
+  name: ReadCodeProfessor
+  type: http
+  seq: 8
+}
+
+get {
+  url: {{mailpitUrl}}/api/v1/message/{{msgId}}
+  auth: none
+}
+
+tests {
+  expect(res.status).to.equal(200);
+  const m = (res.body.Text || "").match(/verificación: (\d{6})/);
+  expect(m, "código no encontrado en el correo").to.not.be.null;
+  bru.setVar("professorCode", m[1]);
+}

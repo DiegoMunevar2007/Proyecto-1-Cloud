@@ -1,0 +1,29 @@
+meta {
+  name: AddResourceText
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/api/v1/units/{{unitId}}/resources
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{professorToken}}
+}
+
+body:json {
+  {
+    "type": "text",
+    "title": "Lección 1",
+    "markdown_body": "# Variables en Go"
+  }
+}
+
+tests {
+  expect(res.status).to.equal(201);
+  bru.setVar("textResourceId", res.body.resource.id);
+  bru.setVar("textStableId", res.body.resource.stable_id);
+}

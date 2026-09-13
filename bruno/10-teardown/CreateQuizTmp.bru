@@ -1,0 +1,26 @@
+meta {
+  name: CreateQuizTmp
+  type: http
+  seq: 9
+}
+
+post {
+  url: {{baseUrl}}/api/v1/quizzes
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{professorToken}}
+}
+
+body:json {
+  {
+    "resource_id": {{tmpQuizResourceId}}
+  }
+}
+
+tests {
+  expect(res.status).to.equal(201);
+  bru.setVar("tmpQuizId", res.body.quiz.id);
+}

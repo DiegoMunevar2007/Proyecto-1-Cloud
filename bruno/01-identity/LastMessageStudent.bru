@@ -1,0 +1,19 @@
+meta {
+  name: LastMessageStudent
+  type: http
+  seq: 12
+}
+
+get {
+  url: {{mailpitUrl}}/api/v1/messages?limit=20
+  auth: none
+}
+
+tests {
+  expect(res.status).to.equal(200);
+  const found = res.body.messages.find(m =>
+    (m.To || []).some(t => (t.Address || "").includes(bru.getEnvVar("studentEmail")))
+  );
+  expect(found, "email de verificación no encontrado en Mailpit").to.exist;
+  bru.setVar("msgId", found.ID);
+}

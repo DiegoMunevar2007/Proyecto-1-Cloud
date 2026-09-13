@@ -1,0 +1,19 @@
+meta {
+  name: Submit
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/api/v1/attempts/{{attemptId}}/submit
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{studentToken}}
+}
+
+tests {
+  expect(res.status).to.equal(200);
+  expect(res.body.status).to.equal("submitted");
+}

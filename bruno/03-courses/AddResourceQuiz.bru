@@ -1,0 +1,28 @@
+meta {
+  name: AddResourceQuiz
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/api/v1/units/{{unitId}}/resources
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{professorToken}}
+}
+
+body:json {
+  {
+    "type": "quiz",
+    "title": "Quiz 1",
+    "markdown_body": "Evaluación del módulo 1"
+  }
+}
+
+tests {
+  expect(res.status).to.equal(201);
+  bru.setVar("quizResourceId", res.body.resource.id);
+}

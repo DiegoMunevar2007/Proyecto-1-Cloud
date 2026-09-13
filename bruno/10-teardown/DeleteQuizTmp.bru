@@ -1,0 +1,18 @@
+meta {
+  name: DeleteQuizTmp
+  type: http
+  seq: 10
+}
+
+delete {
+  url: {{baseUrl}}/api/v1/quizzes/{{tmpQuizId}}
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{professorToken}}
+}
+
+tests {
+  expect(res.status).to.equal(200);
+}

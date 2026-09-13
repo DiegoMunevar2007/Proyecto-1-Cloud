@@ -32,7 +32,7 @@ func actorFromContext(c *gin.Context) Actor {
 }
 
 // SetupAdminRoutes registra las rutas administrativas (solo rol admin).
-func SetupAdminRoutes(router *gin.Engine, db *gorm.DB, rdb *redis.Client) {
+func SetupAdminRoutes(router *gin.RouterGroup, db *gorm.DB, rdb *redis.Client) {
 	h := &Handler{DB: db, RDB: rdb}
 	admin := router.Group("/admin", auth.RequireRole(rdb, auth.RoleAdmin))
 	{
@@ -74,7 +74,7 @@ func SetupAdminRoutes(router *gin.Engine, db *gorm.DB, rdb *redis.Client) {
 //	@Failure		401	{object}	utils.ErrorResponse	"No autenticado"
 //	@Failure		403	{object}	utils.ErrorResponse	"Se requiere rol admin"
 //	@Failure		500	{object}	utils.ErrorResponse	"Error interno"
-//	@Router			/admin/users [get]
+//	@Router			/api/v1/admin/users [get]
 func (h *Handler) ListUsers(c *gin.Context) {
 	var f UserFilter
 	f.Search = c.Query("search")
@@ -114,7 +114,7 @@ func (h *Handler) ListUsers(c *gin.Context) {
 //	@Failure		401	{object}	utils.ErrorResponse	"No autenticado"
 //	@Failure		403	{object}	utils.ErrorResponse	"Se requiere rol admin"
 //	@Failure		404	{object}	utils.ErrorResponse	"Usuario no encontrado"
-//	@Router			/admin/users/{id} [get]
+//	@Router			/api/v1/admin/users/{id} [get]
 func (h *Handler) GetUser(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
@@ -147,7 +147,7 @@ func (h *Handler) GetUser(c *gin.Context) {
 //	@Failure		400	{object}	utils.ErrorResponse	"ID inválido, rol inválido o falta el campo"
 //	@Failure		404	{object}	utils.ErrorResponse	"Usuario no encontrado"
 //	@Failure		409	{object}	utils.ErrorResponse	"No se puede dejar el sistema sin administrador"
-//	@Router			/admin/users/{id}/role [put]
+//	@Router			/api/v1/admin/users/{id}/role [put]
 func (h *Handler) UpdateRole(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
@@ -198,7 +198,7 @@ func (h *Handler) UpdateRole(c *gin.Context) {
 //	@Failure		400	{object}	utils.ErrorResponse	"ID inválido, estado inválido o falta el campo"
 //	@Failure		404	{object}	utils.ErrorResponse	"Usuario no encontrado"
 //	@Failure		409	{object}	utils.ErrorResponse	"No se puede dejar el sistema sin administrador"
-//	@Router			/admin/users/{id}/status [patch]
+//	@Router			/api/v1/admin/users/{id}/status [patch]
 func (h *Handler) UpdateStatus(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
@@ -247,7 +247,7 @@ func (h *Handler) UpdateStatus(c *gin.Context) {
 //	@Failure		400	{object}	utils.ErrorResponse	"ID inválido"
 //	@Failure		404	{object}	utils.ErrorResponse	"Usuario no encontrado"
 //	@Failure		409	{object}	utils.ErrorResponse	"No se puede dejar el sistema sin administrador"
-//	@Router			/admin/users/{id} [delete]
+//	@Router			/api/v1/admin/users/{id} [delete]
 func (h *Handler) DeleteUser(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
@@ -282,7 +282,7 @@ func (h *Handler) DeleteUser(c *gin.Context) {
 //	@Success		200	{object}	UserMessageResponse	"Usuario restaurado"
 //	@Failure		400	{object}	utils.ErrorResponse	"ID inválido"
 //	@Failure		500	{object}	utils.ErrorResponse	"Error interno"
-//	@Router			/admin/users/{id}/restore [post]
+//	@Router			/api/v1/admin/users/{id}/restore [post]
 func (h *Handler) RestoreUser(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
@@ -309,7 +309,7 @@ func (h *Handler) RestoreUser(c *gin.Context) {
 //	@Success		200	{object}	SessionsResponse	"Sesiones activas"
 //	@Failure		400	{object}	utils.ErrorResponse	"ID inválido"
 //	@Failure		404	{object}	utils.ErrorResponse	"Usuario no encontrado"
-//	@Router			/admin/users/{id}/sessions [get]
+//	@Router			/api/v1/admin/users/{id}/sessions [get]
 func (h *Handler) ListSessions(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
@@ -345,7 +345,7 @@ func (h *Handler) ListSessions(c *gin.Context) {
 //	@Success		200	{object}	RevokeSessionsResponse	"Sesiones revocadas"
 //	@Failure		400	{object}	utils.ErrorResponse	"ID inválido"
 //	@Failure		404	{object}	utils.ErrorResponse	"Usuario no encontrado"
-//	@Router			/admin/users/{id}/sessions [delete]
+//	@Router			/api/v1/admin/users/{id}/sessions [delete]
 func (h *Handler) RevokeSessions(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
@@ -377,7 +377,7 @@ func (h *Handler) RevokeSessions(c *gin.Context) {
 //	@Success		200	{object}	utils.MessageResponse	"Sesión revocada"
 //	@Failure		400	{object}	utils.ErrorResponse	"Falta el token a revocar"
 //	@Failure		500	{object}	utils.ErrorResponse	"Error interno"
-//	@Router			/admin/sessions [delete]
+//	@Router			/api/v1/admin/sessions [delete]
 func (h *Handler) RevokeOne(c *gin.Context) {
 	var req SessionTokenRequest
 	_ = c.ShouldBind(&req)
@@ -413,7 +413,7 @@ func (h *Handler) RevokeOne(c *gin.Context) {
 //	@Security		BearerAuth
 //	@Success		200	{object}	AuditListResponse	"Registros de auditoría"
 //	@Failure		500	{object}	utils.ErrorResponse	"Error interno"
-//	@Router			/admin/audit [get]
+//	@Router			/api/v1/admin/audit [get]
 func (h *Handler) ListAudit(c *gin.Context) {
 	var f AuditFilter
 	f.Actor = c.Query("actor")
@@ -440,7 +440,7 @@ func (h *Handler) ListAudit(c *gin.Context) {
 //	@Param			Authorization	header		string	true	"Bearer <token de admin>"
 //	@Security		BearerAuth
 //	@Success		200	{object}	StatsResponse	"Estadísticas"
-//	@Router			/admin/stats [get]
+//	@Router			/api/v1/admin/stats [get]
 func (h *Handler) Stats(c *gin.Context) {
 	var total, active, inactive, blocked, admins int64
 	h.DB.Model(&auth.UserModel{}).Count(&total)

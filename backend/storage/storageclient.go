@@ -124,6 +124,11 @@ func (c *Client) DownloadToFile(bucket, objectKey, destPath string) error {
 	return c.mc.FGetObject(context.Background(), bucket, objectKey, destPath, minio.GetObjectOptions{})
 }
 
+// DeleteFile elimina un objeto (cuarentena tras hallazgo de malware).
+func (c *Client) DeleteFile(bucket, objectKey string) error {
+	return c.mc.RemoveObject(context.Background(), bucket, objectKey, minio.RemoveObjectOptions{})
+}
+
 // UploadFile sube un archivo local (uso del worker para segmentos HLS).
 func (c *Client) UploadFile(bucket, objectKey, srcPath, contentType string) error {
 	_, err := c.mc.FPutObject(context.Background(), bucket, objectKey, srcPath, minio.PutObjectOptions{ContentType: contentType})

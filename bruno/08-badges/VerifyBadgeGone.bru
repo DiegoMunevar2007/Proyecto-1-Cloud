@@ -1,0 +1,14 @@
+meta {
+  name: VerifyBadgeGone
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/api/v1/badges/{{badgeCode}}
+  auth: none
+}
+
+tests {
+  expect(res.status).to.equal(404);
+}

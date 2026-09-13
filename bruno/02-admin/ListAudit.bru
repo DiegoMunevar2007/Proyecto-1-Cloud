@@ -1,0 +1,19 @@
+meta {
+  name: ListAudit
+  type: http
+  seq: 9
+}
+
+get {
+  url: {{baseUrl}}/api/v1/admin/audit
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{adminToken}}
+}
+
+tests {
+  expect(res.status).to.equal(200);
+  expect(res.body.total).to.be.above(0);
+}

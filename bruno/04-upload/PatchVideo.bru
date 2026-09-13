@@ -1,0 +1,28 @@
+meta {
+  name: PatchVideo
+  type: http
+  seq: 9
+}
+
+patch {
+  url: {{uploadLocationVideo}}
+  body: file
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{professorToken}}
+}
+
+headers {
+  Tus-Resumable: 1.0.0
+  Upload-Offset: 0
+}
+
+body:file {
+  file: @file(fixtures/sample.mp4) @contentType(application/offset+octet-stream)
+}
+
+tests {
+  expect(res.status).to.equal(204);
+}

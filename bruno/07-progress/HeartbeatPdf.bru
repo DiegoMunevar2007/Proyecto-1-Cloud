@@ -1,0 +1,29 @@
+meta {
+  name: HeartbeatPdf
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/api/v1/progress/heartbeat
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{studentToken}}
+}
+
+body:json {
+  {
+    "stable_id": "{{pdfStableId}}",
+    "position_sec": 0,
+    "duration_sec": 0,
+    "event": "pdf_open"
+  }
+}
+
+tests {
+  expect(res.status).to.equal(200);
+  expect(res.body.completed).to.equal(true);
+}

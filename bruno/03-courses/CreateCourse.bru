@@ -1,0 +1,29 @@
+meta {
+  name: CreateCourse
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/api/v1/courses
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{professorToken}}
+}
+
+body:json {
+  {
+    "title": "Curso Bruno E2E",
+    "description": "Curso sintético para pruebas E2E",
+    "min_required_pct": 80
+  }
+}
+
+tests {
+  expect(res.status).to.equal(201);
+  expect(res.body.course.id).to.be.above(0);
+  bru.setVar("courseId", res.body.course.id);
+}

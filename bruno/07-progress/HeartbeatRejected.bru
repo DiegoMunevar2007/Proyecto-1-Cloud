@@ -1,0 +1,29 @@
+meta {
+  name: HeartbeatRejected
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/api/v1/progress/heartbeat
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{studentToken}}
+}
+
+body:json {
+  {
+    "stable_id": "{{textStableId}}",
+    "position_sec": 0,
+    "duration_sec": 0,
+    "event": "open",
+    "percent": 100
+  }
+}
+
+tests {
+  expect(res.status).to.equal(400);
+}

@@ -1,0 +1,29 @@
+meta {
+  name: AddResourceVideoHidden
+  type: http
+  seq: 9
+}
+
+post {
+  url: {{baseUrl}}/api/v1/units/{{unitId}}/resources
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{professorToken}}
+}
+
+body:json {
+  {
+    "type": "video",
+    "title": "Video pendiente",
+    "is_visible": false
+  }
+}
+
+tests {
+  expect(res.status).to.equal(201);
+  bru.setVar("videoResourceId", res.body.resource.id);
+  bru.setVar("videoStableId", res.body.resource.stable_id);
+}

@@ -1,0 +1,18 @@
+meta {
+  name: DownloadForbidden
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/v1/resources/{{fileResourceId}}/download-url
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{studentToken}}
+}
+
+tests {
+  expect(res.status).to.equal(403);
+}

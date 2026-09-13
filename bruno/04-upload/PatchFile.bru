@@ -1,0 +1,28 @@
+meta {
+  name: PatchFile
+  type: http
+  seq: 6
+}
+
+patch {
+  url: {{uploadLocation}}
+  body: file
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{professorToken}}
+}
+
+headers {
+  Tus-Resumable: 1.0.0
+  Upload-Offset: 0
+}
+
+body:file {
+  file: @file(fixtures/sample.txt) @contentType(application/offset+octet-stream)
+}
+
+tests {
+  expect(res.status).to.equal(204);
+}

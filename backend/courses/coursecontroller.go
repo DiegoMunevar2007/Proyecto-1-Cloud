@@ -36,13 +36,11 @@ type Handler struct {
 }
 
 func currentUser(db *gorm.DB, c *gin.Context) (uint, string) {
-	username := c.GetString("username")
-	role := auth.NormalizeRole(c.GetString("role"))
-	var u auth.UserModel
-	if err := db.Where("username = ?", username).First(&u).Error; err != nil {
-		return 0, role
+	uid, role := auth.LookupUser(db, c.GetString("username"))
+	if uid == 0 {
+		return 0, auth.NormalizeRole(c.GetString("role"))
 	}
-	return u.ID, u.Role
+	return uid, role
 }
 
 func writeErr(c *gin.Context, err error) {
@@ -61,7 +59,7 @@ func writeErr(c *gin.Context, err error) {
 }
 
 // SetupCourseRoutes registra las rutas de autoría y catálogo (sin versionamiento de API).
-func SetupCourseRoutes(router *gin.Engine, db *gorm.DB, rdb *redis.Client) {
+func SetupCourseRoutes(router *gin.RouterGroup, db *gorm.DB, rdb *redis.Client) {
 	h := &Handler{DB: db, RDB: rdb}
 	requireAuth := auth.RequireAuth(rdb)
 	requireAuthor := auth.RequireRole(rdb, auth.RoleProfessor, auth.RoleAdmin)
@@ -78,6 +76,7 @@ func SetupCourseRoutes(router *gin.Engine, db *gorm.DB, rdb *redis.Client) {
 		g.POST("/:id/versions", requireAuthor, h.NewVersion)
 		g.POST("/:id/modules", requireAuthor, h.AddModule)
 		g.POST("/:id/modules/reorder", requireAuthor, h.ReorderModules)
+		g.DELETE("/:id", requireAuthor, h.Delete)
 	}
 
 	router.POST("/modules/:id/units", requireAuthor, h.AddUnit)
@@ -85,6 +84,7 @@ func SetupCourseRoutes(router *gin.Engine, db *gorm.DB, rdb *redis.Client) {
 	router.POST("/units/:id/resources", requireAuthor, h.AddResource)
 	router.POST("/units/:id/resources/reorder", requireAuthor, h.ReorderResources)
 	router.PUT("/resources/:id", requireAuthor, h.UpdateResource)
+	router.DELETE("/resources/:id", requireAuthor, h.DeleteResource)
 	router.POST("/resources/:id/upload-url", requireAuthor, h.UploadURL)
 	router.GET("/resources/:id/download-url", requireAuth, h.DownloadURL)
 }
@@ -100,7 +100,7 @@ func SetupCourseRoutes(router *gin.Engine, db *gorm.DB, rdb *redis.Client) {
 //	@Param			limit	query		int		false	"Resultados por página (máx 100)"	default(20)
 //	@Success		200		{object}	CoursesResponse	"Catálogo paginado"
 //	@Failure		500		{object}	utils.ErrorResponse	"Error interno"
-//	@Router			/courses [get]
+//	@Router			/api/v1/courses [get]
 func (h *Handler) ListCatalog(c *gin.Context) {
 	search := c.Query("search")
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
@@ -142,7 +142,7 @@ func (h *Handler) ListCatalog(c *gin.Context) {
 //	@Failure		401	{object}	utils.ErrorResponse	"Token inválido"
 //	@Failure		403	{object}	utils.ErrorResponse	"Curso no publicado"
 //	@Failure		404	{object}	utils.ErrorResponse	"No encontrado"
-//	@Router			/courses/{id} [get]
+//	@Router			/api/v1/courses/{id} [get]
 func (h *Handler) GetDetail(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
@@ -191,7 +191,7 @@ func (h *Handler) GetDetail(c *gin.Context) {
 //	@Failure		400	{object}	utils.ErrorResponse	"Título requerido"
 //	@Failure		401	{object}	utils.ErrorResponse	"No autenticado"
 //	@Failure		403	{object}	utils.ErrorResponse	"Se requiere professor o admin"
-//	@Router			/courses [post]
+//	@Router			/api/v1/courses [post]
 func (h *Handler) Create(c *gin.Context) {
 	var req CreateCourseRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -222,7 +222,7 @@ func (h *Handler) Create(c *gin.Context) {
 //	@Failure		403	{object}	utils.ErrorResponse	"Sin permiso"
 //	@Failure		404	{object}	utils.ErrorResponse	"No encontrado"
 //	@Failure		409	{object}	utils.ErrorResponse	"Curso publicado (despublicar primero)"
-//	@Router			/courses/{id} [put]
+//	@Router			/api/v1/courses/{id} [put]
 func (h *Handler) Update(c *gin.Context) {
 	id, _ := strconv.ParseUint(c.Param("id"), 10, 32)
 	var req UpdateCourseRequest
@@ -234,6 +234,35 @@ func (h *Handler) Update(c *gin.Context) {
 		return
 	}
 	c.JSON(200, gin.H{"course": course})
+}
+
+// Delete elimina el curso y todo su rastro (teardown/demo).
+//
+//	@Summary		Eliminar curso
+//	@Description	Borra árbol, quizzes, intentos, progreso, inscripciones e insignias, más objetos en S3 (best-effort). Requiere ser el autor o admin.
+//	@Tags			Cursos
+//	@Produce		json
+//	@Param			Authorization	header		string	true	"Bearer <token>"
+//	@Param			id				path		int		true	"ID del curso"
+//	@Security		BearerAuth
+//	@Success		200	{object}	utils.MessageResponse	"Curso eliminado"
+//	@Failure		403	{object}	utils.ErrorResponse	"Sin permiso"
+//	@Failure		404	{object}	utils.ErrorResponse	"No encontrado"
+//	@Router			/api/v1/courses/{id} [delete]
+func (h *Handler) Delete(c *gin.Context) {
+	id, _ := strconv.ParseUint(c.Param("id"), 10, 32)
+	uid, role := currentUser(h.DB, c)
+	keys, err := DeleteCourse(h.DB, uint(id), uid, role)
+	if err != nil {
+		writeErr(c, err)
+		return
+	}
+	if storageClient != nil {
+		for _, k := range keys {
+			_ = storageClient.DeleteFile(storage.BucketOriginals, k)
+		}
+	}
+	c.JSON(200, gin.H{"message": "curso eliminado"})
 }
 
 // Validate retorna la lista exhaustiva de errores que impiden publicar.
@@ -248,7 +277,7 @@ func (h *Handler) Update(c *gin.Context) {
 //	@Success		200	{object}	ValidateResponse	"Resultado de validación"
 //	@Failure		401	{object}	utils.ErrorResponse	"No autenticado"
 //	@Failure		403	{object}	utils.ErrorResponse	"Se requiere professor o admin"
-//	@Router			/courses/{id}/validate [get]
+//	@Router			/api/v1/courses/{id}/validate [get]
 func (h *Handler) Validate(c *gin.Context) {
 	id, _ := strconv.ParseUint(c.Param("id"), 10, 32)
 	errs := ValidatePublishable(h.DB, uint(id))
@@ -268,7 +297,7 @@ func (h *Handler) Validate(c *gin.Context) {
 //	@Failure		400	{object}	utils.ErrorResponse	"Validación fallida (ver errores)"
 //	@Failure		403	{object}	utils.ErrorResponse	"Sin permiso"
 //	@Failure		404	{object}	utils.ErrorResponse	"No encontrado"
-//	@Router			/courses/{id}/publish [post]
+//	@Router			/api/v1/courses/{id}/publish [post]
 func (h *Handler) Publish(c *gin.Context) {
 	id, _ := strconv.ParseUint(c.Param("id"), 10, 32)
 	uid, role := currentUser(h.DB, c)
@@ -292,7 +321,7 @@ func (h *Handler) Publish(c *gin.Context) {
 //	@Success		200	{object}	UnpublishResponse	"Curso despublicado"
 //	@Failure		403	{object}	utils.ErrorResponse	"Sin permiso"
 //	@Failure		404	{object}	utils.ErrorResponse	"No encontrado"
-//	@Router			/courses/{id}/unpublish [post]
+//	@Router			/api/v1/courses/{id}/unpublish [post]
 func (h *Handler) Unpublish(c *gin.Context) {
 	id, _ := strconv.ParseUint(c.Param("id"), 10, 32)
 	uid, role := currentUser(h.DB, c)
@@ -317,7 +346,7 @@ func (h *Handler) Unpublish(c *gin.Context) {
 //	@Failure		400	{object}	utils.ErrorResponse	"Ya existe un borrador"
 //	@Failure		403	{object}	utils.ErrorResponse	"Sin permiso"
 //	@Failure		404	{object}	utils.ErrorResponse	"No encontrado"
-//	@Router			/courses/{id}/versions [post]
+//	@Router			/api/v1/courses/{id}/versions [post]
 func (h *Handler) NewVersion(c *gin.Context) {
 	id, _ := strconv.ParseUint(c.Param("id"), 10, 32)
 	uid, role := currentUser(h.DB, c)
@@ -344,7 +373,7 @@ func (h *Handler) NewVersion(c *gin.Context) {
 //	@Failure		403	{object}	utils.ErrorResponse	"Sin permiso"
 //	@Failure		404	{object}	utils.ErrorResponse	"No encontrado"
 //	@Failure		409	{object}	utils.ErrorResponse	"Curso publicado o versión inmutable"
-//	@Router			/courses/{id}/modules [post]
+//	@Router			/api/v1/courses/{id}/modules [post]
 func (h *Handler) AddModule(c *gin.Context) {
 	id, _ := strconv.ParseUint(c.Param("id"), 10, 32)
 	var req CreateModuleRequest
@@ -375,7 +404,7 @@ func (h *Handler) AddModule(c *gin.Context) {
 //	@Failure		400	{object}	utils.ErrorResponse	"ordered_ids requerido o módulo inexistente"
 //	@Failure		403	{object}	utils.ErrorResponse	"Sin permiso"
 //	@Failure		404	{object}	utils.ErrorResponse	"No encontrado"
-//	@Router			/courses/{id}/modules/reorder [post]
+//	@Router			/api/v1/courses/{id}/modules/reorder [post]
 func (h *Handler) ReorderModules(c *gin.Context) {
 	id, _ := strconv.ParseUint(c.Param("id"), 10, 32)
 	var req OrderedIDsRequest
@@ -406,7 +435,7 @@ func (h *Handler) ReorderModules(c *gin.Context) {
 //	@Failure		403	{object}	utils.ErrorResponse	"Sin permiso"
 //	@Failure		404	{object}	utils.ErrorResponse	"No encontrado"
 //	@Failure		409	{object}	utils.ErrorResponse	"Versión inmutable"
-//	@Router			/modules/{id}/units [post]
+//	@Router			/api/v1/modules/{id}/units [post]
 func (h *Handler) AddUnit(c *gin.Context) {
 	id, _ := strconv.ParseUint(c.Param("id"), 10, 32)
 	var req CreateUnitRequest
@@ -437,7 +466,7 @@ func (h *Handler) AddUnit(c *gin.Context) {
 //	@Failure		400	{object}	utils.ErrorResponse	"ordered_ids requerido o unidad inexistente"
 //	@Failure		403	{object}	utils.ErrorResponse	"Sin permiso"
 //	@Failure		404	{object}	utils.ErrorResponse	"No encontrado"
-//	@Router			/modules/{id}/units/reorder [post]
+//	@Router			/api/v1/modules/{id}/units/reorder [post]
 func (h *Handler) ReorderUnits(c *gin.Context) {
 	id, _ := strconv.ParseUint(c.Param("id"), 10, 32)
 	var req OrderedIDsRequest
@@ -468,7 +497,7 @@ func (h *Handler) ReorderUnits(c *gin.Context) {
 //	@Failure		403	{object}	utils.ErrorResponse	"Sin permiso"
 //	@Failure		404	{object}	utils.ErrorResponse	"No encontrado"
 //	@Failure		409	{object}	utils.ErrorResponse	"Versión inmutable"
-//	@Router			/units/{id}/resources [post]
+//	@Router			/api/v1/units/{id}/resources [post]
 func (h *Handler) AddResource(c *gin.Context) {
 	id, _ := strconv.ParseUint(c.Param("id"), 10, 32)
 	var req ResourceInput
@@ -499,7 +528,7 @@ func (h *Handler) AddResource(c *gin.Context) {
 //	@Failure		400	{object}	utils.ErrorResponse	"ordered_ids requerido o recurso inexistente"
 //	@Failure		403	{object}	utils.ErrorResponse	"Sin permiso"
 //	@Failure		404	{object}	utils.ErrorResponse	"No encontrado"
-//	@Router			/units/{id}/resources/reorder [post]
+//	@Router			/api/v1/units/{id}/resources/reorder [post]
 func (h *Handler) ReorderResources(c *gin.Context) {
 	id, _ := strconv.ParseUint(c.Param("id"), 10, 32)
 	var req OrderedIDsRequest
@@ -530,7 +559,7 @@ func (h *Handler) ReorderResources(c *gin.Context) {
 //	@Failure		403	{object}	utils.ErrorResponse	"Sin permiso"
 //	@Failure		404	{object}	utils.ErrorResponse	"No encontrado"
 //	@Failure		409	{object}	utils.ErrorResponse	"Versión inmutable"
-//	@Router			/resources/{id} [put]
+//	@Router			/api/v1/resources/{id} [put]
 func (h *Handler) UpdateResource(c *gin.Context) {
 	id, _ := strconv.ParseUint(c.Param("id"), 10, 32)
 	var req ResourceInput
@@ -547,10 +576,40 @@ func (h *Handler) UpdateResource(c *gin.Context) {
 	c.JSON(200, gin.H{"resource": r})
 }
 
-// UploadURL emite una URL prefirmada de subida directa y encola el transcode si aplica.
+// DeleteResource elimina un recurso del borrador (con su objeto, best-effort).
+//
+//	@Summary		Eliminar recurso
+//	@Description	Solo en versión borrador de curso no publicado. Con quiz asociado pide borrar el quiz primero.
+//	@Tags			Cursos
+//	@Produce		json
+//	@Param			Authorization	header		string	true	"Bearer <token>"
+//	@Param			id				path		int		true	"ID del recurso"
+//	@Security		BearerAuth
+//	@Success		200	{object}	utils.MessageResponse	"Recurso eliminado"
+//	@Failure		400	{object}	utils.ErrorResponse	"Tiene quiz asociado"
+//	@Failure		403	{object}	utils.ErrorResponse	"Sin permiso"
+//	@Failure		404	{object}	utils.ErrorResponse	"No encontrado"
+//	@Failure		409	{object}	utils.ErrorResponse	"Versión inmutable o curso publicado"
+//	@Router			/api/v1/resources/{id} [delete]
+func (h *Handler) DeleteResource(c *gin.Context) {
+	id, _ := strconv.ParseUint(c.Param("id"), 10, 32)
+	uid, role := currentUser(h.DB, c)
+	r, err := DeleteResource(h.DB, uint(id), uid, role)
+	if err != nil {
+		writeErr(c, err)
+		return
+	}
+	if storageClient != nil && r.ObjectKey != "" {
+		_ = storageClient.DeleteFile(storage.BucketOriginals, r.ObjectKey)
+	}
+	c.JSON(200, gin.H{"message": "recurso eliminado"})
+}
+
+// UploadURL emite una URL prefirmada de subida directa y encola el escaneo antimalware.
+// Si el archivo está limpio y es video/audio, el worker encadena la transcodificación HLS.
 //
 //	@Summary		URL de subida
-//	@Description	Genera una URL prefirmada PUT válida 24h para carga directa a objetos. En video/audio encola transcodificación HLS idempotente (header Idempotency-Key recomendado).
+//	@Description	Genera una URL prefirmada PUT válida 24h para carga directa a objetos. LEGADO: preferir TUS en /api/v1/uploads (reanudable). Siempre encola escaneo antimalware (fail-closed); si está limpio y es video/audio, encadena transcode HLS idempotente (header Idempotency-Key recomendado).
 //	@Tags			Cursos
 //	@Produce		json
 //	@Param			Authorization		header		string				true	"Bearer <token>"
@@ -562,7 +621,7 @@ func (h *Handler) UpdateResource(c *gin.Context) {
 //	@Failure		400	{object}	utils.ErrorResponse	"object_key requerido"
 //	@Failure		404	{object}	utils.ErrorResponse	"Recurso no encontrado"
 //	@Failure		501	{object}	utils.ErrorResponse	"Almacenamiento/cola no configurados"
-//	@Router			/resources/{id}/upload-url [post]
+//	@Router			/api/v1/resources/{id}/upload-url [post]
 func (h *Handler) UploadURL(c *gin.Context) {
 	id, _ := strconv.ParseUint(c.Param("id"), 10, 32)
 	var req UploadURLRequest
@@ -592,28 +651,31 @@ func (h *Handler) UploadURL(c *gin.Context) {
 	if req.SizeBytes > 0 {
 		r.SizeBytes = req.SizeBytes
 	}
-	taskID := ""
-	if IsMediaType(r.Type) {
-		// Idempotencia: entrega duplicada del mismo objeto no resetea el
-		// estado (el worker confirma sin regenerar salidas); objeto nuevo
-		// sí reinicia el procesamiento.
-		if prevKey != req.ObjectKey {
-			r.HLSKey = ""
-			r.ProcessingStatus = ProcessingPending
-		} else if r.ProcessingStatus != ProcessingReady || r.HLSKey == "" {
+	// Objeto nuevo → reinicia escaneo y procesamiento; misma clave → conserva.
+	if prevKey != req.ObjectKey {
+		r.HLSKey = ""
+		r.ScanStatus = ScanPending
+		r.ProcessingStatus = ProcessingPending
+	} else {
+		if r.ScanStatus != ScanClean {
+			r.ScanStatus = ScanPending
+		}
+		if IsMediaType(r.Type) && (r.ProcessingStatus != ProcessingReady || r.HLSKey == "") {
 			r.ProcessingStatus = ProcessingPending
 		}
-		idemKey := c.GetHeader("Idempotency-Key")
-		if idemKey == "" {
-			idemKey = "transcode-" + r.StableID
-		}
-		taskID, _ = queueClient.EnqueueTranscode(queue.TranscodePayload{
-			ResourceID:     r.ID,
-			ObjectKey:      r.ObjectKey,
-			MimeType:       r.MimeType,
-			IdempotencyKey: idemKey,
-		}, idemKey)
 	}
+	// Fail-closed: todo objeto pasa por ClamAV; el transcode se encadena
+	// solo si está limpio (lo decide el worker, no la API).
+	idemKey := c.GetHeader("Idempotency-Key")
+	if idemKey == "" {
+		idemKey = "scan-" + r.StableID
+	}
+	transcodeKey := "transcode-" + r.StableID
+	taskID, _ := queueClient.EnqueueScan(queue.ScanPayload{
+		ResourceID:   r.ID,
+		ObjectKey:    r.ObjectKey,
+		TranscodeKey: transcodeKey,
+	}, idemKey)
 	h.DB.Save(&r)
 	c.JSON(200, gin.H{"upload_url": url, "task_id": taskID, "resource": r})
 }
@@ -630,7 +692,7 @@ func (h *Handler) UploadURL(c *gin.Context) {
 //	@Success		200	{object}	DownloadURLResponse	"URL de consumo"
 //	@Failure		403	{object}	utils.ErrorResponse	"Sin derecho de acceso"
 //	@Failure		404	{object}	utils.ErrorResponse	"Recurso no encontrado"
-//	@Router			/resources/{id}/download-url [get]
+//	@Router			/api/v1/resources/{id}/download-url [get]
 func (h *Handler) DownloadURL(c *gin.Context) {
 	id, _ := strconv.ParseUint(c.Param("id"), 10, 32)
 	var r Resource
@@ -649,9 +711,14 @@ func (h *Handler) DownloadURL(c *gin.Context) {
 	uid, role := currentUser(h.DB, c)
 	allowed := IsOwnerOrAdmin(&course, uid, role)
 	if !allowed {
-		// Estudiante: solo si el curso está publicado y el recurso es visible.
+		// Estudiante: curso publicado, recurso visible e inscripción activa.
 		if course.Status != CourseStatusPublished || !r.IsVisible {
 			c.JSON(403, gin.H{"error": "sin derecho de acceso"})
+			return
+		}
+		var m Matricula
+		if err := h.DB.Where("student_id = ? AND course_id = ?", uid, course.ID).First(&m).Error; err != nil || !m.Inscrito {
+			c.JSON(403, gin.H{"error": "se requiere inscripción"})
 			return
 		}
 		allowed = true

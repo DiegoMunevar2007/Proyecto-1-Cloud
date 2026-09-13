@@ -1,0 +1,27 @@
+meta {
+  name: CreateCourseC
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/api/v1/courses
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{professorToken}}
+}
+
+body:json {
+  {
+    "title": "Curso Bruno Teardown",
+    "description": "Curso desechable para probar eliminación"
+  }
+}
+
+tests {
+  expect(res.status).to.equal(201);
+  bru.setVar("courseCId", res.body.course.id);
+}

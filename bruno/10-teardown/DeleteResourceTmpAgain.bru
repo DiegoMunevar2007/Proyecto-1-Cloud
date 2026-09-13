@@ -1,0 +1,18 @@
+meta {
+  name: DeleteResourceTmpAgain
+  type: http
+  seq: 7
+}
+
+delete {
+  url: {{baseUrl}}/api/v1/resources/{{tmpResourceId}}
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{professorToken}}
+}
+
+tests {
+  expect(res.status).to.equal(404);
+}

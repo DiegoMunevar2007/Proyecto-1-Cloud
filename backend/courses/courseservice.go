@@ -107,6 +107,101 @@ func unitChain(db *gorm.DB, unitID uint) (*Unit, *Module, *CourseVersion, *Cours
 	return &u, m, v, c, nil
 }
 
+// LocateResource carga recurso + curso + versión para autorización desde otros dominios.
+func LocateResource(db *gorm.DB, resourceID uint) (*Resource, *Course, *CourseVersion, error) {
+	var r Resource
+	if err := db.First(&r, resourceID).Error; err != nil {
+		return nil, nil, nil, ErrNotFound
+	}
+	_, _, v, c, err := unitChain(db, r.UnitID)
+	if err != nil {
+		return nil, nil, nil, err
+	}
+	return &r, c, v, nil
+}
+
+// ByStableID retorna el recurso más reciente con ese stable_id.
+func ByStableID(db *gorm.DB, stableID string) (*Resource, error) {
+	var r Resource
+	if err := db.Where("stable_id = ?", stableID).Order("id desc").First(&r).Error; err != nil {
+		return nil, ErrNotFound
+	}
+	return &r, nil
+}
+
+// treeResources limita a los recursos del curso (para purgas en cascada).
+const treeResources = `SELECT r.id FROM resources r
+	JOIN units u ON u.id = r.unit_id
+	JOIN modules m ON m.id = u.module_id
+	JOIN course_versions v ON v.id = m.course_version_id
+	WHERE v.course_id = ?`
+
+// DeleteCourse elimina el curso y todo su rastro: árbol, quizzes e intentos,
+// progreso, inscripciones e insignias. Retorna los object_keys para limpieza
+// S3 (best-effort, la hace el controlador). Las tablas de otros dominios se
+// purgan con SQL porque importar esos paquetes crearía un ciclo.
+func DeleteCourse(db *gorm.DB, courseID, userID uint, role string) ([]string, error) {
+	c, err := getCourse(db, courseID)
+	if err != nil {
+		return nil, err
+	}
+	if !IsOwnerOrAdmin(c, userID, role) {
+		return nil, ErrForbidden
+	}
+	var keys []string
+	db.Model(&Resource{}).Where("unit_id IN (SELECT u.id FROM units u JOIN modules m ON m.id = u.module_id JOIN course_versions v ON v.id = m.course_version_id WHERE v.course_id = ?) AND object_key <> ''", courseID).Pluck("object_key", &keys)
+	quizIDs := `SELECT q.id FROM quizzes q WHERE q.resource_id IN (` + treeResources + `)`
+	err = db.Transaction(func(tx *gorm.DB) error {
+		// Soltar primero la versión vigente (FK courses.current_version_id).
+		if err := tx.Exec(`UPDATE courses SET current_version_id = NULL WHERE id = ?`, courseID).Error; err != nil {
+			return err
+		}
+		for _, s := range []string{
+			`DELETE FROM attempts WHERE quiz_id IN (` + quizIDs + `)`,
+			`DELETE FROM questions WHERE quiz_id IN (` + quizIDs + `)`,
+			`DELETE FROM quizzes WHERE resource_id IN (` + treeResources + `)`,
+			`DELETE FROM progresses WHERE stable_id IN (SELECT r.stable_id FROM resources r JOIN units u ON u.id = r.unit_id JOIN modules m ON m.id = u.module_id JOIN course_versions v ON v.id = m.course_version_id WHERE v.course_id = ?)`,
+			`DELETE FROM matriculas WHERE course_id = ?`,
+			`DELETE FROM badges WHERE course_id = ?`,
+			`DELETE FROM resources WHERE id IN (` + treeResources + `)`,
+			`DELETE FROM units WHERE module_id IN (SELECT m.id FROM modules m JOIN course_versions v ON v.id = m.course_version_id WHERE v.course_id = ?)`,
+			`DELETE FROM modules WHERE course_version_id IN (SELECT id FROM course_versions WHERE course_id = ?)`,
+			`DELETE FROM course_versions WHERE course_id = ?`,
+			`DELETE FROM courses WHERE id = ?`,
+		} {
+			if err := tx.Exec(s, courseID).Error; err != nil {
+				return err
+			}
+		}
+		return nil
+	})
+	return keys, err
+}
+
+// DeleteResource elimina un recurso del borrador (con su objeto, best-effort
+// en el controlador). Si tiene quiz asociado, pide borrar el quiz primero.
+func DeleteResource(db *gorm.DB, resourceID, userID uint, role string) (*Resource, error) {
+	r, c, v, err := LocateResource(db, resourceID)
+	if err != nil {
+		return nil, err
+	}
+	if !IsOwnerOrAdmin(c, userID, role) {
+		return nil, ErrForbidden
+	}
+	if v.IsImmutable || v.Status != VersionStatusDraft {
+		return nil, ErrImmutable
+	}
+	if c.Status == CourseStatusPublished {
+		return nil, ErrPublishedEdit
+	}
+	var n int64
+	db.Table("quizzes").Where("resource_id = ?", resourceID).Count(&n)
+	if n > 0 {
+		return nil, fmt.Errorf("%w: el recurso tiene quiz, elimínelo primero", ErrInvalidPayload)
+	}
+	return r, db.Delete(&Resource{}, resourceID).Error
+}
+
 // reorderPositions asigna posiciones 1-based según el orden de IDs recibido.
 // Actualiza directo sin cargar cada fila; RowsAffected==0 => no encontrado.
 func reorderPositions(tx *gorm.DB, model interface{}, scopeColumn string, scopeID uint, orderedIDs []uint, kind string) error {
@@ -514,6 +609,17 @@ func ValidatePublishable(db *gorm.DB, courseID uint) []string {
 			for _, r := range res {
 				if !r.IsVisible {
 					continue
+				}
+				// Fail-closed antimalware: con objeto subido exige scan limpio.
+				if r.ObjectKey != "" {
+					if r.ScanStatus == ScanInfected {
+						errs = append(errs, fmt.Sprintf("recurso visible '%s' infectado (rechazado por antimalware)", r.Title))
+						continue
+					}
+					if r.ScanStatus != ScanClean {
+						errs = append(errs, fmt.Sprintf("recurso visible '%s' pendiente de escaneo antimalware", r.Title))
+						continue
+					}
 				}
 				switch NormalizeResourceType(r.Type) {
 				case ResourceTypeVideo, ResourceTypeAudio:

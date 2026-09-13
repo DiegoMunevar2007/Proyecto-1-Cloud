@@ -1,0 +1,28 @@
+meta {
+  name: AddResourceTmp
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/api/v1/units/{{unitCId}}/resources
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{professorToken}}
+}
+
+body:json {
+  {
+    "type": "text",
+    "title": "Recurso temporal",
+    "markdown_body": "# Temporal"
+  }
+}
+
+tests {
+  expect(res.status).to.equal(201);
+  bru.setVar("tmpResourceId", res.body.resource.id);
+}

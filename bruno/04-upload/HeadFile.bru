@@ -1,0 +1,23 @@
+meta {
+  name: HeadFile
+  type: http
+  seq: 7
+}
+
+head {
+  url: {{uploadLocation}}
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{professorToken}}
+}
+
+headers {
+  Tus-Resumable: 1.0.0
+}
+
+tests {
+  expect(res.status).to.equal(200);
+  expect(res.headers["upload-offset"]).to.equal("53");
+}

@@ -1,0 +1,18 @@
+meta {
+  name: ValidateB
+  type: http
+  seq: 11
+}
+
+get {
+  url: {{baseUrl}}/api/v1/courses/{{courseBId}}/validate
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{professorToken}}
+}
+
+tests {
+  expect(res.status).to.equal(200);
+}

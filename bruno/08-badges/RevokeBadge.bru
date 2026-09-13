@@ -1,0 +1,18 @@
+meta {
+  name: RevokeBadge
+  type: http
+  seq: 3
+}
+
+delete {
+  url: {{baseUrl}}/api/v1/badges/{{badgeId}}
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{adminToken}}
+}
+
+tests {
+  expect(res.status).to.equal(200);
+}

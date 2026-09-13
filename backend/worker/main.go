@@ -61,7 +61,15 @@ func main() {
 		log.Fatalf("worker: no se pudo crear cliente S3: %v", err)
 	}
 
-	h := &MediaHandler{DB: db, Store: store}
+	qclient := queue.NewClient()
+	defer qclient.Close()
+
+	h := &MediaHandler{
+		DB:       db,
+		Store:    store,
+		Queue:    qclient,
+		ClamHost: utils.GetEnv("CLAMAV_HOST", "clamav:3310"),
+	}
 
 	srv := asynq.NewServer(redisOpt, asynq.Config{
 		Concurrency: concurrency,
@@ -78,6 +86,7 @@ func main() {
 	})
 
 	mux := asynq.NewServeMux()
+	mux.HandleFunc(queue.TypeMediaScan, h.HandleScan)
 	mux.HandleFunc(queue.TypeMediaTranscode, h.HandleTranscode)
 
 	log.Printf("worker: escuchando colas media/default (concurrency=%d)", concurrency)

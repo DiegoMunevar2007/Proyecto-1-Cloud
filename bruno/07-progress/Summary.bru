@@ -1,0 +1,24 @@
+meta {
+  name: Summary
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{baseUrl}}/api/v1/progress/{{courseId}}
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{studentToken}}
+}
+
+tests {
+  expect(res.status).to.equal(200);
+  expect(res.body.total).to.equal(3);
+  expect(res.body.done).to.equal(3);
+  expect(res.body.percent).to.equal(100);
+  expect(res.body.status).to.equal("approved");
+  expect(res.body.badge).to.be.a("string").and.not.empty;
+  bru.setVar("badgeCode", res.body.badge);
+}

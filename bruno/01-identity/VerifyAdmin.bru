@@ -1,0 +1,14 @@
+meta {
+  name: VerifyAdmin
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/api/v1/auth/verify?username={{adminUser}}&code={{adminCode}}
+  auth: none
+}
+
+tests {
+  expect(res.status).to.equal(200);
+}

@@ -17,10 +17,84 @@ import (
 	"gorm.io/gorm"
 )
 
-// MediaHandler procesa multimedia a HLS de forma idempotente.
+// MediaHandler procesa multimedia a HLS de forma idempotente,
+// con escaneo antimalware previo (fail-closed).
 type MediaHandler struct {
-	DB    *gorm.DB
-	Store *storage.Client
+	DB       *gorm.DB
+	Store    *storage.Client
+	Queue    *queue.Client
+	ClamHost string
+}
+
+// HandleScan verifica el original con ClamAV y, si está limpio y es
+// multimedia, encadena el transcode. Fail-closed: sin clamd → error,
+// reintentos con backoff y DLQ (nada infectado llega a publicarse).
+func (h *MediaHandler) HandleScan(ctx context.Context, t *asynq.Task) error {
+	p, err := queue.DecodeScan(t.Payload())
+	if err != nil {
+		return fmt.Errorf("payload inválido: %w", err)
+	}
+	if p.ResourceID == 0 || p.ObjectKey == "" {
+		return fmt.Errorf("payload incompleto")
+	}
+
+	var r courses.Resource
+	if err := h.DB.First(&r, p.ResourceID).Error; err != nil {
+		return fmt.Errorf("recurso %d no encontrado: %w", p.ResourceID, err)
+	}
+
+	// Idempotencia: ya limpio → solo re-encolar transcode si aplica.
+	if r.ScanStatus == courses.ScanClean {
+		return h.enqueueTranscodeIfMedia(&r, p.TranscodeKey)
+	}
+
+	tmpDir, err := os.MkdirTemp("", fmt.Sprintf("scan-%d-", r.ID))
+	if err != nil {
+		return err
+	}
+	defer os.RemoveAll(tmpDir)
+
+	srcPath := filepath.Join(tmpDir, "original.bin")
+	if err := h.Store.DownloadToFile(storage.BucketOriginals, p.ObjectKey, srcPath); err != nil {
+		return fmt.Errorf("descarga original: %w", err)
+	}
+
+	infected, virus, err := ScanFile(h.ClamHost, srcPath)
+	if err != nil {
+		return fmt.Errorf("clamav: %w", err)
+	}
+	if infected {
+		// Cuarentena: el objeto se elimina, el recurso queda marcado.
+		_ = h.Store.DeleteFile(storage.BucketOriginals, p.ObjectKey)
+		h.DB.Model(&r).Updates(map[string]interface{}{
+			"scan_status":       courses.ScanInfected,
+			"processing_status": courses.ProcessingFailed,
+		})
+		log.Printf("worker: recurso %d INFECTADO (%s), objeto eliminado", r.ID, virus)
+		return nil
+	}
+
+	h.DB.Model(&r).Update("scan_status", courses.ScanClean)
+	log.Printf("worker: recurso %d limpio, scan ok", r.ID)
+	return h.enqueueTranscodeIfMedia(&r, p.TranscodeKey)
+}
+
+// enqueueTranscodeIfMedia encadena el transcode solo para video/audio.
+// Idempotente: TaskID estable por stable_id (asynq dedupica entregas).
+func (h *MediaHandler) enqueueTranscodeIfMedia(r *courses.Resource, transcodeKey string) error {
+	if !courses.IsMediaType(r.Type) || h.Queue == nil {
+		return nil
+	}
+	if transcodeKey == "" {
+		transcodeKey = "transcode-" + r.StableID
+	}
+	_, err := h.Queue.EnqueueTranscode(queue.TranscodePayload{
+		ResourceID:     r.ID,
+		ObjectKey:      r.ObjectKey,
+		MimeType:       r.MimeType,
+		IdempotencyKey: transcodeKey,
+	}, transcodeKey)
+	return err
 }
 
 // HandleTranscode descarga el original, genera HLS sin upscaling y conserva el original.

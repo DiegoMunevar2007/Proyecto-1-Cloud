@@ -1,0 +1,27 @@
+meta {
+  name: AddModule
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/api/v1/courses/{{courseId}}/modules
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{professorToken}}
+}
+
+body:json {
+  {
+    "title": "Módulo 1",
+    "description": "Fundamentos"
+  }
+}
+
+tests {
+  expect(res.status).to.equal(201);
+  bru.setVar("moduleId", res.body.module.id);
+}

@@ -1,0 +1,14 @@
+meta {
+  name: VerifyStudent
+  type: http
+  seq: 14
+}
+
+get {
+  url: {{baseUrl}}/api/v1/auth/verify?username={{studentUser}}&code={{studentCode}}
+  auth: none
+}
+
+tests {
+  expect(res.status).to.equal(200);
+}

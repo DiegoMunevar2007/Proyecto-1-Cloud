@@ -130,6 +130,13 @@ type Unit struct {
 	Resources   []Resource `gorm:"foreignKey:UnitID" json:"resources,omitempty"`
 }
 
+// Estados de escaneo antimalware (fail-closed: publicar exige clean).
+const (
+	ScanPending  = "pending"
+	ScanClean    = "clean"
+	ScanInfected = "infected"
+)
+
 // Resource es el nivel hoja: contenido o quiz.
 type Resource struct {
 	ID               uint      `gorm:"primaryKey" json:"id"`
@@ -140,19 +147,20 @@ type Resource struct {
 	Position         int       `gorm:"not null;index" json:"position"`
 	Type             string    `gorm:"not null;index" json:"type"`
 	Title            string    `gorm:"not null" json:"title"`
-	IsVisible        bool      `gorm:"not null;default:true" json:"is_visible"`
-	IsRequired       bool      `gorm:"not null;default:true" json:"is_required"`
+	IsVisible        bool      `gorm:"not null" json:"is_visible"`
+	IsRequired       bool      `gorm:"not null" json:"is_required"`
 	AllowDownload    bool      `gorm:"not null;default:false" json:"allow_download"`
 	MarkdownBody     string    `gorm:"type:text" json:"markdown_body"`
 	ObjectKey        string    `json:"object_key"`
 	HLSKey           string    `json:"hls_key"`
 	ProcessingStatus string    `gorm:"not null;default:'none';index" json:"processing_status"`
+	ScanStatus       string    `gorm:"not null;default:'pending';index" json:"scan_status"`
 	MimeType         string    `json:"mime_type"`
 	SizeBytes        int64     `json:"size_bytes"`
 	ExternalURL      string    `json:"external_url"`
 }
 
-// Matricula conserva inscripción de estudiantes (progreso se añade en etapa 5.1-10).
+// Matricula conserva inscripción de estudiantes y su estado de avance.
 type Matricula struct {
 	ID               uint           `gorm:"primaryKey" json:"id"`
 	CreatedAt        time.Time      `json:"created_at"`
@@ -162,5 +170,6 @@ type Matricula struct {
 	CourseID         uint           `gorm:"not null;index:idx_student_course,unique" json:"course_id"`
 	Course           Course         `gorm:"foreignKey:CourseID" json:"-"`
 	Inscrito         bool           `gorm:"not null;default:true" json:"inscrito"`
+	Status           string         `gorm:"not null;default:'in_progress';index" json:"status"`
 	FechaInscripcion time.Time      `gorm:"not null" json:"fecha_inscripcion"`
 }

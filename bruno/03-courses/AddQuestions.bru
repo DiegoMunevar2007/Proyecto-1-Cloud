@@ -1,0 +1,37 @@
+meta {
+  name: AddQuestions
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{baseUrl}}/api/v1/quizzes/{{quizId}}/questions
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{professorToken}}
+}
+
+body:json {
+  {
+    "questions": [
+      {
+        "prompt": "¿Qué es una variable?",
+        "choices": ["Un tipo", "Un valor con nombre", "Una función", "Un módulo"],
+        "correct_index": 1
+      },
+      {
+        "prompt": "¿Go es compilado?",
+        "choices": ["Sí", "No"],
+        "correct_index": 0
+      }
+    ]
+  }
+}
+
+tests {
+  expect(res.status).to.equal(201);
+  expect(res.body.questions).to.have.lengthOf(2);
+}

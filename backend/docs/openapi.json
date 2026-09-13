@@ -339,6 +339,66 @@
                 },
                 "type": "object"
             },
+            "badges.Badge": {
+                "properties": {
+                    "code": {
+                        "type": "string"
+                    },
+                    "course_id": {
+                        "type": "integer"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "integer"
+                    },
+                    "issued_at": {
+                        "type": "string"
+                    },
+                    "revoked_at": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "badges.BadgeResponse": {
+                "properties": {
+                    "code": {
+                        "example": "a1b2c3d4e5f6",
+                        "type": "string"
+                    },
+                    "course_id": {
+                        "example": 1,
+                        "type": "integer"
+                    },
+                    "issued_at": {
+                        "example": "2026-09-10T02:00:00Z",
+                        "type": "string"
+                    },
+                    "valid": {
+                        "example": true,
+                        "type": "boolean"
+                    }
+                },
+                "type": "object"
+            },
+            "badges.MyBadgesResponse": {
+                "properties": {
+                    "badges": {
+                        "items": {
+                            "$ref": "#/components/schemas/badges.Badge"
+                        },
+                        "type": "array",
+                        "uniqueItems": false
+                    },
+                    "total": {
+                        "example": 1,
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
             "courses.Course": {
                 "properties": {
                     "created_at": {
@@ -526,6 +586,35 @@
                 },
                 "type": "object"
             },
+            "courses.Matricula": {
+                "properties": {
+                    "course_id": {
+                        "type": "integer"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "fecha_inscripcion": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "integer"
+                    },
+                    "inscrito": {
+                        "type": "boolean"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "student_id": {
+                        "type": "integer"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
             "courses.Module": {
                 "properties": {
                     "course_version_id": {
@@ -635,6 +724,9 @@
                         "type": "integer"
                     },
                     "processing_status": {
+                        "type": "string"
+                    },
+                    "scan_status": {
                         "type": "string"
                     },
                     "size_bytes": {
@@ -837,6 +929,39 @@
                 },
                 "type": "object"
             },
+            "enroll.EnrollRequest": {
+                "properties": {
+                    "course_id": {
+                        "example": 1,
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "enroll.EnrollmentsResponse": {
+                "properties": {
+                    "enrollments": {
+                        "items": {
+                            "$ref": "#/components/schemas/courses.Matricula"
+                        },
+                        "type": "array",
+                        "uniqueItems": false
+                    },
+                    "total": {
+                        "example": 3,
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "enroll.MatriculaEnvelope": {
+                "properties": {
+                    "enrollment": {
+                        "$ref": "#/components/schemas/courses.Matricula"
+                    }
+                },
+                "type": "object"
+            },
             "main.HealthResponse": {
                 "properties": {
                     "message": {
@@ -845,6 +970,302 @@
                     },
                     "status": {
                         "example": "ok",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "progress.CourseProgressResponse": {
+                "properties": {
+                    "badge": {
+                        "example": "a1b2c3d4e5f6",
+                        "type": "string"
+                    },
+                    "done": {
+                        "example": 9,
+                        "type": "integer"
+                    },
+                    "percent": {
+                        "example": 75,
+                        "type": "integer"
+                    },
+                    "status": {
+                        "example": "in_progress",
+                        "type": "string"
+                    },
+                    "total": {
+                        "example": 12,
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "progress.HeartbeatInput": {
+                "properties": {
+                    "completed": {
+                        "type": "boolean"
+                    },
+                    "duration_sec": {
+                        "example": 600,
+                        "type": "integer"
+                    },
+                    "event": {
+                        "example": "playing",
+                        "type": "string"
+                    },
+                    "percent": {
+                        "type": "number"
+                    },
+                    "position_sec": {
+                        "example": 320,
+                        "type": "integer"
+                    },
+                    "stable_id": {
+                        "example": "550e8400-e29b-41d4-a716-446655440000",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "progress.Progress": {
+                "properties": {
+                    "completed": {
+                        "type": "boolean"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "duration_sec": {
+                        "type": "integer"
+                    },
+                    "id": {
+                        "type": "integer"
+                    },
+                    "position_sec": {
+                        "type": "integer"
+                    },
+                    "stable_id": {
+                        "type": "string"
+                    },
+                    "student_id": {
+                        "type": "integer"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "quiz.AddQuestionsRequest": {
+                "properties": {
+                    "questions": {
+                        "items": {
+                            "$ref": "#/components/schemas/quiz.QuestionInput"
+                        },
+                        "type": "array",
+                        "uniqueItems": false
+                    }
+                },
+                "type": "object"
+            },
+            "quiz.AttemptAnswers": {
+                "properties": {
+                    "answers": {
+                        "additionalProperties": {
+                            "type": "integer"
+                        },
+                        "example": {
+                            "0": 1
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "quiz.AttemptResponse": {
+                "properties": {
+                    "answers": {
+                        "additionalProperties": {
+                            "type": "integer"
+                        },
+                        "type": "object"
+                    },
+                    "feedback": {
+                        "items": {
+                            "type": "boolean"
+                        },
+                        "type": "array",
+                        "uniqueItems": false
+                    },
+                    "id": {
+                        "example": 1,
+                        "type": "integer"
+                    },
+                    "questions": {
+                        "items": {
+                            "$ref": "#/components/schemas/quiz.StudentQuestion"
+                        },
+                        "type": "array",
+                        "uniqueItems": false
+                    },
+                    "score": {
+                        "example": 100,
+                        "type": "integer"
+                    },
+                    "status": {
+                        "example": "submitted",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "quiz.CreateQuizRequest": {
+                "properties": {
+                    "attempts_allowed": {
+                        "example": 3,
+                        "type": "integer"
+                    },
+                    "feedback_policy": {
+                        "example": "on_submit",
+                        "type": "string"
+                    },
+                    "resource_id": {
+                        "example": 7,
+                        "type": "integer"
+                    },
+                    "time_limit_sec": {
+                        "example": 600,
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "quiz.Question": {
+                "properties": {
+                    "choices": {
+                        "type": "string"
+                    },
+                    "correct_index": {
+                        "type": "integer"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "integer"
+                    },
+                    "position": {
+                        "type": "integer"
+                    },
+                    "prompt": {
+                        "type": "string"
+                    },
+                    "quiz_id": {
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "quiz.QuestionInput": {
+                "properties": {
+                    "choices": {
+                        "items": {
+                            "type": "string"
+                        },
+                        "type": "array",
+                        "uniqueItems": false
+                    },
+                    "correct_index": {
+                        "type": "integer"
+                    },
+                    "prompt": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "quiz.QuestionsEnvelope": {
+                "properties": {
+                    "questions": {
+                        "items": {
+                            "$ref": "#/components/schemas/quiz.Question"
+                        },
+                        "type": "array",
+                        "uniqueItems": false
+                    }
+                },
+                "type": "object"
+            },
+            "quiz.Quiz": {
+                "properties": {
+                    "attempts_allowed": {
+                        "type": "integer"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "feedback_policy": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "integer"
+                    },
+                    "resource_id": {
+                        "type": "integer"
+                    },
+                    "time_limit_sec": {
+                        "type": "integer"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "quiz.QuizDetailResponse": {
+                "properties": {
+                    "questions": {
+                        "items": {
+                            "$ref": "#/components/schemas/quiz.Question"
+                        },
+                        "type": "array",
+                        "uniqueItems": false
+                    },
+                    "quiz": {
+                        "$ref": "#/components/schemas/quiz.Quiz"
+                    }
+                },
+                "type": "object"
+            },
+            "quiz.QuizEnvelope": {
+                "properties": {
+                    "quiz": {
+                        "$ref": "#/components/schemas/quiz.Quiz"
+                    }
+                },
+                "type": "object"
+            },
+            "quiz.StudentQuestion": {
+                "properties": {
+                    "choices": {
+                        "example": [
+                            "Un valor con nombre",
+                            "Un tipo",
+                            "Otro",
+                            "Otro más"
+                        ],
+                        "items": {
+                            "type": "string"
+                        },
+                        "type": "array",
+                        "uniqueItems": false
+                    },
+                    "position": {
+                        "example": 1,
+                        "type": "integer"
+                    },
+                    "prompt": {
+                        "example": "¿Qué es una variable?",
                         "type": "string"
                     }
                 },
@@ -879,7 +1300,7 @@
         }
     },
     "info": {
-        "description": "API REST del monolito modular: identidad y sesiones, administración y auditoría, autoría de cursos versionados y carga multimedia con procesamiento asíncrono a HLS.\nAutenticación con JWT revocable: iniciar sesión en /auth/login y enviar `Authorization: Bearer \u003ctoken\u003e`.",
+        "description": "API REST del monolito modular: identidad y sesiones, administración y auditoría, autoría de cursos versionados y carga multimedia con procesamiento asíncrono a HLS.\nAutenticación con JWT revocable: iniciar sesión en /api/v1/auth/login y enviar `Authorization: Bearer \u003ctoken\u003e`.",
         "title": "Plataforma MOOC - API",
         "version": "1.0"
     },
@@ -888,7 +1309,7 @@
         "url": ""
     },
     "paths": {
-        "/admin/audit": {
+        "/api/v1/admin/audit": {
             "get": {
                 "description": "Registros inmutables de acciones administrativas, filtrables por actor, objetivo, acción y rango de fechas.",
                 "parameters": [
@@ -993,7 +1414,7 @@
                 ]
             }
         },
-        "/admin/sessions": {
+        "/api/v1/admin/sessions": {
             "delete": {
                 "description": "Revoca el token indicado (cuerpo o query) con registro en auditoría.",
                 "parameters": [
@@ -1070,7 +1491,7 @@
                 ]
             }
         },
-        "/admin/stats": {
+        "/api/v1/admin/stats": {
             "get": {
                 "description": "Totales de usuarios por estado y administradores activos.",
                 "parameters": [
@@ -1107,7 +1528,7 @@
                 ]
             }
         },
-        "/admin/users": {
+        "/api/v1/admin/users": {
             "get": {
                 "description": "Lista paginada de usuarios con búsqueda por texto, filtros por rol, estado y verificación.",
                 "parameters": [
@@ -1232,7 +1653,7 @@
                 ]
             }
         },
-        "/admin/users/{id}": {
+        "/api/v1/admin/users/{id}": {
             "delete": {
                 "description": "Soft delete con auditoría y revocación de sesiones. Protege al último administrador activo.",
                 "parameters": [
@@ -1392,7 +1813,7 @@
                 ]
             }
         },
-        "/admin/users/{id}/restore": {
+        "/api/v1/admin/users/{id}/restore": {
             "post": {
                 "description": "Revierte el soft delete de un usuario, con registro en auditoría.",
                 "parameters": [
@@ -1458,7 +1879,7 @@
                 ]
             }
         },
-        "/admin/users/{id}/role": {
+        "/api/v1/admin/users/{id}/role": {
             "put": {
                 "description": "Actualiza el rol de un usuario y registra la acción en auditoría. No permite degradar al último administrador activo.",
                 "parameters": [
@@ -1547,7 +1968,7 @@
                 ]
             }
         },
-        "/admin/users/{id}/sessions": {
+        "/api/v1/admin/users/{id}/sessions": {
             "delete": {
                 "description": "Elimina todos los tokens activos de un usuario, con registro en auditoría.",
                 "parameters": [
@@ -1677,7 +2098,7 @@
                 ]
             }
         },
-        "/admin/users/{id}/status": {
+        "/api/v1/admin/users/{id}/status": {
             "patch": {
                 "description": "Actualiza el estado (active, inactive, blocked) con auditoría. Desactivar o bloquear revoca todas las sesiones. Protege al último admin activo.",
                 "parameters": [
@@ -1766,7 +2187,216 @@
                 ]
             }
         },
-        "/auth/login": {
+        "/api/v1/attempts/{id}": {
+            "get": {
+                "description": "Score y feedback solo tras el envío, según la política del quiz.",
+                "parameters": [
+                    {
+                        "description": "Bearer \u003ctoken\u003e",
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "ID del intento",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/quiz.AttemptResponse"
+                                }
+                            }
+                        },
+                        "description": "Intento"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "No encontrado"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Ver intento",
+                "tags": [
+                    "Quizzes"
+                ]
+            },
+            "put": {
+                "description": "Solo sobre intentos en borrador vigente; valida rangos en servidor.",
+                "parameters": [
+                    {
+                        "description": "Bearer \u003ctoken\u003e",
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "ID del intento",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/quiz.AttemptAnswers",
+                                "summary": "request",
+                                "description": "Respuestas (posición → opción)"
+                            }
+                        }
+                    },
+                    "description": "Respuestas (posición → opción)",
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/quiz.AttemptResponse"
+                                }
+                            }
+                        },
+                        "description": "Intento actualizado"
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Respuesta fuera de rango"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "No encontrado"
+                    },
+                    "409": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Intento cerrado o expirado"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Guardado parcial",
+                "tags": [
+                    "Quizzes"
+                ]
+            }
+        },
+        "/api/v1/attempts/{id}/submit": {
+            "post": {
+                "description": "Calcula la nota en servidor desde el snapshot; nunca confía en el cliente.",
+                "parameters": [
+                    {
+                        "description": "Bearer \u003ctoken\u003e",
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "ID del intento",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/quiz.AttemptResponse"
+                                }
+                            }
+                        },
+                        "description": "Calificado"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "No encontrado"
+                    },
+                    "409": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Intento cerrado o expirado"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Enviar intento",
+                "tags": [
+                    "Quizzes"
+                ]
+            }
+        },
+        "/api/v1/auth/login": {
             "post": {
                 "description": "Verifica las credenciales y retorna un token JWT de 24 horas para el header Authorization.",
                 "requestBody": {
@@ -1830,7 +2460,7 @@
                 ]
             }
         },
-        "/auth/logout": {
+        "/api/v1/auth/logout": {
             "post": {
                 "description": "Invalida el token de la petición actual. Es idempotente.",
                 "parameters": [
@@ -1877,7 +2507,7 @@
                 ]
             }
         },
-        "/auth/me": {
+        "/api/v1/auth/me": {
             "get": {
                 "description": "Retorna el username y rol asociados al token de la petición.",
                 "parameters": [
@@ -1924,7 +2554,7 @@
                 ]
             }
         },
-        "/auth/register": {
+        "/api/v1/auth/register": {
             "post": {
                 "description": "Registra un estudiante o administrador de forma pública. Crear un profesor requiere el token de un administrador.",
                 "parameters": [
@@ -2008,7 +2638,7 @@
                 ]
             }
         },
-        "/auth/resend-verification": {
+        "/api/v1/auth/resend-verification": {
             "post": {
                 "description": "Genera un nuevo código de verificación y lo envía al correo indicado. Solo para cuentas pendientes de verificación.",
                 "requestBody": {
@@ -2082,7 +2712,7 @@
                 ]
             }
         },
-        "/auth/reset-password": {
+        "/api/v1/auth/reset-password": {
             "post": {
                 "description": "Valida el código de recuperación y guarda la nueva contraseña (hasheada con bcrypt).",
                 "requestBody": {
@@ -2126,7 +2756,7 @@
                 ]
             }
         },
-        "/auth/revoke-session": {
+        "/api/v1/auth/revoke-session": {
             "post": {
                 "description": "Elimina de Redis el token indicado en el cuerpo o en el header Authorization. No requiere autenticación (uso en pruebas).",
                 "requestBody": {
@@ -2179,7 +2809,7 @@
                 ]
             }
         },
-        "/auth/send-recovery-code": {
+        "/api/v1/auth/send-recovery-code": {
             "get": {
                 "description": "Genera un código de recuperación válido por 10 minutos y lo envía al correo del usuario.",
                 "parameters": [
@@ -2229,7 +2859,7 @@
                 ]
             }
         },
-        "/auth/verify": {
+        "/api/v1/auth/verify": {
             "get": {
                 "description": "Activa la cuenta recién registrada con el código de verificación de 6 caracteres.",
                 "parameters": [
@@ -2280,7 +2910,142 @@
                 ]
             }
         },
-        "/courses": {
+        "/api/v1/badges": {
+            "get": {
+                "description": "Retorna las insignias emitidas al estudiante (incluye IDs para gestión).",
+                "parameters": [
+                    {
+                        "description": "Bearer \u003ctoken\u003e",
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/badges.MyBadgesResponse"
+                                }
+                            }
+                        },
+                        "description": "Insignias"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Mis insignias",
+                "tags": [
+                    "Insignias"
+                ]
+            }
+        },
+        "/api/v1/badges/{code}": {
+            "get": {
+                "description": "URL pública de verificación; no expone datos del estudiante.",
+                "parameters": [
+                    {
+                        "description": "Código de la insignia",
+                        "in": "path",
+                        "name": "code",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/badges.BadgeResponse"
+                                }
+                            }
+                        },
+                        "description": "Insignia válida"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "No encontrada o revocada"
+                    }
+                },
+                "summary": "Verificar insignia",
+                "tags": [
+                    "Insignias"
+                ]
+            }
+        },
+        "/api/v1/badges/{id}": {
+            "delete": {
+                "description": "Marca RevokedAt; la URL pública deja de validar.",
+                "parameters": [
+                    {
+                        "description": "Bearer \u003ctoken de admin\u003e",
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "ID de la insignia",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.MessageResponse"
+                                }
+                            }
+                        },
+                        "description": "Insignia revocada"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "No encontrada"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Revocar insignia",
+                "tags": [
+                    "Insignias"
+                ]
+            }
+        },
+        "/api/v1/courses": {
             "get": {
                 "description": "Catálogo público con búsqueda y filtros. Solo incluye cursos publicados.",
                 "parameters": [
@@ -2417,7 +3182,71 @@
                 ]
             }
         },
-        "/courses/{id}": {
+        "/api/v1/courses/{id}": {
+            "delete": {
+                "description": "Borra árbol, quizzes, intentos, progreso, inscripciones e insignias, más objetos en S3 (best-effort). Requiere ser el autor o admin.",
+                "parameters": [
+                    {
+                        "description": "Bearer \u003ctoken\u003e",
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "ID del curso",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.MessageResponse"
+                                }
+                            }
+                        },
+                        "description": "Curso eliminado"
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Sin permiso"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "No encontrado"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Eliminar curso",
+                "tags": [
+                    "Cursos"
+                ]
+            },
             "get": {
                 "description": "Si el curso está publicado es público; si es borrador requiere ser el autor o admin.",
                 "parameters": [
@@ -2594,7 +3423,7 @@
                 ]
             }
         },
-        "/courses/{id}/modules": {
+        "/api/v1/courses/{id}/modules": {
             "post": {
                 "description": "Agrega un módulo al final del borrador editable del curso.",
                 "parameters": [
@@ -2693,7 +3522,7 @@
                 ]
             }
         },
-        "/courses/{id}/modules/reorder": {
+        "/api/v1/courses/{id}/modules/reorder": {
             "post": {
                 "description": "Asigna posiciones 1-based según el orden de IDs recibido, en transacción.",
                 "parameters": [
@@ -2782,7 +3611,7 @@
                 ]
             }
         },
-        "/courses/{id}/publish": {
+        "/api/v1/courses/{id}/publish": {
             "post": {
                 "description": "Valida y publica el borrador: la versión se vuelve inmutable y pasa a ser la vigente.",
                 "parameters": [
@@ -2858,7 +3687,7 @@
                 ]
             }
         },
-        "/courses/{id}/unpublish": {
+        "/api/v1/courses/{id}/unpublish": {
             "post": {
                 "description": "La edición de un curso publicado exige despublicarlo temporalmente durante el MVP.",
                 "parameters": [
@@ -2924,7 +3753,7 @@
                 ]
             }
         },
-        "/courses/{id}/validate": {
+        "/api/v1/courses/{id}/validate": {
             "get": {
                 "description": "Verifica metadatos, estructura mínima, criterios de aprobación y disponibilidad de recursos visibles.",
                 "parameters": [
@@ -2990,7 +3819,7 @@
                 ]
             }
         },
-        "/courses/{id}/versions": {
+        "/api/v1/courses/{id}/versions": {
             "post": {
                 "description": "Clona módulos, unidades y recursos preservando los stable_id para conservar el progreso.",
                 "parameters": [
@@ -3066,38 +3895,244 @@
                 ]
             }
         },
-        "/health": {
+        "/api/v1/enrollments": {
             "get": {
-                "description": "Verifica la conectividad con PostgreSQL y Redis. Usado por Docker healthchecks y monitoreo.",
+                "description": "Lista cursos con inscripción del estudiante, incluyendo retirados (progreso conservado).",
+                "parameters": [
+                    {
+                        "description": "Bearer \u003ctoken\u003e",
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/main.HealthResponse"
+                                    "$ref": "#/components/schemas/enroll.EnrollmentsResponse"
                                 }
                             }
                         },
-                        "description": "Servicio y dependencias Saludables"
+                        "description": "Inscripciones"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Mis inscripciones",
+                "tags": [
+                    "Inscripción"
+                ]
+            },
+            "post": {
+                "description": "Crea o reactiva la inscripción; re-POST no duplica ni borra progreso.",
+                "parameters": [
+                    {
+                        "description": "Bearer \u003ctoken\u003e",
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/enroll.EnrollRequest",
+                                "summary": "request",
+                                "description": "Curso"
+                            }
+                        }
                     },
-                    "500": {
+                    "description": "Curso",
+                    "required": true
+                },
+                "responses": {
+                    "200": {
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/main.HealthResponse"
+                                    "$ref": "#/components/schemas/enroll.MatriculaEnvelope"
                                 }
                             }
                         },
-                        "description": "Alguna dependencia falló"
+                        "description": "Ya inscrito"
+                    },
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/enroll.MatriculaEnvelope"
+                                }
+                            }
+                        },
+                        "description": "Inscrito"
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Curso no publicado"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "No encontrado"
                     }
                 },
-                "summary": "Salud del servicio",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Inscribirse",
                 "tags": [
-                    "Operación"
+                    "Inscripción"
                 ]
             }
         },
-        "/modules/{id}/units": {
+        "/api/v1/enrollments/{course_id}": {
+            "delete": {
+                "description": "Marca Inscrito=false; el progreso y las notas se conservan para reinscripción.",
+                "parameters": [
+                    {
+                        "description": "Bearer \u003ctoken\u003e",
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "ID del curso",
+                        "in": "path",
+                        "name": "course_id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.MessageResponse"
+                                }
+                            }
+                        },
+                        "description": "Retiro registrado"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "No encontrado"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Retirarse",
+                "tags": [
+                    "Inscripción"
+                ]
+            }
+        },
+        "/api/v1/enrollments/{course_id}/reenroll": {
+            "post": {
+                "description": "Reactiva la inscripción sin tocar progreso ni notas.",
+                "parameters": [
+                    {
+                        "description": "Bearer \u003ctoken\u003e",
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "ID del curso",
+                        "in": "path",
+                        "name": "course_id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/enroll.MatriculaEnvelope"
+                                }
+                            }
+                        },
+                        "description": "Reinscrito"
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Curso no publicado"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "No encontrado"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Reinscribirse",
+                "tags": [
+                    "Inscripción"
+                ]
+            }
+        },
+        "/api/v1/modules/{id}/units": {
             "post": {
                 "description": "Agrega una unidad al final del módulo indicado.",
                 "parameters": [
@@ -3196,7 +4231,7 @@
                 ]
             }
         },
-        "/modules/{id}/units/reorder": {
+        "/api/v1/modules/{id}/units/reorder": {
             "post": {
                 "description": "Asigna posiciones 1-based según el orden de IDs recibido, en transacción.",
                 "parameters": [
@@ -3285,7 +4320,630 @@
                 ]
             }
         },
-        "/resources/{id}": {
+        "/api/v1/progress/heartbeat": {
+            "post": {
+                "description": "Reporta posición y duración; el servidor decide la finalización. Enviar percent/completed es 400 y se audita.",
+                "parameters": [
+                    {
+                        "description": "Bearer \u003ctoken\u003e",
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/progress.HeartbeatInput",
+                                "summary": "request",
+                                "description": "Señal de reproducción"
+                            }
+                        }
+                    },
+                    "description": "Señal de reproducción",
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/progress.Progress"
+                                }
+                            }
+                        },
+                        "description": "Progreso actualizado"
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Señal inválida o manipulada"
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Sin inscripción"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Recurso no encontrado"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Heartbeat de progreso",
+                "tags": [
+                    "Progreso"
+                ]
+            }
+        },
+        "/api/v1/progress/{course_id}": {
+            "get": {
+                "description": "Calcula % sobre recursos obligatorios; al aprobar emite la insignia (idempotente).",
+                "parameters": [
+                    {
+                        "description": "Bearer \u003ctoken\u003e",
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "ID del curso",
+                        "in": "path",
+                        "name": "course_id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/progress.CourseProgressResponse"
+                                }
+                            }
+                        },
+                        "description": "Avance"
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Sin inscripción"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "No encontrado"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Avance del curso",
+                "tags": [
+                    "Progreso"
+                ]
+            }
+        },
+        "/api/v1/quizzes": {
+            "post": {
+                "description": "Define intentos, límite de tiempo y retroalimentación sobre un recurso quiz del borrador.",
+                "parameters": [
+                    {
+                        "description": "Bearer \u003ctoken\u003e",
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/quiz.CreateQuizRequest",
+                                "summary": "request",
+                                "description": "Reglas del quiz"
+                            }
+                        }
+                    },
+                    "description": "Reglas del quiz",
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/quiz.QuizEnvelope"
+                                }
+                            }
+                        },
+                        "description": "Quiz creado"
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Datos inválidos"
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Sin permiso"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "No encontrado"
+                    },
+                    "409": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Versión inmutable"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Crear quiz",
+                "tags": [
+                    "Quizzes"
+                ]
+            }
+        },
+        "/api/v1/quizzes/{id}": {
+            "delete": {
+                "description": "Borra el quiz con sus preguntas e intentos. Solo en versión borrador de curso no publicado.",
+                "parameters": [
+                    {
+                        "description": "Bearer \u003ctoken\u003e",
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "ID del quiz",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.MessageResponse"
+                                }
+                            }
+                        },
+                        "description": "Quiz eliminado"
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Sin permiso"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "No encontrado"
+                    },
+                    "409": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Versión inmutable o curso publicado"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Eliminar quiz",
+                "tags": [
+                    "Quizzes"
+                ]
+            },
+            "get": {
+                "description": "Incluye correct_index; solo professor/admin propietarios.",
+                "parameters": [
+                    {
+                        "description": "Bearer \u003ctoken\u003e",
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "ID del quiz",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/quiz.QuizDetailResponse"
+                                }
+                            }
+                        },
+                        "description": "Quiz con preguntas"
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Sin permiso"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "No encontrado"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Ver quiz (autoría)",
+                "tags": [
+                    "Quizzes"
+                ]
+            }
+        },
+        "/api/v1/quizzes/{id}/attempts": {
+            "post": {
+                "description": "Congela un snapshot de preguntas; reintento con la misma clave retorna el mismo intento.",
+                "parameters": [
+                    {
+                        "description": "Bearer \u003ctoken\u003e",
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Clave de idempotencia",
+                        "in": "header",
+                        "name": "Idempotency-Key",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "ID del quiz",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/quiz.AttemptResponse"
+                                }
+                            }
+                        },
+                        "description": "Intento"
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Sin derecho o intentos agotados"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "No encontrado"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Iniciar intento",
+                "tags": [
+                    "Quizzes"
+                ]
+            }
+        },
+        "/api/v1/quizzes/{id}/questions": {
+            "post": {
+                "description": "La clave correcta queda solo en servidor; el cliente jamás la recibe.",
+                "parameters": [
+                    {
+                        "description": "Bearer \u003ctoken\u003e",
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "ID del quiz",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/quiz.AddQuestionsRequest",
+                                "summary": "request",
+                                "description": "Preguntas"
+                            }
+                        }
+                    },
+                    "description": "Preguntas",
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/quiz.QuestionsEnvelope"
+                                }
+                            }
+                        },
+                        "description": "Preguntas creadas"
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Datos inválidos"
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Sin permiso"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "No encontrado"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Agregar preguntas",
+                "tags": [
+                    "Quizzes"
+                ]
+            }
+        },
+        "/api/v1/resources/{id}": {
+            "delete": {
+                "description": "Solo en versión borrador de curso no publicado. Con quiz asociado pide borrar el quiz primero.",
+                "parameters": [
+                    {
+                        "description": "Bearer \u003ctoken\u003e",
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "ID del recurso",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.MessageResponse"
+                                }
+                            }
+                        },
+                        "description": "Recurso eliminado"
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Tiene quiz asociado"
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Sin permiso"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "No encontrado"
+                    },
+                    "409": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/utils.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Versión inmutable o curso publicado"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Eliminar recurso",
+                "tags": [
+                    "Cursos"
+                ]
+            },
             "put": {
                 "description": "Actualiza los campos indicados; los no enviados conservan su valor. Solo en versión borrador.",
                 "parameters": [
@@ -3384,7 +5042,7 @@
                 ]
             }
         },
-        "/resources/{id}/download-url": {
+        "/api/v1/resources/{id}/download-url": {
             "get": {
                 "description": "Verifica propiedad o inscripción y curso publicado con recurso visible. Si hay HLS listo retorna su URL pública; si no, una URL firmada de 15 min.",
                 "parameters": [
@@ -3450,9 +5108,9 @@
                 ]
             }
         },
-        "/resources/{id}/upload-url": {
+        "/api/v1/resources/{id}/upload-url": {
             "post": {
-                "description": "Genera una URL prefirmada PUT válida 24h para carga directa a objetos. En video/audio encola transcodificación HLS idempotente (header Idempotency-Key recomendado).",
+                "description": "Genera una URL prefirmada PUT válida 24h para carga directa a objetos. LEGADO: preferir TUS en /api/v1/uploads (reanudable). Siempre encola escaneo antimalware (fail-closed); si está limpio y es video/audio, encadena transcode HLS idempotente (header Idempotency-Key recomendado).",
                 "parameters": [
                     {
                         "description": "Bearer \u003ctoken\u003e",
@@ -3547,7 +5205,7 @@
                 ]
             }
         },
-        "/units/{id}/resources": {
+        "/api/v1/units/{id}/resources": {
             "post": {
                 "description": "Tipos: text, image, video, audio, pdf, slides, file, iframe, link, quiz. Video/audio quedan en processing pending hasta el transcode.",
                 "parameters": [
@@ -3646,7 +5304,7 @@
                 ]
             }
         },
-        "/units/{id}/resources/reorder": {
+        "/api/v1/units/{id}/resources/reorder": {
             "post": {
                 "description": "Asigna posiciones 1-based según el orden de IDs recibido, en transacción.",
                 "parameters": [
@@ -3732,6 +5390,37 @@
                 "summary": "Reordenar recursos",
                 "tags": [
                     "Cursos"
+                ]
+            }
+        },
+        "/health": {
+            "get": {
+                "description": "Verifica la conectividad con PostgreSQL y Redis. Usado por Docker healthchecks y monitoreo.",
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/main.HealthResponse"
+                                }
+                            }
+                        },
+                        "description": "Servicio y dependencias Saludables"
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/main.HealthResponse"
+                                }
+                            }
+                        },
+                        "description": "Alguna dependencia falló"
+                    }
+                },
+                "summary": "Salud del servicio",
+                "tags": [
+                    "Operación"
                 ]
             }
         }

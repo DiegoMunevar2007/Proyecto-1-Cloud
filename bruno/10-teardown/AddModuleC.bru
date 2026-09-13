@@ -1,0 +1,26 @@
+meta {
+  name: AddModuleC
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/api/v1/courses/{{courseCId}}/modules
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{professorToken}}
+}
+
+body:json {
+  {
+    "title": "Módulo C"
+  }
+}
+
+tests {
+  expect(res.status).to.equal(201);
+  bru.setVar("moduleCId", res.body.module.id);
+}

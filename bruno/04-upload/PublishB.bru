@@ -1,0 +1,23 @@
+meta {
+  name: PublishB
+  type: http
+  seq: 12
+}
+
+post {
+  url: {{baseUrl}}/api/v1/courses/{{courseBId}}/publish
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{professorToken}}
+}
+
+script:pre-request {
+  await bru.sleep(15000);
+}
+
+tests {
+  expect(res.status).to.equal(200);
+  expect(res.body.version.is_immutable).to.equal(true);
+}

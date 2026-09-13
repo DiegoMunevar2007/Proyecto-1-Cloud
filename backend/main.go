@@ -7,9 +7,14 @@ import (
 
 	"github.com/DiegoMunevar2007/Proyecto-1-Cloud.git/admin"
 	"github.com/DiegoMunevar2007/Proyecto-1-Cloud.git/auth"
+	"github.com/DiegoMunevar2007/Proyecto-1-Cloud.git/badges"
 	"github.com/DiegoMunevar2007/Proyecto-1-Cloud.git/courses"
+	"github.com/DiegoMunevar2007/Proyecto-1-Cloud.git/enroll"
+	"github.com/DiegoMunevar2007/Proyecto-1-Cloud.git/progress"
 	"github.com/DiegoMunevar2007/Proyecto-1-Cloud.git/queue"
+	"github.com/DiegoMunevar2007/Proyecto-1-Cloud.git/quiz"
 	"github.com/DiegoMunevar2007/Proyecto-1-Cloud.git/storage"
+	"github.com/DiegoMunevar2007/Proyecto-1-Cloud.git/uploads"
 	"github.com/DiegoMunevar2007/Proyecto-1-Cloud.git/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/redis/go-redis/v9"
@@ -97,7 +102,7 @@ func initRedisClient() *redis.Client {
 // @title			Plataforma MOOC - API
 // @version		1.0
 // @description	API REST del monolito modular: identidad y sesiones, administración y auditoría, autoría de cursos versionados y carga multimedia con procesamiento asíncrono a HLS.
-// @description	Autenticación con JWT revocable: iniciar sesión en /auth/login y enviar `Authorization: Bearer <token>`.
+// @description	Autenticación con JWT revocable: iniciar sesión en /api/v1/auth/login y enviar `Authorization: Bearer <token>`.
 //
 // @host		localhost:8080
 // @schemes	http https
@@ -119,6 +124,11 @@ func main() {
 		&courses.Unit{},
 		&courses.Resource{},
 		&courses.Matricula{},
+		&quiz.Quiz{},
+		&quiz.Question{},
+		&quiz.Attempt{},
+		&progress.Progress{},
+		&badges.Badge{},
 	); err != nil {
 		panic("No se pudo migrar el esquema: " + err.Error())
 	}
@@ -136,9 +146,17 @@ func main() {
 
 	// Inicializar el enrutador Gin
 	router := SetupRouter(db, rdb)
-	auth.SetupAuthRoutes(router, db, rdb)
-	admin.SetupAdminRoutes(router, db, rdb)
-	courses.SetupCourseRoutes(router, db, rdb)
+	v1 := router.Group("/api/v1")
+	auth.SetupAuthRoutes(v1, db, rdb)
+	admin.SetupAdminRoutes(v1, db, rdb)
+	courses.SetupCourseRoutes(v1, db, rdb)
+	enroll.SetupEnrollRoutes(v1, db, rdb)
+	quiz.SetupQuizRoutes(v1, db, rdb)
+	progress.SetupProgressRoutes(v1, db, rdb)
+	badges.SetupBadgesRoutes(v1, db, rdb)
+	if err := uploads.SetupRoutes(v1, db, rdb, qclient); err != nil {
+		panic("No se pudo montar TUS: " + err.Error())
+	}
 
 	// Iniciar el servidor
 	if err := router.Run(":8080"); err != nil {

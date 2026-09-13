@@ -1,0 +1,28 @@
+meta {
+  name: CreateQuiz
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{baseUrl}}/api/v1/quizzes
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{professorToken}}
+}
+
+body:json {
+  {
+    "resource_id": {{quizResourceId}},
+    "attempts_allowed": 3,
+    "feedback_policy": "on_submit"
+  }
+}
+
+tests {
+  expect(res.status).to.equal(201);
+  bru.setVar("quizId", res.body.quiz.id);
+}

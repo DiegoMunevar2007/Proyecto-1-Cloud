@@ -1,0 +1,28 @@
+meta {
+  name: AddQuizResourceTmp
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{baseUrl}}/api/v1/units/{{unitCId}}/resources
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{professorToken}}
+}
+
+body:json {
+  {
+    "type": "quiz",
+    "title": "Quiz temporal",
+    "markdown_body": "Temporal"
+  }
+}
+
+tests {
+  expect(res.status).to.equal(201);
+  bru.setVar("tmpQuizResourceId", res.body.resource.id);
+}

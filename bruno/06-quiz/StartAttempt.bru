@@ -1,0 +1,27 @@
+meta {
+  name: StartAttempt
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/api/v1/quizzes/{{quizId}}/attempts
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{studentToken}}
+}
+
+headers {
+  Idempotency-Key: bruno-e2e-attempt-1
+}
+
+tests {
+  expect(res.status).to.equal(201);
+  expect(res.body.status).to.equal("draft");
+  expect(res.body.questions).to.have.lengthOf(2);
+  expect(JSON.stringify(res.body)).to.not.contain("correct_index");
+  expect(JSON.stringify(res.body)).to.not.contain("Correct");
+  bru.setVar("attemptId", res.body.id);
+}

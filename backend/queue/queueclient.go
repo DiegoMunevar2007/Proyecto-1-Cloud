@@ -61,3 +61,28 @@ func (c *Client) EnqueueTranscode(p TranscodePayload, idempotencyKey string) (st
 	}
 	return info.ID, nil
 }
+
+// EnqueueScan publica un trabajo de escaneo antimalware (fail-closed:
+// el transcode solo se encola si el archivo está limpio).
+// Misma semántica idempotente que EnqueueTranscode.
+func (c *Client) EnqueueScan(p ScanPayload, idempotencyKey string) (string, error) {
+	payload, _ := json.Marshal(p)
+	task := asynq.NewTask(TypeMediaScan, payload)
+	opts := []asynq.Option{
+		asynq.MaxRetry(3),
+		asynq.Timeout(10 * time.Minute),
+		asynq.Queue("media"),
+		asynq.Unique(24 * time.Hour),
+	}
+	if idempotencyKey != "" {
+		opts = append(opts, asynq.TaskID(idempotencyKey))
+	}
+	info, err := c.client.Enqueue(task, opts...)
+	if err != nil {
+		if err == asynq.ErrTaskIDConflict {
+			return idempotencyKey, nil
+		}
+		return "", err
+	}
+	return info.ID, nil
+}

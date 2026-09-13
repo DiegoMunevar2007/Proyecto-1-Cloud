@@ -1,0 +1,26 @@
+meta {
+  name: AddUnitC
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/api/v1/modules/{{moduleCId}}/units
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{professorToken}}
+}
+
+body:json {
+  {
+    "title": "Unidad C"
+  }
+}
+
+tests {
+  expect(res.status).to.equal(201);
+  bru.setVar("unitCId", res.body.unit.id);
+}

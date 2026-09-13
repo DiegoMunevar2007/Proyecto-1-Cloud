@@ -1,0 +1,27 @@
+meta {
+  name: AddUnit
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/api/v1/modules/{{moduleId}}/units
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{professorToken}}
+}
+
+body:json {
+  {
+    "title": "Unidad 1",
+    "description": "Variables"
+  }
+}
+
+tests {
+  expect(res.status).to.equal(201);
+  bru.setVar("unitId", res.body.unit.id);
+}

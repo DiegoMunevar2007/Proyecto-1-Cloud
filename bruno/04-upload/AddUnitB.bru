@@ -1,0 +1,26 @@
+meta {
+  name: AddUnitB
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/api/v1/modules/{{moduleBId}}/units
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{professorToken}}
+}
+
+body:json {
+  {
+    "title": "Unidad única"
+  }
+}
+
+tests {
+  expect(res.status).to.equal(201);
+  bru.setVar("unitBId", res.body.unit.id);
+}

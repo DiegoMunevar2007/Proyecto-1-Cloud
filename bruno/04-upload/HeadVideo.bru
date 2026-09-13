@@ -1,0 +1,23 @@
+meta {
+  name: HeadVideo
+  type: http
+  seq: 10
+}
+
+head {
+  url: {{uploadLocationVideo}}
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{professorToken}}
+}
+
+headers {
+  Tus-Resumable: 1.0.0
+}
+
+tests {
+  expect(res.status).to.equal(200);
+  expect(res.headers["upload-offset"]).to.equal("3788");
+}

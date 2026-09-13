@@ -1,0 +1,26 @@
+meta {
+  name: UpdateStatusActive
+  type: http
+  seq: 6
+}
+
+patch {
+  url: {{baseUrl}}/api/v1/admin/users/{{userId}}/status
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{adminToken}}
+}
+
+body:json {
+  {
+    "status": "active"
+  }
+}
+
+tests {
+  expect(res.status).to.equal(200);
+  expect(res.body.user.status).to.equal("active");
+}

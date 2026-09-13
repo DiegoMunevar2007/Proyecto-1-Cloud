@@ -16,12 +16,12 @@ type Handler struct {
 }
 
 // SetupAuthRoutes registra las rutas de autenticación en el enrutador Gin.
-func SetupAuthRoutes(router *gin.Engine, db *gorm.DB, rdb *redis.Client) {
+func SetupAuthRoutes(router *gin.RouterGroup, db *gorm.DB, rdb *redis.Client) {
 	h := &Handler{DB: db, RDB: rdb}
 	authGroup := router.Group("/auth")
 	{
 		authGroup.POST("/register", h.Register)
-		authGroup.POST("/login", h.Login)
+		authGroup.POST("/login", RateLimit(5, 10), h.Login)
 		authGroup.POST("/logout", RequireAuth(rdb), h.Logout)
 		authGroup.GET("/me", RequireAuth(rdb), h.Me)
 		authGroup.POST("/revoke-session", h.RevokeSession)
@@ -46,7 +46,7 @@ func SetupAuthRoutes(router *gin.Engine, db *gorm.DB, rdb *redis.Client) {
 //	@Failure		401		{object}	utils.ErrorResponse	"Token de administrador inválido"
 //	@Failure		403		{object}	utils.ErrorResponse	"Se requiere administrador para crear profesores"
 //	@Failure		409		{object}	utils.ErrorResponse	"Usuario o correo ya en uso"
-//	@Router			/auth/register [post]
+//	@Router			/api/v1/auth/register [post]
 func (h *Handler) Register(c *gin.Context) {
 	var request RegisterRequest
 	if err := c.ShouldBind(&request); err != nil {
@@ -97,7 +97,7 @@ func (h *Handler) Register(c *gin.Context) {
 //	@Failure		400		{object}	utils.ErrorResponse	"Solicitud inválida"
 //	@Failure		401		{object}	utils.ErrorResponse	"Credenciales incorrectas"
 //	@Failure		403		{object}	utils.ErrorResponse	"Cuenta desactivada o bloqueada"
-//	@Router			/auth/login [post]
+//	@Router			/api/v1/auth/login [post]
 func (h *Handler) Login(c *gin.Context) {
 	var request LoginRequest
 	if err := c.ShouldBind(&request); err != nil {
@@ -140,7 +140,7 @@ func (h *Handler) Login(c *gin.Context) {
 //	@Security		BearerAuth
 //	@Success		200				{object}	utils.MessageResponse	"Sesión cerrada"
 //	@Failure		401				{object}	utils.ErrorResponse	"Token inválido o ausente"
-//	@Router			/auth/logout [post]
+//	@Router			/api/v1/auth/logout [post]
 func (h *Handler) Logout(c *gin.Context) {
 	// El logout invalida el token actual; ignoramos el error si ya
 	// no existe (p. ej. si se llama dos veces con el mismo token).
@@ -158,7 +158,7 @@ func (h *Handler) Logout(c *gin.Context) {
 //	@Security		BearerAuth
 //	@Success		200				{object}	MeResponse	"Perfil de la sesión"
 //	@Failure		401				{object}	utils.ErrorResponse	"Token inválido o ausente"
-//	@Router			/auth/me [get]
+//	@Router			/api/v1/auth/me [get]
 func (h *Handler) Me(c *gin.Context) {
 	c.JSON(200, gin.H{"username": c.GetString("username"), "role": c.GetString("role")})
 }
@@ -173,7 +173,7 @@ func (h *Handler) Me(c *gin.Context) {
 //	@Success		200		{object}	utils.MessageResponse	"Sesión revocada"
 //	@Failure		400		{object}	utils.ErrorResponse	"Falta el token a revocar"
 //	@Failure		500		{object}	utils.ErrorResponse	"No se pudo revocar la sesión"
-//	@Router			/auth/revoke-session [post]
+//	@Router			/api/v1/auth/revoke-session [post]
 func (h *Handler) RevokeSession(c *gin.Context) {
 	var request TokenRequest
 	// ShouldBind no falla si el body está vacío, por eso se tolera error.
@@ -200,7 +200,7 @@ func (h *Handler) RevokeSession(c *gin.Context) {
 //	@Param			code		query		string	true	"Código de verificación"
 //	@Success		200			{object}	utils.MessageResponse	"Usuario verificado"
 //	@Failure		400			{object}	utils.ErrorResponse	"Solicitud inválida o código incorrecto"
-//	@Router			/auth/verify [get]
+//	@Router			/api/v1/auth/verify [get]
 func (h *Handler) Verify(c *gin.Context) {
 	var request VerifyRequest
 	// ShouldBind enlaza query params en peticiones GET.
@@ -235,7 +235,7 @@ func (h *Handler) Verify(c *gin.Context) {
 //	@Failure		404		{object}	utils.ErrorResponse	"Usuario no encontrado"
 //	@Failure		409		{object}	utils.ErrorResponse	"Usuario ya verificado"
 //	@Failure		500		{object}	utils.ErrorResponse	"No se pudo enviar el correo"
-//	@Router			/auth/resend-verification [post]
+//	@Router			/api/v1/auth/resend-verification [post]
 func (h *Handler) ResendVerification(c *gin.Context) {
 	var request ResendVerificationRequest
 	if err := c.ShouldBind(&request); err != nil {
@@ -266,7 +266,7 @@ func (h *Handler) ResendVerification(c *gin.Context) {
 //	@Param			email		query		string	false	"Correo (informativo)"
 //	@Success		200			{object}	utils.MessageResponse	"Código enviado"
 //	@Failure		400			{object}	utils.ErrorResponse	"Solicitud inválida"
-//	@Router			/auth/send-recovery-code [get]
+//	@Router			/api/v1/auth/send-recovery-code [get]
 func (h *Handler) SendRecoveryCode(c *gin.Context) {
 	var request RecoveryRequest
 	if err := c.ShouldBind(&request); err != nil {
@@ -289,7 +289,7 @@ func (h *Handler) SendRecoveryCode(c *gin.Context) {
 //	@Param			request	body		ResetPasswordRequest	true	"Usuario, código y nueva contraseña"
 //	@Success		200		{object}	utils.MessageResponse	"Contraseña restablecida"
 //	@Failure		400		{object}	utils.ErrorResponse	"Solicitud inválida"
-//	@Router			/auth/reset-password [post]
+//	@Router			/api/v1/auth/reset-password [post]
 func (h *Handler) ResetPassword(c *gin.Context) {
 	var request ResetPasswordRequest
 	if err := c.ShouldBind(&request); err != nil {

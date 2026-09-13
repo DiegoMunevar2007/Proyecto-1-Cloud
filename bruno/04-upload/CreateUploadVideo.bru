@@ -1,0 +1,42 @@
+meta {
+  name: CreateUploadVideo
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{baseUrl}}/api/v1/uploads
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{professorToken}}
+}
+
+headers {
+  Tus-Resumable: 1.0.0
+  Upload-Length: 3788
+  Upload-Metadata: {{metaVideo}}
+}
+
+script:pre-request {
+  function b64(s) {
+    var T = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+    s = String(s);
+    var o = "", i = 0;
+    while (i < s.length) {
+      var a = s.charCodeAt(i++), b = s.charCodeAt(i++), c = s.charCodeAt(i++);
+      var x = (a << 16) | ((isNaN(b) ? 0 : b) << 8) | (isNaN(c) ? 0 : c);
+      o += T[(x >> 18) & 63] + T[(x >> 12) & 63] + (isNaN(b) ? "=" : T[(x >> 6) & 63]) + (isNaN(c) ? "=" : T[x & 63]);
+    }
+    return o;
+  }
+  var rid = bru.getVar("videoResourceId");
+  bru.setVar("metaVideo", "resource_id " + b64(rid) + ",filename " + b64("sample.mp4") + ",filetype " + b64("video/mp4"));
+}
+
+tests {
+  expect(res.status).to.equal(201);
+  expect(res.headers.location).to.be.a("string").and.not.empty;
+  bru.setVar("uploadLocationVideo", res.headers.location);
+}
