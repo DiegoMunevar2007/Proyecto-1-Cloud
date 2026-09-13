@@ -1,0 +1,22 @@
+meta {
+  name: CreateCourseNoToken
+  type: http
+  seq: 14
+}
+
+post {
+  url: {{baseUrl}}/api/v1/courses
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "title": "No autorizado",
+    "description": "No debe crearse"
+  }
+}
+
+tests {
+  expect(res.status).to.equal(401);
+}

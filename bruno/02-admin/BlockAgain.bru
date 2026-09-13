@@ -1,0 +1,25 @@
+meta {
+  name: BlockAgain
+  type: http
+  seq: 12
+}
+
+patch {
+  url: {{baseUrl}}/api/v1/admin/users/{{userId}}/status
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{adminToken}}
+}
+
+body:json {
+  {
+    "status": "blocked"
+  }
+}
+
+tests {
+  expect(res.status).to.equal(200);
+}

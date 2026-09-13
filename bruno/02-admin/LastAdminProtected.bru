@@ -1,0 +1,25 @@
+meta {
+  name: LastAdminProtected
+  type: http
+  seq: 16
+}
+
+put {
+  url: {{baseUrl}}/api/v1/admin/users/{{adminId}}/role
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{adminToken}}
+}
+
+body:json {
+  {
+    "role": "student"
+  }
+}
+
+tests {
+  expect(res.status).to.equal(409);
+}

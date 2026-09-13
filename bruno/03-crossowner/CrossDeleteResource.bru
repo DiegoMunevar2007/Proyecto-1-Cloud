@@ -1,0 +1,18 @@
+meta {
+  name: CrossDeleteResource
+  type: http
+  seq: 5
+}
+
+delete {
+  url: {{baseUrl}}/api/v1/resources/{{textResourceId}}
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{profe2Token}}
+}
+
+tests {
+  expect(res.status).to.equal(403);
+}

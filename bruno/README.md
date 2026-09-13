@@ -49,3 +49,10 @@ El veredicto real es el conteo de errores:
   en scripts usa `bru.getEnvVar()` (no `bru.getVar()`) para variables de
   entorno, evita bloques `params:query` (se pierden; pon el query inline
   en la URL) y cuenta `Tests 0/0` aunque los `tests {}` sí se ejecutan.
+- **Cobertura negativa**: `03-crossowner` (profe2 vs curso de profe1),
+  `LoginBlocked`/`LastAdminProtected` (02), `*Denied/*Forbidden/*NotFound`
+  repartidos (401/403/404/409 según diseño). Nada rompe los tokens del flujo.
+- `PatchWrongOffset` deja un multipart S3 abandonado a propósito: su `.info`
+  expira por lifecycle (`tus-meta/`, 7 días), pero el multipart incompleto
+  requiere el barrido programado pendiente (MinIO no soporta abort por
+  lifecycle). Ver notas TUS.

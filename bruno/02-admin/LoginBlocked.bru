@@ -1,0 +1,22 @@
+meta {
+  name: LoginBlocked
+  type: http
+  seq: 13
+}
+
+post {
+  url: {{baseUrl}}/api/v1/auth/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "username": "estudiante2",
+    "password": "{{studentPass}}"
+  }
+}
+
+tests {
+  expect(res.status).to.equal(403);
+}

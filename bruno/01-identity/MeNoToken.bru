@@ -1,0 +1,14 @@
+meta {
+  name: MeNoToken
+  type: http
+  seq: 17
+}
+
+get {
+  url: {{baseUrl}}/api/v1/auth/me
+  auth: none
+}
+
+tests {
+  expect(res.status).to.equal(401);
+}

@@ -1,0 +1,18 @@
+meta {
+  name: StudentAttemptsDenied
+  type: http
+  seq: 10
+}
+
+get {
+  url: {{baseUrl}}/api/v1/quizzes/{{quizId}}/attempts
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{studentToken}}
+}
+
+tests {
+  expect(res.status).to.equal(403);
+}

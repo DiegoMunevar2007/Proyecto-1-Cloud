@@ -1,0 +1,18 @@
+meta {
+  name: CrossAttempt
+  type: http
+  seq: 9
+}
+
+get {
+  url: {{baseUrl}}/api/v1/attempts/{{attemptId}}
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{student2Token}}
+}
+
+tests {
+  expect(res.status).to.equal(404);
+}

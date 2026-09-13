@@ -1,0 +1,28 @@
+meta {
+  name: HeartbeatUnknownStable
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{baseUrl}}/api/v1/progress/heartbeat
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{studentToken}}
+}
+
+body:json {
+  {
+    "stable_id": "00000000-0000-0000-0000-000000000000",
+    "position_sec": 10,
+    "duration_sec": 100,
+    "event": "playing"
+  }
+}
+
+tests {
+  expect(res.status).to.equal(404);
+}

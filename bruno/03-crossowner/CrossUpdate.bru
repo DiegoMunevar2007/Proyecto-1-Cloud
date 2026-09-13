@@ -1,0 +1,25 @@
+meta {
+  name: CrossUpdate
+  type: http
+  seq: 3
+}
+
+put {
+  url: {{baseUrl}}/api/v1/courses/{{courseId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{profe2Token}}
+}
+
+body:json {
+  {
+    "title": "Secuestro de curso"
+  }
+}
+
+tests {
+  expect(res.status).to.equal(403);
+}

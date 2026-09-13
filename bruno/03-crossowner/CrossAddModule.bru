@@ -1,0 +1,25 @@
+meta {
+  name: CrossAddModule
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/api/v1/courses/{{courseId}}/modules
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{profe2Token}}
+}
+
+body:json {
+  {
+    "title": "Módulo intruso"
+  }
+}
+
+tests {
+  expect(res.status).to.equal(403);
+}

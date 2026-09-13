@@ -1,0 +1,18 @@
+meta {
+  name: DownloadUrlNotFound
+  type: http
+  seq: 9
+}
+
+get {
+  url: {{baseUrl}}/api/v1/resources/999999/download-url
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{studentToken}}
+}
+
+tests {
+  expect(res.status).to.equal(404);
+}
