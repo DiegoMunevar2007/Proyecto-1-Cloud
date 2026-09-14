@@ -54,5 +54,4 @@ El veredicto real es el conteo de errores:
   repartidos (401/403/404/409 según diseño). Nada rompe los tokens del flujo.
 - `PatchWrongOffset` deja un multipart S3 abandonado a propósito: su `.info`
   expira por lifecycle (`tus-meta/`, 7 días), pero el multipart incompleto
-  requiere el barrido programado pendiente (MinIO no soporta abort por
-  lifecycle). Ver notas TUS.
+  requiere el barrido programado pendiente. Ver notas TUS.

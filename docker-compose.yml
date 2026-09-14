@@ -56,18 +56,34 @@ services:
       MP_SMTP_AUTH_ACCEPT_ANY: 1
       MP_SMTP_AUTH_ALLOW_INSECURE: 1
 
+  # Almacenamiento de objetos S3-compatible (RustFS, ex-MinIO).
+  # Formato de datos incompatible con MinIO: requiere volumen fresco.
   s3:
-    image: minio/minio
+    image: rustfs/rustfs:latest
     restart: unless-stopped
+    depends_on:
+      s3-perms:
+        condition: service_completed_successfully
     environment:
-      MINIO_ROOT_USER: minioadmin
-      MINIO_ROOT_PASSWORD: minioadmin
-    command: server /data --console-address ":9001"
+      RUSTFS_VOLUMES: /data
+      RUSTFS_ADDRESS: 0.0.0.0:9000
+      RUSTFS_CONSOLE_ADDRESS: 0.0.0.0:9001
+      RUSTFS_CONSOLE_ENABLE: "true"
+      RUSTFS_ACCESS_KEY: minioadmin
+      RUSTFS_SECRET_KEY: minioadmin
     ports:
       - "9000:9000"
       - "9001:9001"
     volumes:
       - s3_data:/data
+
+  # RustFS corre como 10001:10001; el volumen nombrado nace de root.
+  s3-perms:
+    image: alpine
+    volumes:
+      - s3_data:/data
+    command: sh -c "chown -R 10001:10001 /data && echo perms-ok"
+    restart: "no"
 
   clamav:
     image: clamav/clamav:stable

@@ -133,7 +133,7 @@ func main() {
 		panic("No se pudo migrar el esquema: " + err.Error())
 	}
 
-	// Cola asynq (publicador) y almacenamiento S3/MinIO.
+	// Cola asynq (publicador) y almacenamiento S3-compatible.
 	// Sin estado local: solo clientes externos, la API escala horizontalmente.
 	qclient := queue.NewClient()
 	defer qclient.Close()

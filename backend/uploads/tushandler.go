@@ -34,7 +34,7 @@ type tusHandler struct {
 	Queue *queue.Client
 }
 
-// SetupRoutes monta el protocolo TUS tras RequireAuth. El estado vive en MinIO + Redis: el API sigue stateless.
+// SetupRoutes monta el protocolo TUS tras RequireAuth. El estado vive en S3 + Redis: el API sigue stateless.
 func SetupRoutes(router *gin.RouterGroup, db *gorm.DB, rdb *redis.Client, q *queue.Client) error {
 	store := s3store.New(storage.BucketOriginals, newS3Service())
 	// Sidecars de tusd (.info/.part) bajo prefijo propio: el bucket expira
@@ -87,7 +87,7 @@ func rewriteID(h func(http.ResponseWriter, *http.Request)) gin.HandlerFunc {
 	}
 }
 
-// newS3Service construye el cliente S3 (AWS SDK) contra MinIO.
+// newS3Service construye el cliente S3 (AWS SDK) contra el endpoint S3-compatible.
 func newS3Service() *s3.Client {
 	scheme := "http://"
 	if utils.GetEnv("S3_USE_SSL", "false") == "true" {
