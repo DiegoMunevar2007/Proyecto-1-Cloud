@@ -61,9 +61,6 @@ services:
   s3:
     image: rustfs/rustfs:latest
     restart: unless-stopped
-    depends_on:
-      s3-perms:
-        condition: service_completed_successfully
     environment:
       RUSTFS_VOLUMES: /data
       RUSTFS_ADDRESS: 0.0.0.0:9000
@@ -77,17 +74,10 @@ services:
     volumes:
       - s3_data:/data
 
-  # RustFS corre como 10001:10001; el volumen nombrado nace de root.
-  s3-perms:
-    image: alpine
-    volumes:
-      - s3_data:/data
-    command: sh -c "chown -R 10001:10001 /data && echo perms-ok"
-    restart: "no"
-
   clamav:
     image: clamav/clamav:stable
     restart: unless-stopped
+    platform: linux/amd64
     volumes:
       - clamav_data:/var/lib/clamav
 

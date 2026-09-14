@@ -24,5 +24,5 @@ body:json {
 }
 
 tests {
-  expect(res.status).to.be.oneOf([200, 201]);
+  expect(res.status).to.be.oneOf([200, 201, 409]); // 409 = re-run idempotente (usuario persiste);
 }

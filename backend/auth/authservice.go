@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"math/big"
+	"strings"
 	"time"
 
 	"github.com/DiegoMunevar2007/Proyecto-1-Cloud.git/mail"
@@ -251,8 +252,27 @@ func RegisterUser(username string, email string, password string, role string, d
 	}
 
 	var existing UserModel
-	result := db.Where("username = ? OR email = ?", username, email).First(&existing)
+	result := db.Unscoped().Where("username = ? OR email = ?", username, email).First(&existing)
 	if result.Error == nil {
+		// Si fue soft-deleted (teardown), restaurarlo para que el flujo
+		// e2e/reintentos no muera con 500 por uniqueIndex en username.
+		if !existing.DeletedAt.Time.IsZero() {
+			updates := map[string]interface{}{
+				"deleted_at":  nil,
+				"email":       email,
+				"password":    hashPassword(password),
+				"role":        role,
+				"status":      StatusActive,
+				"is_verified": false,
+			}
+			if err := db.Unscoped().Model(&existing).Updates(updates).Error; err != nil {
+				return "Error al restaurar el usuario: " + err.Error(), 500
+			}
+			if err := SendVerificationCode(username, email, db, rdb); err != nil {
+				return "Usuario " + username + " restaurado, pero error al enviar el correo de verificación: " + err.Error(), 201
+			}
+			return "Usuario " + username + " restaurado exitosamente con rol " + role, 201
+		}
 		return "El nombre de usuario o correo electrónico ya está en uso", 409
 	}
 	if result.Error != nil && !errors.Is(result.Error, gorm.ErrRecordNotFound) {
@@ -262,6 +282,11 @@ func RegisterUser(username string, email string, password string, role string, d
 	hashedPassword := hashPassword(password)
 	user := UserModel{Username: username, Email: email, Password: hashedPassword, Role: role}
 	if err := db.Create(&user).Error; err != nil {
+		// Carrera contra otro registro/restauración: mapear unique violation a 409.
+		msg := err.Error()
+		if strings.Contains(msg, "duplicate") || strings.Contains(msg, "Duplicate") || strings.Contains(msg, "unique") || strings.Contains(msg, "UNIQUE") {
+			return "El nombre de usuario o correo electrónico ya está en uso", 409
+		}
 		return "Error al crear el usuario: " + err.Error(), 500
 	}
 

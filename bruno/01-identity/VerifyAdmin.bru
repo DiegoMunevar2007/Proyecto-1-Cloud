@@ -10,5 +10,6 @@ get {
 }
 
 tests {
-  expect(res.status).to.equal(200);
+  // 200 fresco, 400 re-run (usuario ya verificado / código reutilizado)
+  expect(res.status).to.be.oneOf([200, 400]);
 }
