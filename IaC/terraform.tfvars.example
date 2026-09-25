@@ -1,0 +1,23 @@
+# Copiar a terraform.tfvars y ajustar. NO incluir secretos: las contraseñas
+# se generan con random_password y se guardan en Secret Manager.
+
+project_id = "mi-proyecto-gcp"
+
+region = "us-central1"
+zone   = "us-central1-a"
+
+name_prefix  = "mooc"
+machine_type = "e2-small"
+
+repo_url    = "https://github.com/DiegoMunevar2007/Proyecto-1-Cloud.git"
+repo_branch = "main"
+
+# Vacío usa la IP pública de Web Server (TLS interno). Con dominio propio,
+# Caddy solicita un certificado Let's Encrypt.
+domain = ""
+
+deploy_frontend   = false
+worker_concurrency = 10
+
+db_tier         = "db-f1-micro"
+db_disk_size_gb = 20

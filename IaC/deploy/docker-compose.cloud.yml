@@ -1,0 +1,83 @@
+# Despliegue cloud de la plataforma MOOC.
+# Las dependencias administradas (PostgreSQL y almacenamiento de objetos) son
+# externas; Redis y ClamAV corren como contenedores en Worker Server.
+# Se invoca con --project-directory en la raíz del repositorio:
+#   docker compose --project-directory /opt/mooc \
+#     -f IaC/deploy/docker-compose.cloud.yml up -d <servicios>
+name: mooc-cloud
+
+services:
+  # Cola de mensajería (asynq). Solo alcanzable desde la red privada.
+  redis:
+    image: redis:8.10-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes", "--requirepass", "${REDIS_PASSWORD}"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  clamav:
+    image: clamav/clamav:stable
+    restart: unless-stopped
+    platform: linux/amd64
+    volumes:
+      - clamav_data:/var/lib/clamav
+
+  # API modular en Go (Web Server).
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file:
+      - .env
+    expose:
+      - "8080"
+
+  # Frontend Next.js existente (opcional).
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-}
+    restart: unless-stopped
+    expose:
+      - "3000"
+
+  # Proxy inverso con TLS (Web Server).
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      MOOC_DOMAIN: ${MOOC_DOMAIN}
+    volumes:
+      - ./IaC/deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+
+  # Workers en Go con ffmpeg (Worker Server).
+  worker:
+    build:
+      context: ./backend
+      dockerfile: worker/Dockerfile
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      CLAMAV_HOST: clamav:3310
+    depends_on:
+      - redis
+      - clamav
+
+volumes:
+  redis_data:
+  clamav_data:
+  caddy_data:
+  caddy_config:

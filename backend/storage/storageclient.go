@@ -15,11 +15,12 @@ import (
 	"github.com/minio/minio-go/v7/pkg/lifecycle"
 )
 
-// Buckets lógicos (misma instancia MinIO, prefijos/buckets separados).
-const (
-	BucketOriginals = "originals"
-	BucketHLS       = "hls"
-	BucketPublic    = "public"
+// Buckets lógicos. Configurables por entorno para apuntar al servicio de
+// almacenamiento administrado sin cambiar el código.
+var (
+	BucketOriginals = utils.GetEnv("S3_BUCKET_ORIGINALS", "originals")
+	BucketHLS       = utils.GetEnv("S3_BUCKET_HLS", "hls")
+	BucketPublic    = utils.GetEnv("S3_BUCKET_PUBLIC", "public")
 )
 
 // BadgeImageKey es la insignia estática por defecto (bucket público).

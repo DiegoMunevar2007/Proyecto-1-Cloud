@@ -22,8 +22,9 @@ func GetPostgresDSN() string {
 	user := GetEnv("POSTGRES_USER", "postgres")
 	password := GetEnv("POSTGRES_PASSWORD", "postgres")
 	dbname := GetEnv("POSTGRES_DB", "mydb")
+	sslmode := GetEnv("POSTGRES_SSLMODE", "disable")
 
-	return "host=" + host + " user=" + user + " password=" + password + " dbname=" + dbname + " port=" + port + " sslmode=disable"
+	return "host=" + host + " user=" + user + " password=" + password + " dbname=" + dbname + " port=" + port + " sslmode=" + sslmode
 }
 
 func GetJWTSecret() string {

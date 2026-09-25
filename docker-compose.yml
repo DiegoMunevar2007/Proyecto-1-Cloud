@@ -5,6 +5,7 @@ x-common-env: &common-env
   POSTGRES_USER: postgres
   POSTGRES_PASSWORD: postgres
   POSTGRES_DB: mydb
+  POSTGRES_SSLMODE: "disable"
   REDIS_ADDR: redis:6379
   REDIS_PASSWORD: ""
   S3_ENDPOINT: s3:9000
@@ -13,6 +14,9 @@ x-common-env: &common-env
   S3_SECRET_KEY: minioadmin
   S3_USE_SSL: "false"
   S3_REGION: us-east-1
+  S3_BUCKET_ORIGINALS: originals
+  S3_BUCKET_HLS: hls
+  S3_BUCKET_PUBLIC: public
 
 services:
   postgres:
