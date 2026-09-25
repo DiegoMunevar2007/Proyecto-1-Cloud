@@ -1,3 +1,8 @@
+output "project_id" {
+  description = "Proyecto de GCP donde se desplegó la plataforma"
+  value       = var.project_id
+}
+
 output "app_url" {
   description = "URL pública de la API a través del proxy inverso"
   value       = "https://${local.web_domain}"

@@ -62,9 +62,20 @@ curl -k https://$(terraform output -raw web_public_ip)/health
 
 - **SSH**: solo a través de IAP (`gcloud compute ssh ... --tunnel-through-iap`),
   el puerto 22 no está abierto a Internet.
-- **HTTPS**: Caddy usa certificado interno por defecto; con `domain` configurado
-  solicita Let's Encrypt. Se puede usar un nombre tipo `sslip.io` apuntando a la
-  IP pública.
+- **HTTPS**:
+  - Sin `domain` (o con la IP pública), Caddy emite un certificado **interno
+    autofirmado**: la conexión es TLS pero el navegador advierte. Para clientes
+    HTTP usar `curl -k` (ej. `curl -k https://<IP>/health`). El Caddyfile fija
+    `default_sni {$MOOC_DOMAIN}` para que funcione aunque el cliente no envíe
+    SNI al conectar por IP.
+  - Con `domain` configurado a un nombre DNS que resuelva a la IP pública,
+    Caddy solicita automáticamente un certificado de **Let's Encrypt** (puerto 80
+    abierto para el reto HTTP-01). Sirve un dominio propio o uno gratuito tipo
+    `34.x.x.x.sslip.io`.
+  - Caddy no puede emitir certificados públicos para una IP: por eso una IP
+    siempre usa el certificado interno.
+  - Tras cambiar `domain` y hacer `apply`, re-ejecutar el arranque en Web Server:
+    `sudo google_metadata_script_runner startup` (o reiniciar la VM).
 - **Base de datos**: IP privada, alcanzable solo desde las VM por VPC peering.
 
 ## Configuración de las VM
@@ -112,7 +123,10 @@ IaC/
 - **Apagar** las VM cuando no se usen (`gcloud compute instances stop mooc-web mooc-worker`).
 - **Eliminar Cloud SQL** después de cargar evidencias: es el recurso más caro y
   sigue facturando aunque se detenga. Conservar los respaldos/`dumps` y scripts.
-- Al terminar: `terraform destroy` (el estado local evita dejar recursos huérfanos).
+- Al terminar: `terraform destroy`. La conexión de Service Networking usa
+  `deletion_policy = "REMOVE_PEERING"`: Cloud SQL se borra de forma asíncrona y
+  puede retener la conexión, así que si el API rechaza el borrado Terraform
+  elimina el peering para poder borrar la VPC. No requiere scripts externos.
 
 ## Limitaciones conocidas
 
