@@ -82,11 +82,24 @@ NEXT_PUBLIC_API_URL=https://$(get_meta mooc-domain)
 EOF
 chmod 600 "${APP_DIR}/.env"
 
+# TLS: con IP se usa el certificado interno de Caddy (autofirmado); con un
+# nombre DNS, Caddy obtiene automáticamente un certificado de Let's Encrypt.
+DOMAIN="$(get_meta mooc-domain)"
+if [[ "${DOMAIN}" =~ ^[0-9]{1,3}(\.[0-9]{1,3}){3}$ ]]; then
+  TLS_DIRECTIVE="tls internal"
+else
+  TLS_DIRECTIVE=""
+fi
+
 # Caddyfile generado según si se despliega el frontend existente.
 if [[ "${COMPOSE_SERVICES}" == *frontend* ]]; then
   cat > "${APP_DIR}/IaC/deploy/Caddyfile" <<'CADDY'
+{
+	default_sni {$MOOC_DOMAIN}
+}
+
 {$MOOC_DOMAIN} {
-	tls internal
+	TLS_DIRECTIVE_PLACEHOLDER
 	encode gzip
 
 	@api path /api/* /health /openapi.json
@@ -101,13 +114,18 @@ if [[ "${COMPOSE_SERVICES}" == *frontend* ]]; then
 CADDY
 else
   cat > "${APP_DIR}/IaC/deploy/Caddyfile" <<'CADDY'
+{
+	default_sni {$MOOC_DOMAIN}
+}
+
 {$MOOC_DOMAIN} {
-	tls internal
+	TLS_DIRECTIVE_PLACEHOLDER
 	encode gzip
 	reverse_proxy backend:8080
 }
 CADDY
 fi
+sed -i "s|TLS_DIRECTIVE_PLACEHOLDER|${TLS_DIRECTIVE}|" "${APP_DIR}/IaC/deploy/Caddyfile"
 
 echo "==> [${ROLE}] levantando contenedores: ${COMPOSE_SERVICES}"
 cd "${APP_DIR}"
