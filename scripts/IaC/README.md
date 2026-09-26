@@ -97,7 +97,7 @@ Ajustes relevantes de `terraform.tfvars`:
 ## Estructura
 
 ```
-IaC/
+scripts/IaC/
 ├── terraform.tf / providers.tf / variables.tf / locals.tf
 ├── network.tf      # VPC, subred, firewall, NAT, Private Service Access
 ├── compute.tf      # Web Server y Worker Server
@@ -114,6 +114,26 @@ IaC/
 - `S3_BUCKET_ORIGINALS`, `S3_BUCKET_HLS`, `S3_BUCKET_PUBLIC`: nombres de bucket
   configurables (Cloud Storage exige nombres globalmente únicos).
 - `POSTGRES_SSLMODE`: configuración del modo SSL del DSN (por defecto `disable`).
+
+## Mailpit (correo de pruebas)
+
+Mailpit no forma parte del enunciado; se conserva como dependencia de desarrollo
+para no perder la verificación de correos (códigos de registro).
+
+- Se ejecuta como contenedor en **Web Server**, junto a la API, que es el único
+  componente que envía correo (`SMTP_HOST=mailpit`, `SMTP_PORT=1025`).
+- El SMTP (1025) solo es alcanzable por la red interna de Docker.
+- La interfaz (8025) escucha en `127.0.0.1` y **no** se expone a Internet.
+- Para leer los códigos durante pruebas o sustentación:
+
+  ```bash
+  gcloud compute start-iap-tunnel mooc-web 8025 \
+    --local-host-port=localhost:8025 --project=<PROJECT_ID> --zone=us-central1-a
+  # abrir http://localhost:8025
+  ```
+
+En producción se reemplazaría por un proveedor SMTP real cambiando
+`SMTP_HOST`/`SMTP_PORT`.
 
 ## Costos y control
 

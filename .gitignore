@@ -262,4 +262,5 @@ override.tf.json
 terraform.rc
 
 # Caddyfile generado en el arranque de Web Server
-IaC/deploy/Caddyfile
+scripts/IaC/deploy/Caddyfile
+

@@ -118,7 +118,7 @@ resource "google_service_networking_connection" "psa" {
   network                 = google_compute_network.main.id
   service                 = "servicenetworking.googleapis.com"
   reserved_peering_ranges = [google_compute_global_address.psa.name]
-  deletion_policy = "REMOVE_PEERING"
+  deletion_policy         = "REMOVE_PEERING"
 
   depends_on = [google_project_service.enabled]
 }

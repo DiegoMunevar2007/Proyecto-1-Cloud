@@ -3,7 +3,7 @@
 # externas; Redis y ClamAV corren como contenedores en Worker Server.
 # Se invoca con --project-directory en la raíz del repositorio:
 #   docker compose --project-directory /opt/mooc \
-#     -f IaC/deploy/docker-compose.cloud.yml up -d <servicios>
+#     -f scripts/IaC/deploy/docker-compose.cloud.yml up -d <servicios>
 name: mooc-cloud
 
 services:
@@ -23,6 +23,24 @@ services:
     platform: linux/amd64
     volumes:
       - clamav_data:/var/lib/clamav
+
+  # Servidor SMTP de pruebas con captura de correos (Web Server). La API lo
+  # alcanza por la red interna como mailpit:1025; la UI (8025) solo escucha en
+  # loopback y se accede por túnel IAP.
+  mailpit:
+    image: axllent/mailpit
+    restart: unless-stopped
+    environment:
+      MP_MAX_MESSAGES: 5000
+      MP_DATABASE: /data/mailpit.db
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
+    expose:
+      - "1025"
+    ports:
+      - "127.0.0.1:8025:8025"
+    volumes:
+      - mailpit_data:/data
 
   # API modular en Go (Web Server).
   backend:
@@ -58,7 +76,7 @@ services:
     environment:
       MOOC_DOMAIN: ${MOOC_DOMAIN}
     volumes:
-      - ./IaC/deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./scripts/IaC/deploy/Caddyfile:/etc/caddy/Caddyfile:ro
       - caddy_data:/data
       - caddy_config:/config
 
@@ -79,5 +97,6 @@ services:
 volumes:
   redis_data:
   clamav_data:
+  mailpit_data:
   caddy_data:
   caddy_config:

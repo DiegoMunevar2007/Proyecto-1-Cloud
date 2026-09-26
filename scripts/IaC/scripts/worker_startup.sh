@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Arranque de Web Server: instala Docker, clona el repositorio y levanta la
-# API y el proxy inverso con la configuración del entorno cloud.
+# Arranque de Worker Server: instala Docker, clona el repositorio y levanta
+# Redis (cola asynq), ClamAV y los workers con la configuración cloud.
 set -euo pipefail
 exec > >(tee -a /var/log/mooc-startup.log) 2>&1
 export PATH="${PATH}:/usr/lib/google-cloud-sdk/bin:/snap/bin"
@@ -77,59 +77,14 @@ SMTP_PORT=1025
 SMTP_USER=prueba@test.com
 CLAMAV_HOST=clamav:3310
 WORKER_CONCURRENCY=$(get_meta mooc-worker-concurrency)
-MOOC_DOMAIN=$(get_meta mooc-domain)
-NEXT_PUBLIC_API_URL=https://$(get_meta mooc-domain)
+MOOC_DOMAIN=
+NEXT_PUBLIC_API_URL=
 EOF
 chmod 600 "${APP_DIR}/.env"
-
-# TLS: con IP se usa el certificado interno de Caddy (autofirmado); con un
-# nombre DNS, Caddy obtiene automáticamente un certificado de Let's Encrypt.
-DOMAIN="$(get_meta mooc-domain)"
-if [[ "${DOMAIN}" =~ ^[0-9]{1,3}(\.[0-9]{1,3}){3}$ ]]; then
-  TLS_DIRECTIVE="tls internal"
-else
-  TLS_DIRECTIVE=""
-fi
-
-# Caddyfile generado según si se despliega el frontend existente.
-if [[ "${COMPOSE_SERVICES}" == *frontend* ]]; then
-  cat > "${APP_DIR}/IaC/deploy/Caddyfile" <<'CADDY'
-{
-	default_sni {$MOOC_DOMAIN}
-}
-
-{$MOOC_DOMAIN} {
-	TLS_DIRECTIVE_PLACEHOLDER
-	encode gzip
-
-	@api path /api/* /health /openapi.json
-	handle @api {
-		reverse_proxy backend:8080
-	}
-
-	handle {
-		reverse_proxy frontend:3000
-	}
-}
-CADDY
-else
-  cat > "${APP_DIR}/IaC/deploy/Caddyfile" <<'CADDY'
-{
-	default_sni {$MOOC_DOMAIN}
-}
-
-{$MOOC_DOMAIN} {
-	TLS_DIRECTIVE_PLACEHOLDER
-	encode gzip
-	reverse_proxy backend:8080
-}
-CADDY
-fi
-sed -i "s|TLS_DIRECTIVE_PLACEHOLDER|${TLS_DIRECTIVE}|" "${APP_DIR}/IaC/deploy/Caddyfile"
 
 echo "==> [${ROLE}] levantando contenedores: ${COMPOSE_SERVICES}"
 cd "${APP_DIR}"
 # shellcheck disable=SC2086
-docker compose --project-directory "${APP_DIR}" -f IaC/deploy/docker-compose.cloud.yml up -d --build ${COMPOSE_SERVICES}
+docker compose --project-directory "${APP_DIR}" -f scripts/IaC/deploy/docker-compose.cloud.yml up -d --build ${COMPOSE_SERVICES}
 
 echo "==> [${ROLE}] arranque completado"

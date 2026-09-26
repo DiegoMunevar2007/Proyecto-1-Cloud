@@ -39,7 +39,7 @@ resource "google_compute_instance" "web" {
   metadata = merge(local.common_metadata, {
     "mooc-role"             = "web"
     "mooc-domain"           = local.web_domain
-    "mooc-compose-services" = var.deploy_frontend ? "backend frontend caddy" : "backend caddy"
+    "mooc-compose-services" = var.deploy_frontend ? "backend frontend caddy mailpit" : "backend caddy mailpit"
   })
 
   metadata_startup_script = file("${path.module}/scripts/web_startup.sh")
