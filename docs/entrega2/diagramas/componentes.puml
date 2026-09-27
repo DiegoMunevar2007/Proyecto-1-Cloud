@@ -1,0 +1,63 @@
+@startuml
+title Plataforma MOOC · modelo de componentes
+skinparam componentStyle uml2
+skinparam shadowing false
+skinparam nodesep 45
+skinparam ranksep 55
+skinparam defaultFontName "Helvetica"
+
+actor "Profesor" as prof
+actor "Estudiante" as est
+
+component "Broker de cola\nRedis 8.10" as redis
+database "Cloud SQL\nPostgreSQL 17" as pg
+cloud "Cloud Storage\noriginals · hls · public" as gcs
+component "Antivirus\nClamAV" as clam
+component "Transcodificador\nffmpeg" as ff
+
+package "Web Server · mooc-web" {
+  component "Proxy inverso\nCaddy" as caddy
+  component "Frontend\nNext.js" as fe
+  component "API\nGo · monolito modular" as api
+  component "Correo de pruebas\nMailpit" as mail
+}
+
+package "Worker Server · mooc-worker" {
+  component "Worker\nGo · asynq" as worker
+}
+
+() "HTTPS" as i_https
+() "API\nREST" as i_api
+() "Cola\nmedia" as i_queue
+() "SQL\n5432" as i_sql
+() "Objetos\nS3" as i_s3
+() "clamd\n3310" as i_scan
+
+i_https - caddy
+prof --> i_https
+est --> i_https
+
+i_api - api
+caddy --> i_api
+fe --> i_api
+
+i_queue - redis
+api -down-> i_queue : encola
+worker -up-> i_queue : consume
+
+i_sql - pg
+api -down-> i_sql
+worker -up-> i_sql
+
+i_s3 - gcs
+api -down-> i_s3
+worker -up-> i_s3
+
+i_scan - clam
+worker -up-> i_scan
+
+caddy --> fe : HTTP
+fe --> api : JSON
+api --> mail : SMTP
+worker --> ff : CLI
+@enduml

@@ -40,6 +40,12 @@ vars:
     sh: |
       if [ -n "${BASE_URL}" ]; then echo "${BASE_URL}";
       else terraform -chdir="{{.IAC_DIR}}" output -raw app_url 2>/dev/null; fi
+  # URL contra la que se generó el corpus, cuando el objetivo de la corrida es
+  # otra dirección del mismo despliegue. El caso típico es medir desde
+  # mooc-loadgen contra la IP privada: BASE_URL cambia pero el corpus se sembró
+  # contra la pública. Vacío significa que coinciden.
+  CORPUS_BASE_URL:
+    sh: echo "${CORPUS_BASE_URL:-}"
   RUN_ID:
     sh: echo "${RUN_ID:-r$(date +%s)}"
   STUDENT_COUNT:
@@ -76,6 +82,7 @@ vars:
   common: >-
     -e ENV={{.ENV}}
     -e BASE_URL={{.BASE_URL}}
+    -e CORPUS_BASE_URL={{.CORPUS_BASE_URL}}
     -e RUN_ID={{.RUN_ID}}
     -e STUDENT_COUNT={{.STUDENT_COUNT}}
     -e COURSE_COUNT={{.COURSE_COUNT}}
@@ -194,7 +201,7 @@ tasks:
   # Escenario 1: actividad académica
   # -------------------------------------------------------------------------
   esc1:level:
-    desc: Corre un nivel del escenario 1 (LEVEL=L0..L4, repetir L3 para comprobar estabilidad)
+    desc: Corre un nivel del escenario 1 (LEVEL=L0..L4 en bucle cerrado, T1..T5 por tasa de llegada)
     requires:
       vars: [LEVEL]
     cmds:
@@ -220,6 +227,26 @@ tasks:
         vars: { LEVEL: L4 }
       - task: esc1:level
         vars: { LEVEL: L3 }
+
+  # Los niveles T1..T5 van por tasa de llegada y no por usuarios concurrentes.
+  # Buscan el codo del servidor: con bucle cerrado el throughput es
+  # VUs/(pausa+latencia), así que la pausa de 1 a 5 segundos tapa el límite y
+  # subir VUs casi no sube la carga. Aquí se fija una tasa y se deja que la
+  # latencia crezca. Deben correr desde mooc-loadgen, contra la IP privada, para
+  # no medir el piso de red del portátil.
+  esc1:escalada:
+    desc: Escalada por tasa de llegada (40 a 640 req/s) para encontrar el codo del backend
+    cmds:
+      - task: esc1:level
+        vars: { LEVEL: T1 }
+      - task: esc1:level
+        vars: { LEVEL: T2 }
+      - task: esc1:level
+        vars: { LEVEL: T3 }
+      - task: esc1:level
+        vars: { LEVEL: T4 }
+      - task: esc1:level
+        vars: { LEVEL: T5 }
 
   esc1:burst:
     desc: Variante separada de ráfaga de inicios de sesión
