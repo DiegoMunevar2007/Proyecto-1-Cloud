@@ -35,8 +35,18 @@ export function abrirDataset(nombre) {
 // apuntan a usuarios de la otra base y los ids de curso y de recurso no existen.
 // Sin esta comprobación, cambiar de local a GCP produce fallos que parecen
 // defectos de la plataforma cuando en realidad es el corpus equivocado.
+//
+// Un corpus sin `baseUrl` tampoco se acepta: no se puede atribuir a ningún
+// entorno, y aceptarlo es justo el agujero por el que un corpus de otra base
+// pasa por bueno en silencio. Todos los seeds escriben `baseUrl`, así que su
+// ausencia significa que el archivo viene de otro lado.
 function verificarEntorno(nombre, datos) {
-  if (!datos || !datos.baseUrl) return;
+  if (!datos || !datos.baseUrl) {
+    throw new Error(
+      `${nombre} no declara baseUrl, así que no se puede saber contra qué entorno ` +
+      'se generó. Regenera el corpus con: task seed:reset && task seed:all.'
+    );
+  }
   if (datos.baseUrl === BASE_URL) return;
   throw new Error(
     `${nombre} se generó contra ${datos.baseUrl} y esta corrida apunta a ${BASE_URL}.` +
@@ -52,9 +62,7 @@ export function abrirMedio(nombre) {
   return abrirConCandidatos(nombre, 'media/', 'b');
 }
 
-// Dice si un archivo existe, sin lanzar. Se usa para que los seeds sean
-// idempotentes: si su salida ya está, no vuelven a crearla. La guarda vive aquí
-// y no en el Taskfile porque los scripts son invocables también directamente.
+// Dice si un archivo existe, sin lanzar.
 export function existeDataset(nombre) {
   for (const prefijo of PREFIJOS) {
     try {
@@ -65,6 +73,24 @@ export function existeDataset(nombre) {
     }
   }
   return false;
+}
+
+// Dice si el corpus se puede reutilizar tal cual: tiene que existir y tener que
+// haber sido generado contra este mismo entorno. La existencia sola no alcanza:
+// un corpus de local en una corrida contra GCP hace fallar cada matriculación con
+// tokens que no existen en la base de la nube, y el seed se lo calla.
+//
+// Los seeds usan esto en vez de existeDataset porque sembrar es lento y caro
+// (bcrypt por usuario), pero reused un corpus equivocado es más caro todavía.
+export function corpusReutilizable(nombre) {
+  if (!existeDataset(nombre)) return false;
+  try {
+    abrirDataset(nombre);
+    return true;
+  } catch (_e) {
+    // No es reutilizable: o es de otro entorno o no declara dónde se generó.
+    return false;
+  }
 }
 
 function abrirConCandidatos(nombre, carpeta, modo) {

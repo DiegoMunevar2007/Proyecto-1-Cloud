@@ -1,0 +1,1420 @@
+[
+ {
+  "labels": {
+   "machine_type": "projects/414694464069/machineTypes/e2-small",
+   "method": "GET",
+   "component": "api",
+   "otel_scope_version": "v0.159.0",
+   "instance_name": "mooc-web",
+   "route": "/health",
+   "status": "200",
+   "otel_scope_name": "github.com/open-telemetry/opentelemetry-collector-contrib/receiver/prometheusreceiver"
+  },
+  "resource": {
+   "type": "prometheus_target",
+   "labels": {
+    "cluster": "__gce__",
+    "project_id": "proyecto-2-cloud-509714",
+    "location": "us-central1-a",
+    "instance": "127.0.0.1:8080",
+    "job": "mooc-app",
+    "namespace": "1398563761166861218/mooc-web"
+   }
+  },
+  "puntos": [
+   {
+    "time": "2026-09-27T02:49:33.057Z",
+    "value": {
+     "distributionValue": {
+      "count": "9",
+      "mean": 0.003297580444444445,
+      "sumOfSquaredDeviation": 0.00020679779775491182,
+      "bucketOptions": {
+       "explicitBuckets": {
+        "bounds": [
+         0.005,
+         0.01,
+         0.025,
+         0.05,
+         0.1,
+         0.25,
+         0.5,
+         1,
+         2.5,
+         5,
+         10,
+         30
+        ]
+       }
+      },
+      "bucketCounts": [
+       "8",
+       "0",
+       "1"
+      ]
+     }
+    }
+   },
+   {
+    "time": "2026-09-27T02:49:03.057Z",
+    "value": {
+     "distributionValue": {
+      "count": "9",
+      "mean": 0.003297580444444445,
+      "sumOfSquaredDeviation": 0.00020679779775491182,
+      "bucketOptions": {
+       "explicitBuckets": {
+        "bounds": [
+         0.005,
+         0.01,
+         0.025,
+         0.05,
+         0.1,
+         0.25,
+         0.5,
+         1,
+         2.5,
+         5,
+         10,
+         30
+        ]
+       }
+      },
+      "bucketCounts": [
+       "8",
+       "0",
+       "1"
+      ]
+     }
+    }
+   },
+   {
+    "time": "2026-09-27T02:48:33.057Z",
+    "value": {
+     "distributionValue": {
+      "count": "9",
+      "mean": 0.003297580444444445,
+      "sumOfSquaredDeviation": 0.00020679779775491182,
+      "bucketOptions": {
+       "explicitBuckets": {
+        "bounds": [
+         0.005,
+         0.01,
+         0.025,
+         0.05,
+         0.1,
+         0.25,
+         0.5,
+         1,
+         2.5,
+         5,
+         10,
+         30
+        ]
+       }
+      },
+      "bucketCounts": [
+       "8",
+       "0",
+       "1"
+      ]
+     }
+    }
+   },
+   {
+    "time": "2026-09-27T02:48:03.057Z",
+    "value": {
+     "distributionValue": {
+      "count": "9",
+      "mean": 0.003297580444444445,
+      "sumOfSquaredDeviation": 0.00020679779775491182,
+      "bucketOptions": {
+       "explicitBuckets": {
+        "bounds": [
+         0.005,
+         0.01,
+         0.025,
+         0.05,
+         0.1,
+         0.25,
+         0.5,
+         1,
+         2.5,
+         5,
+         10,
+         30
+        ]
+       }
+      },
+      "bucketCounts": [
+       "8",
+       "0",
+       "1"
+      ]
+     }
+    }
+   },
+   {
+    "time": "2026-09-27T02:47:33.057Z",
+    "value": {
+     "distributionValue": {
+      "count": "8",
+      "mean": 0.00232444425,
+      "sumOfSquaredDeviation": 2.4655857086780617e-07,
+      "bucketOptions": {
+       "explicitBuckets": {
+        "bounds": [
+         0.005,
+         0.01,
+         0.025,
+         0.05,
+         0.1,
+         0.25,
+         0.5,
+         1,
+         2.5,
+         5,
+         10,
+         30
+        ]
+       }
+      },
+      "bucketCounts": [
+       "8"
+      ]
+     }
+    }
+   },
+   {
+    "time": "2026-09-27T02:47:03.057Z",
+    "value": {
+     "distributionValue": {
+      "count": "1",
+      "mean": 0.003644949,
+      "bucketOptions": {
+       "explicitBuckets": {
+        "bounds": [
+         0.005,
+         0.01,
+         0.025,
+         0.05,
+         0.1,
+         0.25,
+         0.5,
+         1,
+         2.5,
+         5,
+         10,
+         30
+        ]
+       }
+      },
+      "bucketCounts": [
+       "1"
+      ]
+     }
+    }
+   },
+   {
+    "time": "2026-09-27T02:46:33.057Z",
+    "value": {
+     "distributionValue": {
+      "count": "1",
+      "mean": 0.003644949,
+      "bucketOptions": {
+       "explicitBuckets": {
+        "bounds": [
+         0.005,
+         0.01,
+         0.025,
+         0.05,
+         0.1,
+         0.25,
+         0.5,
+         1,
+         2.5,
+         5,
+         10,
+         30
+        ]
+       }
+      },
+      "bucketCounts": [
+       "1"
+      ]
+     }
+    }
+   },
+   {
+    "time": "2026-09-27T02:46:03.057Z",
+    "value": {
+     "distributionValue": {
+      "count": "1",
+      "mean": 0.003644949,
+      "bucketOptions": {
+       "explicitBuckets": {
+        "bounds": [
+         0.005,
+         0.01,
+         0.025,
+         0.05,
+         0.1,
+         0.25,
+         0.5,
+         1,
+         2.5,
+         5,
+         10,
+         30
+        ]
+       }
+      },
+      "bucketCounts": [
+       "1"
+      ]
+     }
+    }
+   },
+   {
+    "time": "2026-09-27T02:45:33.057Z",
+    "value": {
+     "distributionValue": {
+      "count": "1",
+      "mean": 0.003644949,
+      "bucketOptions": {
+       "explicitBuckets": {
+        "bounds": [
+         0.005,
+         0.01,
+         0.025,
+         0.05,
+         0.1,
+         0.25,
+         0.5,
+         1,
+         2.5,
+         5,
+         10,
+         30
+        ]
+       }
+      },
+      "bucketCounts": [
+       "1"
+      ]
+     }
+    }
+   },
+   {
+    "time": "2026-09-27T02:45:03.057Z",
+    "value": {
+     "distributionValue": {
+      "count": "1",
+      "mean": 0.003644949,
+      "bucketOptions": {
+       "explicitBuckets": {
+        "bounds": [
+         0.005,
+         0.01,
+         0.025,
+         0.05,
+         0.1,
+         0.25,
+         0.5,
+         1,
+         2.5,
+         5,
+         10,
+         30
+        ]
+       }
+      },
+      "bucketCounts": [
+       "1"
+      ]
+     }
+    }
+   },
+   {
+    "time": "2026-09-27T02:44:33.057Z",
+    "value": {
+     "distributionValue": {
+      "count": "1",
+      "mean": 0.003644949,
+      "bucketOptions": {
+       "explicitBuckets": {
+        "bounds": [
+         0.005,
+         0.01,
+         0.025,
+         0.05,
+         0.1,
+         0.25,
+         0.5,
+         1,
+         2.5,
+         5,
+         10,
+         30
+        ]
+       }
+      },
+      "bucketCounts": [
+       "1"
+      ]
+     }
+    }
+   },
+   {
+    "time": "2026-09-27T02:44:03.057Z",
+    "value": {
+     "distributionValue": {
+      "count": "1",
+      "mean": 0.003644949,
+      "bucketOptions": {
+       "explicitBuckets": {
+        "bounds": [
+         0.005,
+         0.01,
+         0.025,
+         0.05,
+         0.1,
+         0.25,
+         0.5,
+         1,
+         2.5,
+         5,
+         10,
+         30
+        ]
+       }
+      },
+      "bucketCounts": [
+       "1"
+      ]
+     }
+    }
+   },
+   {
+    "time": "2026-09-27T02:43:33.057Z",
+    "value": {
+     "distributionValue": {
+      "bucketOptions": {
+       "explicitBuckets": {
+        "bounds": [
+         0.005,
+         0.01,
+         0.025,
+         0.05,
+         0.1,
+         0.25,
+         0.5,
+         1,
+         2.5,
+         5,
+         10,
+         30
+        ]
+       }
+      }
+     }
+    }
+   },
+   {
+    "time": "2026-09-27T02:43:03.057Z",
+    "value": {
+     "distributionValue": {
+      "bucketOptions": {
+       "explicitBuckets": {
+        "bounds": [
+         0.005,
+         0.01,
+         0.025,
+         0.05,
+         0.1,
+         0.25,
+         0.5,
+         1,
+         2.5,
+         5,
+         10,
+         30
+        ]
+       }
+      }
+     }
+    }
+   }
+  ]
+ },
+ {
+  "labels": {
+   "otel_scope_name": "github.com/open-telemetry/opentelemetry-collector-contrib/receiver/prometheusreceiver",
+   "route": "/openapi.json",
+   "status": "200",
+   "instance_name": "mooc-web",
+   "component": "api",
+   "machine_type": "projects/414694464069/machineTypes/e2-small",
+   "otel_scope_version": "v0.159.0",
+   "method": "GET"
+  },
+  "resource": {
+   "type": "prometheus_target",
+   "labels": {
+    "cluster": "__gce__",
+    "project_id": "proyecto-2-cloud-509714",
+    "job": "mooc-app",
+    "namespace": "1398563761166861218/mooc-web",
+    "location": "us-central1-a",
+    "instance": "127.0.0.1:8080"
+   }
+  },
+  "puntos": [
+   {
+    "time": "2026-09-27T02:49:33.057Z",
+    "value": {
+     "distributionValue": {
+      "bucketOptions": {
+       "explicitBuckets": {
+        "bounds": [
+         0.005,
+         0.01,
+         0.025,
+         0.05,
+         0.1,
+         0.25,
+         0.5,
+         1,
+         2.5,
+         5,
+         10,
+         30
+        ]
+       }
+      }
+     }
+    }
+   },
+   {
+    "time": "2026-09-27T02:49:03.057Z",
+    "value": {
+     "distributionValue": {
+      "bucketOptions": {
+       "explicitBuckets": {
+        "bounds": [
+         0.005,
+         0.01,
+         0.025,
+         0.05,
+         0.1,
+         0.25,
+         0.5,
+         1,
+         2.5,
+         5,
+         10,
+         30
+        ]
+       }
+      }
+     }
+    }
+   },
+   {
+    "time": "2026-09-27T02:48:33.057Z",
+    "value": {
+     "distributionValue": {
+      "bucketOptions": {
+       "explicitBuckets": {
+        "bounds": [
+         0.005,
+         0.01,
+         0.025,
+         0.05,
+         0.1,
+         0.25,
+         0.5,
+         1,
+         2.5,
+         5,
+         10,
+         30
+        ]
+       }
+      }
+     }
+    }
+   }
+  ]
+ },
+ {
+  "labels": {
+   "route": "/api/v1/admin/queue",
+   "component": "api",
+   "method": "GET",
+   "otel_scope_version": "v0.159.0",
+   "status": "401",
+   "machine_type": "projects/414694464069/machineTypes/e2-small",
+   "otel_scope_name": "github.com/open-telemetry/opentelemetry-collector-contrib/receiver/prometheusreceiver",
+   "instance_name": "mooc-web"
+  },
+  "resource": {
+   "type": "prometheus_target",
+   "labels": {
+    "cluster": "__gce__",
+    "project_id": "proyecto-2-cloud-509714",
+    "namespace": "1398563761166861218/mooc-web",
+    "location": "us-central1-a",
+    "job": "mooc-app",
+    "instance": "127.0.0.1:8080"
+   }
+  },
+  "puntos": [
+   {
+    "time": "2026-09-27T02:49:33.057Z",
+    "value": {
+     "distributionValue": {
+      "bucketOptions": {
+       "explicitBuckets": {
+        "bounds": [
+         0.005,
+         0.01,
+         0.025,
+         0.05,
+         0.1,
+         0.25,
+         0.5,
+         1,
+         2.5,
+         5,
+         10,
+         30
+        ]
+       }
+      }
+     }
+    }
+   },
+   {
+    "time": "2026-09-27T02:49:03.057Z",
+    "value": {
+     "distributionValue": {
+      "bucketOptions": {
+       "explicitBuckets": {
+        "bounds": [
+         0.005,
+         0.01,
+         0.025,
+         0.05,
+         0.1,
+         0.25,
+         0.5,
+         1,
+         2.5,
+         5,
+         10,
+         30
+        ]
+       }
+      }
+     }
+    }
+   },
+   {
+    "time": "2026-09-27T02:48:33.057Z",
+    "value": {
+     "distributionValue": {
+      "bucketOptions": {
+       "explicitBuckets": {
+        "bounds": [
+         0.005,
+         0.01,
+         0.025,
+         0.05,
+         0.1,
+         0.25,
+         0.5,
+         1,
+         2.5,
+         5,
+         10,
+         30
+        ]
+       }
+      }
+     }
+    }
+   },
+   {
+    "time": "2026-09-27T02:48:03.057Z",
+    "value": {
+     "distributionValue": {
+      "bucketOptions": {
+       "explicitBuckets": {
+        "bounds": [
+         0.005,
+         0.01,
+         0.025,
+         0.05,
+         0.1,
+         0.25,
+         0.5,
+         1,
+         2.5,
+         5,
+         10,
+         30
+        ]
+       }
+      }
+     }
+    }
+   },
+   {
+    "time": "2026-09-27T02:47:33.057Z",
+    "value": {
+     "distributionValue": {
+      "bucketOptions": {
+       "explicitBuckets": {
+        "bounds": [
+         0.005,
+         0.01,
+         0.025,
+         0.05,
+         0.1,
+         0.25,
+         0.5,
+         1,
+         2.5,
+         5,
+         10,
+         30
+        ]
+       }
+      }
+     }
+    }
+   },
+   {
+    "time": "2026-09-27T02:47:03.057Z",
+    "value": {
+     "distributionValue": {
+      "bucketOptions": {
+       "explicitBuckets": {
+        "bounds": [
+         0.005,
+         0.01,
+         0.025,
+         0.05,
+         0.1,
+         0.25,
+         0.5,
+         1,
+         2.5,
+         5,
+         10,
+         30
+        ]
+       }
+      }
+     }
+    }
+   },
+   {
+    "time": "2026-09-27T02:46:33.057Z",
+    "value": {
+     "distributionValue": {
+      "bucketOptions": {
+       "explicitBuckets": {
+        "bounds": [
+         0.005,
+         0.01,
+         0.025,
+         0.05,
+         0.1,
+         0.25,
+         0.5,
+         1,
+         2.5,
+         5,
+         10,
+         30
+        ]
+       }
+      }
+     }
+    }
+   },
+   {
+    "time": "2026-09-27T02:46:03.057Z",
+    "value": {
+     "distributionValue": {
+      "bucketOptions": {
+       "explicitBuckets": {
+        "bounds": [
+         0.005,
+         0.01,
+         0.025,
+         0.05,
+         0.1,
+         0.25,
+         0.5,
+         1,
+         2.5,
+         5,
+         10,
+         30
+        ]
+       }
+      }
+     }
+    }
+   },
+   {
+    "time": "2026-09-27T02:45:33.057Z",
+    "value": {
+     "distributionValue": {
+      "bucketOptions": {
+       "explicitBuckets": {
+        "bounds": [
+         0.005,
+         0.01,
+         0.025,
+         0.05,
+         0.1,
+         0.25,
+         0.5,
+         1,
+         2.5,
+         5,
+         10,
+         30
+        ]
+       }
+      }
+     }
+    }
+   },
+   {
+    "time": "2026-09-27T02:45:03.057Z",
+    "value": {
+     "distributionValue": {
+      "bucketOptions": {
+       "explicitBuckets": {
+        "bounds": [
+         0.005,
+         0.01,
+         0.025,
+         0.05,
+         0.1,
+         0.25,
+         0.5,
+         1,
+         2.5,
+         5,
+         10,
+         30
+        ]
+       }
+      }
+     }
+    }
+   },
+   {
+    "time": "2026-09-27T02:44:33.057Z",
+    "value": {
+     "distributionValue": {
+      "bucketOptions": {
+       "explicitBuckets": {
+        "bounds": [
+         0.005,
+         0.01,
+         0.025,
+         0.05,
+         0.1,
+         0.25,
+         0.5,
+         1,
+         2.5,
+         5,
+         10,
+         30
+        ]
+       }
+      }
+     }
+    }
+   },
+   {
+    "time": "2026-09-27T02:44:03.057Z",
+    "value": {
+     "distributionValue": {
+      "bucketOptions": {
+       "explicitBuckets": {
+        "bounds": [
+         0.005,
+         0.01,
+         0.025,
+         0.05,
+         0.1,
+         0.25,
+         0.5,
+         1,
+         2.5,
+         5,
+         10,
+         30
+        ]
+       }
+      }
+     }
+    }
+   },
+   {
+    "time": "2026-09-27T02:43:33.057Z",
+    "value": {
+     "distributionValue": {
+      "bucketOptions": {
+       "explicitBuckets": {
+        "bounds": [
+         0.005,
+         0.01,
+         0.025,
+         0.05,
+         0.1,
+         0.25,
+         0.5,
+         1,
+         2.5,
+         5,
+         10,
+         30
+        ]
+       }
+      }
+     }
+    }
+   },
+   {
+    "time": "2026-09-27T02:43:03.057Z",
+    "value": {
+     "distributionValue": {
+      "bucketOptions": {
+       "explicitBuckets": {
+        "bounds": [
+         0.005,
+         0.01,
+         0.025,
+         0.05,
+         0.1,
+         0.25,
+         0.5,
+         1,
+         2.5,
+         5,
+         10,
+         30
+        ]
+       }
+      }
+     }
+    }
+   }
+  ]
+ },
+ {
+  "labels": {
+   "status": "404",
+   "otel_scope_version": "v0.159.0",
+   "route": "no_full_path",
+   "machine_type": "projects/414694464069/machineTypes/e2-small",
+   "instance_name": "mooc-web",
+   "component": "api",
+   "otel_scope_name": "github.com/open-telemetry/opentelemetry-collector-contrib/receiver/prometheusreceiver",
+   "method": "GET"
+  },
+  "resource": {
+   "type": "prometheus_target",
+   "labels": {
+    "namespace": "1398563761166861218/mooc-web",
+    "instance": "127.0.0.1:8080",
+    "location": "us-central1-a",
+    "project_id": "proyecto-2-cloud-509714",
+    "cluster": "__gce__",
+    "job": "mooc-app"
+   }
+  },
+  "puntos": [
+   {
+    "time": "2026-09-27T02:49:33.057Z",
+    "value": {
+     "distributionValue": {
+      "count": "1",
+      "mean": 9.151000000000001e-06,
+      "bucketOptions": {
+       "explicitBuckets": {
+        "bounds": [
+         0.005,
+         0.01,
+         0.025,
+         0.05,
+         0.1,
+         0.25,
+         0.5,
+         1,
+         2.5,
+         5,
+         10,
+         30
+        ]
+       }
+      },
+      "bucketCounts": [
+       "1"
+      ]
+     }
+    }
+   },
+   {
+    "time": "2026-09-27T02:49:03.057Z",
+    "value": {
+     "distributionValue": {
+      "count": "1",
+      "mean": 9.151000000000001e-06,
+      "bucketOptions": {
+       "explicitBuckets": {
+        "bounds": [
+         0.005,
+         0.01,
+         0.025,
+         0.05,
+         0.1,
+         0.25,
+         0.5,
+         1,
+         2.5,
+         5,
+         10,
+         30
+        ]
+       }
+      },
+      "bucketCounts": [
+       "1"
+      ]
+     }
+    }
+   },
+   {
+    "time": "2026-09-27T02:48:33.057Z",
+    "value": {
+     "distributionValue": {
+      "count": "1",
+      "mean": 9.151000000000001e-06,
+      "bucketOptions": {
+       "explicitBuckets": {
+        "bounds": [
+         0.005,
+         0.01,
+         0.025,
+         0.05,
+         0.1,
+         0.25,
+         0.5,
+         1,
+         2.5,
+         5,
+         10,
+         30
+        ]
+       }
+      },
+      "bucketCounts": [
+       "1"
+      ]
+     }
+    }
+   },
+   {
+    "time": "2026-09-27T02:48:03.057Z",
+    "value": {
+     "distributionValue": {
+      "count": "1",
+      "mean": 9.151000000000001e-06,
+      "bucketOptions": {
+       "explicitBuckets": {
+        "bounds": [
+         0.005,
+         0.01,
+         0.025,
+         0.05,
+         0.1,
+         0.25,
+         0.5,
+         1,
+         2.5,
+         5,
+         10,
+         30
+        ]
+       }
+      },
+      "bucketCounts": [
+       "1"
+      ]
+     }
+    }
+   },
+   {
+    "time": "2026-09-27T02:47:33.057Z",
+    "value": {
+     "distributionValue": {
+      "bucketOptions": {
+       "explicitBuckets": {
+        "bounds": [
+         0.005,
+         0.01,
+         0.025,
+         0.05,
+         0.1,
+         0.25,
+         0.5,
+         1,
+         2.5,
+         5,
+         10,
+         30
+        ]
+       }
+      }
+     }
+    }
+   },
+   {
+    "time": "2026-09-27T02:47:03.057Z",
+    "value": {
+     "distributionValue": {
+      "bucketOptions": {
+       "explicitBuckets": {
+        "bounds": [
+         0.005,
+         0.01,
+         0.025,
+         0.05,
+         0.1,
+         0.25,
+         0.5,
+         1,
+         2.5,
+         5,
+         10,
+         30
+        ]
+       }
+      }
+     }
+    }
+   },
+   {
+    "time": "2026-09-27T02:46:33.057Z",
+    "value": {
+     "distributionValue": {
+      "bucketOptions": {
+       "explicitBuckets": {
+        "bounds": [
+         0.005,
+         0.01,
+         0.025,
+         0.05,
+         0.1,
+         0.25,
+         0.5,
+         1,
+         2.5,
+         5,
+         10,
+         30
+        ]
+       }
+      }
+     }
+    }
+   },
+   {
+    "time": "2026-09-27T02:46:03.057Z",
+    "value": {
+     "distributionValue": {
+      "bucketOptions": {
+       "explicitBuckets": {
+        "bounds": [
+         0.005,
+         0.01,
+         0.025,
+         0.05,
+         0.1,
+         0.25,
+         0.5,
+         1,
+         2.5,
+         5,
+         10,
+         30
+        ]
+       }
+      }
+     }
+    }
+   },
+   {
+    "time": "2026-09-27T02:45:33.057Z",
+    "value": {
+     "distributionValue": {
+      "bucketOptions": {
+       "explicitBuckets": {
+        "bounds": [
+         0.005,
+         0.01,
+         0.025,
+         0.05,
+         0.1,
+         0.25,
+         0.5,
+         1,
+         2.5,
+         5,
+         10,
+         30
+        ]
+       }
+      }
+     }
+    }
+   },
+   {
+    "time": "2026-09-27T02:45:03.057Z",
+    "value": {
+     "distributionValue": {
+      "bucketOptions": {
+       "explicitBuckets": {
+        "bounds": [
+         0.005,
+         0.01,
+         0.025,
+         0.05,
+         0.1,
+         0.25,
+         0.5,
+         1,
+         2.5,
+         5,
+         10,
+         30
+        ]
+       }
+      }
+     }
+    }
+   },
+   {
+    "time": "2026-09-27T02:44:33.057Z",
+    "value": {
+     "distributionValue": {
+      "bucketOptions": {
+       "explicitBuckets": {
+        "bounds": [
+         0.005,
+         0.01,
+         0.025,
+         0.05,
+         0.1,
+         0.25,
+         0.5,
+         1,
+         2.5,
+         5,
+         10,
+         30
+        ]
+       }
+      }
+     }
+    }
+   },
+   {
+    "time": "2026-09-27T02:44:03.057Z",
+    "value": {
+     "distributionValue": {
+      "bucketOptions": {
+       "explicitBuckets": {
+        "bounds": [
+         0.005,
+         0.01,
+         0.025,
+         0.05,
+         0.1,
+         0.25,
+         0.5,
+         1,
+         2.5,
+         5,
+         10,
+         30
+        ]
+       }
+      }
+     }
+    }
+   },
+   {
+    "time": "2026-09-27T02:43:33.057Z",
+    "value": {
+     "distributionValue": {
+      "bucketOptions": {
+       "explicitBuckets": {
+        "bounds": [
+         0.005,
+         0.01,
+         0.025,
+         0.05,
+         0.1,
+         0.25,
+         0.5,
+         1,
+         2.5,
+         5,
+         10,
+         30
+        ]
+       }
+      }
+     }
+    }
+   },
+   {
+    "time": "2026-09-27T02:43:03.057Z",
+    "value": {
+     "distributionValue": {
+      "bucketOptions": {
+       "explicitBuckets": {
+        "bounds": [
+         0.005,
+         0.01,
+         0.025,
+         0.05,
+         0.1,
+         0.25,
+         0.5,
+         1,
+         2.5,
+         5,
+         10,
+         30
+        ]
+       }
+      }
+     }
+    }
+   },
+   {
+    "time": "2026-09-27T02:42:33.057Z",
+    "value": {
+     "distributionValue": {
+      "bucketOptions": {
+       "explicitBuckets": {
+        "bounds": [
+         0.005,
+         0.01,
+         0.025,
+         0.05,
+         0.1,
+         0.25,
+         0.5,
+         1,
+         2.5,
+         5,
+         10,
+         30
+        ]
+       }
+      }
+     }
+    }
+   },
+   {
+    "time": "2026-09-27T02:42:03.057Z",
+    "value": {
+     "distributionValue": {
+      "bucketOptions": {
+       "explicitBuckets": {
+        "bounds": [
+         0.005,
+         0.01,
+         0.025,
+         0.05,
+         0.1,
+         0.25,
+         0.5,
+         1,
+         2.5,
+         5,
+         10,
+         30
+        ]
+       }
+      }
+     }
+    }
+   },
+   {
+    "time": "2026-09-27T02:41:33.057Z",
+    "value": {
+     "distributionValue": {
+      "bucketOptions": {
+       "explicitBuckets": {
+        "bounds": [
+         0.005,
+         0.01,
+         0.025,
+         0.05,
+         0.1,
+         0.25,
+         0.5,
+         1,
+         2.5,
+         5,
+         10,
+         30
+        ]
+       }
+      }
+     }
+    }
+   },
+   {
+    "time": "2026-09-27T02:41:03.057Z",
+    "value": {
+     "distributionValue": {
+      "bucketOptions": {
+       "explicitBuckets": {
+        "bounds": [
+         0.005,
+         0.01,
+         0.025,
+         0.05,
+         0.1,
+         0.25,
+         0.5,
+         1,
+         2.5,
+         5,
+         10,
+         30
+        ]
+       }
+      }
+     }
+    }
+   }
+  ]
+ }
+]

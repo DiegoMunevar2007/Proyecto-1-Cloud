@@ -25,7 +25,7 @@ import http from 'k6/http';
 import { sleep } from 'k6';
 import { Counter, Trend } from 'k6/metrics';
 import { params, url } from './lib/api.js';
-import { abrirDataset, abrirMedio, existeDataset } from './lib/corpus.js';
+import { abrirDataset, abrirMedio, corpusReutilizable } from './lib/corpus.js';
 
 export const options = { vus: 1, iterations: 1, setupTimeout: '40m' };
 
@@ -33,7 +33,8 @@ export const options = { vus: 1, iterations: 1, setupTimeout: '40m' };
 const IDENTIDAD = abrirDataset('estudiantes.json');
 const CONTENIDO = abrirDataset('cursos.json');
 // open() solo existe en init, así que la guarda se evalúa al cargar el módulo.
-const MEDIA_EXISTE = existeDataset('media.json');
+// Un media.json de otro entorno no se reutiliza: sus hlsUrl apuntan a otro bucket.
+const MEDIA_EXISTE = corpusReutilizable('media.json');
 
 // Los archivos se leen en el contexto de init, que es el único donde open()
 // existe. Este guion corre con un solo VU, así que mantener los cuatro perfiles

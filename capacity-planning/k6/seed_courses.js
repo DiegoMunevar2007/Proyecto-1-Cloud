@@ -12,7 +12,7 @@ import { sleep } from 'k6';
 import { Counter, Trend } from 'k6/metrics';
 import { BASE_URL, COURSE_COUNT, COURSE_SHAPE, ENTORNO, RUN_ID } from './lib/config.js';
 import { params, url } from './lib/api.js';
-import { abrirDataset, existeDataset } from './lib/corpus.js';
+import { abrirDataset, corpusReutilizable } from './lib/corpus.js';
 
 export const options = { vus: 1, iterations: 1, setupTimeout: '20m' };
 
@@ -21,8 +21,9 @@ export const options = { vus: 1, iterations: 1, setupTimeout: '20m' };
 // Este seed produce datasets/cursos.json, así que solo lee el de identidad.
 const IDENTIDAD = abrirDataset('estudiantes.json');
 
-// courses.slug tiene índice único: si el corpus ya existe, recrearlo falla.
-const CURSOS_EXISTEN = existeDataset('cursos.json');
+// courses.slug tiene índice único: si el corpus ya existe y es de este entorno,
+// recrearlo falla. Si es de otro, se recrea aunque el archivo esté.
+const CURSOS_EXISTEN = corpusReutilizable('cursos.json');
 
 const porCurso = new Trend('seed_course_total_ms');
 const publicaciones = new Counter('seed_courses_published_total');

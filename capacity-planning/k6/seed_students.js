@@ -16,13 +16,16 @@ import {
   SEED_PASSWORD, STUDENT_COUNT,
 } from './lib/config.js';
 import { params, url } from './lib/api.js';
-import { existeDataset } from './lib/corpus.js';
+import { corpusReutilizable } from './lib/corpus.js';
 
-export const options = { vus: 1, iterations: 1 };
+// setupTimeout: registrar 500 estudiantes y hacer un login bcrypt tras cada alta
+// son ~1000 peticiones en serie, y bcrypt va en el request path contra una VM de
+// 2 vCPU. El default de k6 son 60s y no alcanzan.
+export const options = { vus: 1, iterations: 1, setupTimeout: '20m' };
 
 // open() solo existe en init, así que la guarda del corpus se evalúa al cargar
 // el módulo y no dentro de setup().
-const ESTUDIANTES_EXISTEN = existeDataset('estudiantes.json');
+const ESTUDIANTES_EXISTEN = corpusReutilizable('estudiantes.json');
 
 const bcryptLogin = new Trend('seed_login_ms');
 const registros = new Counter('seed_users_created_total');
@@ -107,8 +110,10 @@ function asegurarAdmin() {
 }
 
 export function setup() {
-  // Idempotente: si el corpus ya está, se reutiliza en vez de volver a crear
-  // usuarios, que además es caro por el bcrypt del login.
+  // Idempotente: si el corpus ya está y es de ESTE entorno, se reutiliza en vez
+  // de volver a crear usuarios, que además es caro por el bcrypt del login. Un
+  // corpus de otro entorno no se reutiliza: sus tokens apuntan a otra base, y
+  // medir contra él produce mil rechazos que parecen defectos de la plataforma.
   if (ESTUDIANTES_EXISTEN) {
     return { reutilizado: true };
   }

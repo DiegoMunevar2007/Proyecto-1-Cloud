@@ -39,6 +39,10 @@ const CONTENIDO = abrirDataset('cursos.json');
 const CURSOS_POR_ESTUDIANTE = Number(__ENV.CURSOS_POR_ESTUDIANTE || 5);
 
 export const options = {
+  // setupTimeout: la prematricular de setup() son 2500 matriculaciones en lotes
+  // de 250, y cada una es una escritura en Cloud SQL más un JWT. El default de
+  // k6 son 60s y no alcanzan; el trabajo no se mide, es preparatorio.
+  setupTimeout: '10m',
   scenarios: {
     carga: escenarioPorNiveles(ESC1_LEVELS, 'actividadAcademica'),
     observacion: escenarioObservacion(),
