@@ -51,6 +51,11 @@ vars:
   # VUs vivos para sostenerla.
   SIN_PAUSA:
     sh: echo "${SIN_PAUSA:-false}"
+  # Duración del VU observador que muestrea la cola durante la corrida. Por
+  # defecto acompaña a la corrida más larga; en la escalada se iguala a la
+  # meseta para no alargar cada nivel veinte minutos.
+  OBSERVACION_DURACION:
+    sh: echo "${OBSERVACION_DURACION:-20m}"
   RUN_ID:
     sh: echo "${RUN_ID:-r$(date +%s)}"
   STUDENT_COUNT:
@@ -89,6 +94,7 @@ vars:
     -e BASE_URL={{.BASE_URL}}
     -e CORPUS_BASE_URL={{.CORPUS_BASE_URL}}
     -e SIN_PAUSA={{.SIN_PAUSA}}
+    -e OBSERVACION_DURACION={{.OBSERVACION_DURACION}}
     -e RUN_ID={{.RUN_ID}}
     -e STUDENT_COUNT={{.STUDENT_COUNT}}
     -e COURSE_COUNT={{.COURSE_COUNT}}
@@ -244,15 +250,15 @@ tasks:
     desc: Escalada por tasa de llegada (40 a 640 op/s) para encontrar el codo del backend
     cmds:
       - task: esc1:level
-        vars: { LEVEL: T1, SIN_PAUSA: "true" }
+        vars: { LEVEL: T1, SIN_PAUSA: "true", OBSERVACION_DURACION: "2m" }
       - task: esc1:level
-        vars: { LEVEL: T2, SIN_PAUSA: "true" }
+        vars: { LEVEL: T2, SIN_PAUSA: "true", OBSERVACION_DURACION: "2m" }
       - task: esc1:level
-        vars: { LEVEL: T3, SIN_PAUSA: "true" }
+        vars: { LEVEL: T3, SIN_PAUSA: "true", OBSERVACION_DURACION: "2m" }
       - task: esc1:level
-        vars: { LEVEL: T4, SIN_PAUSA: "true" }
+        vars: { LEVEL: T4, SIN_PAUSA: "true", OBSERVACION_DURACION: "2m" }
       - task: esc1:level
-        vars: { LEVEL: T5, SIN_PAUSA: "true" }
+        vars: { LEVEL: T5, SIN_PAUSA: "true", OBSERVACION_DURACION: "2m" }
 
   esc1:burst:
     desc: Variante separada de ráfaga de inicios de sesión
