@@ -8,19 +8,39 @@ name: mooc-cloud
 
 services:
   # Cola de mensajería (asynq). Solo alcanzable desde la red privada.
+  #
+  # maxmemory + volatile-ttl: Redis no debe poder tumbar la VM por su cuenta. Todas
+  # las claves de sesión llevan TTL, así que volatile-ttl expira primero la que está
+  # por caducar en lugar de rechazar escrituras nuevas.
   redis:
     image: redis:8.10-alpine
     restart: unless-stopped
-    command: ["redis-server", "--appendonly", "yes", "--requirepass", "${REDIS_PASSWORD}"]
+    command: ["redis-server", "--appendonly", "yes", "--requirepass", "${REDIS_PASSWORD}",
+              "--maxmemory", "256mb", "--maxmemory-policy", "volatile-ttl"]
+    mem_limit: 256m
     ports:
       - "6379:6379"
     volumes:
       - redis_data:/data
 
+  # El antimalware es el consumidor de memoria de esta VM: clamd cargó 913 MB con
+  # la base de firmas y el OOM killer lo mató (ver docs/entrega2/evidencia/). El
+  # mem_limit está por encima de ese pico para que no lo mate antes de tiempo, y
+  # para que si alguna vez lo supera muera clamd y no una cadena de servicios: sin
+  # él, la presión de memoria dejó a Redis sin responder y tumbó la autenticación
+  # de toda la plataforma, que vive en otra VM.
+  #
+  # El pico no se puede bajar desde aquí: la imagen clamav/clamav:stable trae
+  # /etc/clamav/clamd.conf horneado y no interpola variables de entorno, así que
+  # CLAMD_CONF_* sería un no-op. Y ConcurrentDatabaseReload solo afecta a recargas
+  # posteriores, no a la carga inicial que provocó el OOM (538 s tras arrancar).
+  # Reducir el pico real exigiría montar un clamd.conf propio o menos firmas, y
+  # el ajuste que sí cabe en 2 GiB es el swap del startup más este límite.
   clamav:
     image: clamav/clamav:stable
     restart: unless-stopped
     platform: linux/amd64
+    mem_limit: 1200m
     volumes:
       - clamav_data:/var/lib/clamav
 
@@ -90,6 +110,7 @@ services:
       context: ./backend
       dockerfile: worker/Dockerfile
     restart: unless-stopped
+    mem_limit: 512m
     env_file:
       - .env
     environment:

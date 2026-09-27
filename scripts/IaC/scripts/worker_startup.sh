@@ -82,6 +82,19 @@ NEXT_PUBLIC_API_URL=
 EOF
 chmod 600 "${APP_DIR}/.env"
 
+echo "==> [${ROLE}] preparando swap"
+# 2 GiB de swap en el Worker Server. ClamAV necesita ~913 MB para su base de
+# firmas en una VM de 1976 MB que además corre Redis y el worker: sin swap ese
+# pico de arranque es letal y el OOM killer se lleva un proceso
+# (ver docs/entrega2/evidencia/). El swap no arregla el dimensionamiento, evita
+# que el pico mortal.
+fallocate -l 2G /swapfile
+chmod 600 /swapfile
+mkswap /swapfile >/dev/null
+swapon /swapfile
+grep -q '^/swapfile' /etc/fstab || echo '/swapfile none swap sw 0 0' >> /etc/fstab
+free -m | awk '/^Mem:|^Swap:/{print "    " $0}'
+
 echo "==> [${ROLE}] levantando contenedores: ${COMPOSE_SERVICES}"
 cd "${APP_DIR}"
 # shellcheck disable=SC2086
