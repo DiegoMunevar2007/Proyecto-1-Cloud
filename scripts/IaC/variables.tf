@@ -92,9 +92,22 @@ variable "deploy_frontend" {
 }
 
 variable "worker_concurrency" {
-  description = "Concurrencia de asynq en Worker Server"
+  description = <<-EOT
+    Concurrencia de asynq en Worker Server, es decir cuántos trabajos de media se
+    procesan a la vez. Bajó de 10 a 4 por dimensionamiento, no por gusto: en una
+    VM de 1976 MB, clamd retiene entre 320 y 850 MB de forma permanente con la
+    base de firmas cargada, y cada ffmpeg transcodificando 1080p consume unos
+    102 MB. Diez simultáneos son 1017 MB de ffmpeg y el total llega a 2297 MB
+    contra 1976 disponibles: el OOM killer se lleva los ffmpeg y los recursos
+    quedan en processing_status=failed. Con 4 son 408 MB y el total baja a
+    1688 MB, con margen para el pico de ClamAV.
+
+    El enunciado exige registrar la concurrencia de workers en cada corrida, así
+    que se fija de forma explícita en terraform.tfvars y no se deja en el default.
+    Ver docs/entrega2/evidencia/.
+  EOT
   type        = number
-  default     = 10
+  default     = 4
 }
 
 variable "install_ops_agent" {

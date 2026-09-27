@@ -93,7 +93,7 @@ Ajustes relevantes de `terraform.tfvars`:
 | `domain` | Dominio para TLS (vacío = IP pública) | `""` |
 | `deploy_frontend` | Desplegar el frontend Next.js existente | `false` |
 | `db_tier` | Tier de Cloud SQL | `db-f1-micro` |
-| `worker_concurrency` | Concurrencia de asynq | `10` |
+| `worker_concurrency` | Concurrencia de asynq (bajada de 10 a 4, ver abajo) | `4` |
 | `install_ops_agent` | Instalar el Ops Agent en las VM | `true` |
 | `metrics_scrape_interval` | Intervalo de métricas del host y de `/metrics` | `30s` |
 
