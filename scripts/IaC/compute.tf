@@ -146,9 +146,10 @@ resource "google_compute_instance" "loadgen" {
   }
 
   metadata = merge(local.common_metadata, {
-    "mooc-role"       = "loadgen"
-    "mooc-k6-version" = var.k6_version
-    "mooc-target-url" = "https://${local.web_domain}"
+    "mooc-role"         = "loadgen"
+    "mooc-k6-version"   = var.k6_version
+    "mooc-task-version" = var.task_version
+    "mooc-target-url"   = "https://${local.web_domain}"
   })
 
   metadata_startup_script = file("${path.module}/scripts/loadgen_startup.sh")

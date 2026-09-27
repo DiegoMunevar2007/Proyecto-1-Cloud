@@ -157,6 +157,12 @@ variable "k6_version" {
   default     = "v2.3.0"
 }
 
+variable "task_version" {
+  description = "Versión de go-task que se instala en el generador (etiqueta de release, con la v)"
+  type        = string
+  default     = "v3.53.1"
+}
+
 variable "db_version" {
   description = "Versión de PostgreSQL del servicio administrado"
   type        = string

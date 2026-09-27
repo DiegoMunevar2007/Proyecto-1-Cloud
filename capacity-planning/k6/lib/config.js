@@ -92,6 +92,20 @@ export const ESC1_LEVELS = [
   { id: 'L4', vus: 90, ramp: '1m', hold: '3m' },
 ];
 
+// Escalada por tasa de llegada. Los niveles L0 a L4 miden "cuántos usuarios
+// concurrentes aguanta la plataforma" con un bucle cerrado; éstos miden "cuántas
+// peticiones por segundo aguanta" con inyección abierta, que es lo que permite
+// encontrar el codo del servidor: si la plataforma se degrada, la tasa de llegada
+// no se reduce sola. La progresión es geométrica para que el codo caiga dentro de
+// la serie en lugar de entre dos niveles.
+export const ESC1_ESCALADA = [
+  { id: 'T1', rate: 40, hold: '2m', maxVUs: 300 },
+  { id: 'T2', rate: 80, hold: '2m', maxVUs: 600 },
+  { id: 'T3', rate: 160, hold: '2m', maxVUs: 1200 },
+  { id: 'T4', rate: 320, hold: '2m', maxVUs: 2400 },
+  { id: 'T5', rate: 640, hold: '2m', maxVUs: 4800 },
+];
+
 // Niveles del escenario 2. La concurrencia de los workers se mantiene fija en 10
 // durante toda la corrida; lo que sube es el número de VUs que cargan.
 export const ESC2_LEVELS = [
@@ -100,14 +114,35 @@ export const ESC2_LEVELS = [
   { id: 'M2', vus: 8, ramp: '20s', hold: '4m' },
 ];
 
-// Extrae el nivel pedido por LEVEL y devuelve el escenario de k6. Si no se
-// reconoce, falla ruidosamente en vez de medir algo distinto de lo pedido.
+// Extrae el nivel pedido por LEVEL y devuelve el escenario de k6. Si no se// reconoce, falla ruidosamente en vez de medir algo distinto de lo pedido.
 export function escenarioPorNiveles(niveles, etiqueta) {
   const id = env.LEVEL || niveles[0].id;
   const nivel = niveles.find((n) => n.id === id);
   if (!nivel) {
     const validos = niveles.map((n) => n.id).join(', ');
     throw new Error(`LEVEL inválido: "${id}". Niveles disponibles: ${validos}`);
+  }
+  // Un nivel con `rate` se inyecta como tasa de llegada. Es la diferencia entre
+  // preguntar "cuántos usuarios aguanta" y "cuántas peticiones por segundo
+  // aguanta": con ramping-vus y una pausa de 1 a 5 segundos el throughput es
+  // VUs/(pausa+latencia), así que subir VUs sin bajar la pausa casi no sube la
+  // carga y nunca se llega a la rodilla del servidor. La tasa de llegada fija
+  // req/s y deja que la latencia crezca, que es lo que revela el límite.
+  if (nivel.rate) {
+    return {
+      executor: 'constant-arrival-rate',
+      rate: nivel.rate,
+      timeUnit: '1s',
+      duration: nivel.hold,
+      preAllocatedVUs: Math.max(50, Math.ceil(nivel.rate * 2)),
+      maxVUs: nivel.maxVUs || Math.ceil(nivel.rate * 6),
+      gracefulStop: '30s',
+      exec: etiqueta,
+      tags: {
+        escenario: etiqueta, nivel: nivel.id,
+        inyeccion: 'tasa-llegada', tasaObjetivo: String(nivel.rate),
+      },
+    };
   }
   return {
     executor: 'ramping-vus',

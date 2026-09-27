@@ -14,6 +14,13 @@
 
 import { BASE_URL } from './config.js';
 
+// El corpus se generó contra la URL pública del despliegue, pero una corrida
+// desde dentro de la VPC apunta a la IP privada de la misma máquina para no
+// medir el enrutado al borde de Google. CORPUS_BASE_URL declara contra qué URL
+// se generó el corpus cuando el objetivo de la corrida es otro; sin esa
+// variable se asume que coinciden, que es el caso de una corrida desde fuera.
+const BASE_ESPERADA = __ENV.CORPUS_BASE_URL || BASE_URL;
+
 const PREFIJOS = ['../', '../../'];
 
 export function abrirDataset(nombre) {
@@ -47,9 +54,10 @@ function verificarEntorno(nombre, datos) {
       'se generó. Regenera el corpus con: task seed:reset && task seed:all.'
     );
   }
-  if (datos.baseUrl === BASE_URL) return;
+  if (datos.baseUrl === BASE_ESPERADA) return;
   throw new Error(
-    `${nombre} se generó contra ${datos.baseUrl} y esta corrida apunta a ${BASE_URL}.` +
+    `${nombre} se generó contra ${datos.baseUrl}, pero se esperaba ${BASE_ESPERADA}` +
+    ` (objetivo de la corrida: ${BASE_URL}).` +
     ` El corpus es de otro entorno` +
     (datos.entorno ? ` (${datos.entorno})` : '') +
     '.\nPara regenerarlo: task seed:reset && task seed:all (con el BASE_URL de este entorno).'

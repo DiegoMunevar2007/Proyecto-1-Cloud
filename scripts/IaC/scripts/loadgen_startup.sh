@@ -20,6 +20,7 @@ APP_DIR="$(get_meta mooc-app-dir)"
 REPO_URL="$(get_meta mooc-repo-url)"
 REPO_BRANCH="$(get_meta mooc-repo-branch)"
 K6_VERSION="$(get_meta mooc-k6-version)"
+TASK_VERSION="$(get_meta mooc-task-version)"
 BASE_URL="$(get_meta mooc-target-url)"
 
 echo "==> [${ROLE}] instalando dependencias"
@@ -43,6 +44,23 @@ if ! command -v k6 >/dev/null 2>&1; then
   rm -rf "${tmp}"
 fi
 k6 version || true
+
+# go-task se instala por la misma razón que k6, con la versión clavada en el
+# tfvars: las tareas del Taskfile fijan los niveles, las variables y las rutas de
+# resultados, y una corrida debe poder repetirse sin depender de la versión que
+# hubiera publicada ese día.
+if ! command -v task >/dev/null 2>&1 && [ -n "${TASK_VERSION}" ]; then
+  echo "==> [${ROLE}] instalando task ${TASK_VERSION}"
+  tmp="$(mktemp -d)"
+  if curl -fsSL -o "${tmp}/task.deb" \
+    "https://github.com/go-task/task/releases/download/${TASK_VERSION}/task_${TASK_VERSION#v}_linux_amd64.deb"; then
+    dpkg -i "${tmp}/task.deb" || apt-get install -y -f
+  else
+    echo "AVISO: no se pudo descargar task ${TASK_VERSION}; instálalo a mano antes de medir" >&2
+  fi
+  rm -rf "${tmp}"
+fi
+task --version || true
 
 echo "==> [${ROLE}] clonando repositorio"
 mkdir -p "$(dirname "${APP_DIR}")"

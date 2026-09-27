@@ -24,6 +24,7 @@
 import http from 'k6/http';
 import { sleep } from 'k6';
 import { Counter, Trend } from 'k6/metrics';
+import { BASE_URL, ENTORNO } from './lib/config.js';
 import { params, url } from './lib/api.js';
 import { abrirDataset, abrirMedio, corpusReutilizable } from './lib/corpus.js';
 
@@ -90,6 +91,93 @@ function recursoEnArbol(data, resourceId) {
   return null;
 }
 
+// Devuelve los recursos del árbol aplanados, para poder emparejar por título.
+function recursosDelArbol(data) {
+  const salida = [];
+  const modulos = (data.version && data.version.modules) || [];
+  for (const m of modulos) {
+    for (const u of m.units || []) {
+      for (const r of u.resources || []) salida.push(r);
+    }
+  }
+  return salida;
+}
+
+// Cuenta los segmentos del manifiesto HLS leyendo el real, no suponiéndolo.
+function medirManifiesto(urlHls) {
+  try {
+    const raw = http.get(urlHls, params({ tags: { op: 'manifiesto_hls' } })).body || '';
+    const n = (raw.match(/#EXTINF/g) || []).length;
+    const dur = (raw.match(/#EXTINF:([0-9.]+)/) || [])[1];
+    return { segmentos: n, duracion: dur ? Number(dur) : null };
+  } catch (_e) {
+    return { segmentos: null, duracion: null };
+  }
+}
+
+// Reconstruye el corpus desde un curso de medios ya existente, o null si no
+// existe o no está listo. La API expone el árbol completo en el detalle del
+// curso, así que no hace falta tocar la base de datos para recuperar los
+// identificadores que el consumo y el drenaje necesitan.
+function reutilizarCursoMedio(prof, slugMedia, cursos) {
+  const catalogo = get('/api/v1/courses', null, 'seed_media_catalogo').json() || {};
+  const encontrado = (catalogo.courses || []).find((c) => c.slug === slugMedia);
+  if (!encontrado) return null;
+
+  const detalle = get(`/api/v1/courses/${encontrado.id}`, prof.token, 'seed_media_detalle').json() || {};
+  const existentes = recursosDelArbol(detalle);
+
+  const subidos = [];
+  for (const p of PERFILES) {
+    const r = existentes.find((x) => (x.title || '').indexOf(p.clave) === 0);
+    if (!r) return null; // El curso existe pero le falta un perfil: no es reutilizable.
+    if (r.processing_status !== 'ready' || r.scan_status !== 'clean') {
+      throw new Error(
+        `el curso de medios ${slugMedia} ya existe pero el recurso ${p.clave} está ` +
+        `en processing_status=${r.processing_status} scan_status=${r.scan_status}. ` +
+        'Bórralo con task seed:reset y vuelve a correr el seed para reprocesarlo.'
+      );
+    }
+    let hlsUrl = null;
+    let segmentos = null;
+    let duracion = null;
+    const d = get(`/api/v1/resources/${r.id}/download-url`, prof.token, 'autoriza_descarga').json() || {};
+    if (d.hls === true && typeof d.url === 'string' && d.url) {
+      hlsUrl = d.url;
+      const m = medirManifiesto(hlsUrl);
+      segmentos = m.segmentos;
+      duracion = m.duracion;
+    }
+    subidos.push({
+      perfil: p.clave, tipo: p.tipo, mime: p.mime,
+      resolucionOriginal: p.resolucion, segundos: p.segundos,
+      segmentosObservados: segmentos, duracionSegmentoSeg: duracion,
+      resourceId: r.id, stableId: r.stable_id, objectKey: r.object_key,
+      cursoMedioId: encontrado.id, profesorIndice: 0,
+      // El instante de encolado y el task_id son los de la corrida anterior y no
+      // se pueden recuperar; el drenaje saca la época de la clave del objeto, así
+      // que no se pierde nada midiendo.
+      encoladoEnMs: null, taskId: null,
+      processing_status: r.processing_status, hlsUrl,
+    });
+  }
+
+  return {
+    runId: cursos.runId,
+    entorno: ENTORNO,
+    baseUrl: BASE_URL,
+    generadoEn: new Date().toISOString(),
+    cursoMedioId: encontrado.id,
+    publicado: true,
+    // Ojo: esto no es el flag `reutilizado` que consulta handleSummary para
+    // saltarse la escritura. Ese significa "el fichero ya existe"; éste
+    // significa "el corpus se reconstruyó desde un curso ya subido", y aquí sí
+    // hay que escribir media.json.
+    reconstruidoDesdeCurso: true,
+    subidos,
+  };
+}
+
 export function setup() {
   // Idempotente: los objetos multimedia son únicos por clave y la cola no
   // admite repetir la tarea, así que subir dos veces lo mismo no aporta nada.
@@ -112,6 +200,18 @@ export function setup() {
   // escenario 2a. Son dos necesidades distintas y por eso dos cursos.
   const prof = identidad.profesores[0];
   const slugMedia = `${cursos.runId}-m`;
+
+  // Reutilizar lo ya subido. El slug del curso de medios es único, así que una
+  // corrida anterior que llegó a transcodificar pero se interrumpió antes de
+  // escribir el corpus deja el curso publicado y vuelve a fallar aquí con 500
+  // por duplicado. Con los recursos ya en ready no hay nada que reprocesar:
+  // se reconstruye el corpus desde la API, que es lo que evita repetir veinte
+  // minutos de ffmpeg para obtener un fichero que ya está en la base de datos.
+  const reutilizado = reutilizarCursoMedio(prof, slugMedia, cursos);
+  if (reutilizado) {
+    return reutilizado;
+  }
+
   const resC = post('/api/v1/courses',
     { title: `Medios ${slugMedia}`, slug: slugMedia,
       description: 'Curso de medios para el escenario de consumo.', min_required_pct: 80 },

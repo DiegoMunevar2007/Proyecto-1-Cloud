@@ -16,7 +16,7 @@ import exec from 'k6/execution';
 import { sleep } from 'k6';
 import { Counter, Trend } from 'k6/metrics';
 import {
-  ENTORNO, ESC1_LEVELS, PREMATRICULA_LOTE, RUN_ID, escenarioPorNiveles, think,
+  ENTORNO, ESC1_ESCALADA, ESC1_LEVELS, PREMATRICULA_LOTE, RUN_ID, escenarioPorNiveles, think,
 } from './lib/config.js';
 import {
   OPS, body, get, json, latenciaControl, params, rechazoNegocio, url,
@@ -44,7 +44,7 @@ export const options = {
   // k6 son 60s y no alcanzan; el trabajo no se mide, es preparatorio.
   setupTimeout: '10m',
   scenarios: {
-    carga: escenarioPorNiveles(ESC1_LEVELS, 'actividadAcademica'),
+    carga: escenarioPorNiveles(ESC1_LEVELS.concat(ESC1_ESCALADA), 'actividadAcademica'),
     observacion: escenarioObservacion(),
   },
   // El único umbral que aborta es el error funcional. Un rechazo de negocio

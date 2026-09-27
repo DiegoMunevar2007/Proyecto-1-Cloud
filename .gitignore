@@ -268,10 +268,10 @@ terraform.rc
 scripts/IaC/deploy/Caddyfile
 
 ### Pruebas de carga (k6) ###
-# Los medios se regeneran con `task media:generate`; los binarios no se versionan.
-capacity-planning/media/
-# Salida cruda de cada corrida: se regenera, pero es la evidencia del informe.
-capacity-planning/results/
-# Credenciales del seed: nunca en el repositorio.
+
 capacity-planning/.env
 
+
+### Python (utilidades de analisis) ###
+__pycache__/
+*.pyc

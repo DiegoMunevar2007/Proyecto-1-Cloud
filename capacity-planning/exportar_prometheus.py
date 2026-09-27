@@ -65,9 +65,9 @@ HOST_METRICS = [
     "agent.googleapis.com/disk/operation_count",
     # processes/vm_usage y processes/rss_usage son deltas: describen variacion, no
     # nivel, y dan maximos imposibles (2485 MB en una VM de 1976 MB). Para el
-    # consumo absoluto estan memory/percent_used y memory/balloon/ram.
+    # consumo absoluto esta memory/percent_used. memory/balloon/ram se descarto
+    # porque no la publica este agente en estas VMs y solo generaba error.
     "agent.googleapis.com/memory/percent_used",
-    "agent.googleapis.com/memory/balloon/ram",
     "agent.googleapis.com/processes/count_by_state",
     "compute.googleapis.com/instance/cpu/utilization",
     "compute.googleapis.com/instance/network/received_bytes_count",
@@ -97,6 +97,8 @@ WINDOWS = {
     "esc2-carga-M0":   ("2026-09-27T05:45:00Z", "2026-09-27T05:53:00Z"),
     "esc2-carga-M1":   ("2026-09-27T05:50:00Z", "2026-09-27T05:58:00Z"),
     "esc2-carga-M2":   ("2026-09-27T05:54:00Z", "2026-09-27T06:02:00Z"),
+    "drenaje":         ("2026-09-27T19:00:00Z", "2026-09-27T20:30:00Z"),
+    "consumo-hls":     ("2026-09-27T18:45:00Z", "2026-09-27T19:30:00Z"),
     "sesion-completa": ("2026-09-27T02:20:00Z", "2026-09-27T07:10:00Z"),
 }
 
@@ -300,7 +302,11 @@ def main():
     previas = []
     if os.path.exists(ruta_man):
         try:
-            previas = json.load(open(ruta_man)).get("entradas", [])
+            previas = json.load(open(ruta_man))
+            # El manifiesto se escribio primero como lista y luego como objeto;
+            # se aceptan las dos formas para no romper una exportacion previa.
+            if isinstance(previas, dict):
+                previas = previas.get("entradas", [])
         except (ValueError, OSError):
             previas = []
     vistas = {(e["ventana"], e["metrica"]) for e in previas}
