@@ -1,0 +1,7237 @@
+{
+  "runId": "ent2",
+  "totales": {
+    "cursos": 20,
+    "modulos": 60,
+    "quizzes": 180,
+    "recursos": 540,
+    "unidades": 180
+  },
+  "borradores": [
+    {
+      "unidadId": 1,
+      "cursoId": 1,
+      "moduloId": 1,
+      "profesor": "sent2-prof0",
+      "profesorIndice": 0,
+      "slug": "ent2-b0"
+    },
+    {
+      "cursoId": 2,
+      "moduloId": 2,
+      "profesor": "sent2-prof1",
+      "profesorIndice": 1,
+      "slug": "ent2-b1",
+      "unidadId": 2
+    },
+    {
+      "slug": "ent2-b2",
+      "unidadId": 3,
+      "cursoId": 3,
+      "moduloId": 3,
+      "profesor": "sent2-prof2",
+      "profesorIndice": 2
+    },
+    {
+      "moduloId": 4,
+      "profesor": "sent2-prof3",
+      "profesorIndice": 3,
+      "slug": "ent2-b3",
+      "unidadId": 4,
+      "cursoId": 4
+    }
+  ],
+  "cursos": [
+    {
+      "unidades": [
+        {
+          "id": 5,
+          "stableId": "083dc694-323d-464a-8b4e-9af2a510cc86"
+        },
+        {
+          "id": 6,
+          "stableId": "74fe81ab-ec00-4977-a232-61b9e9dae1c9"
+        },
+        {
+          "id": 7,
+          "stableId": "b66a3f75-6465-4f41-ac82-e3f11bd2c3dc"
+        },
+        {
+          "id": 8,
+          "stableId": "08bf1f03-2146-4dc0-8bde-9a6d3aed7ac6"
+        },
+        {
+          "id": 9,
+          "stableId": "07f58a24-b605-4cfc-a63e-faa9cbe9b590"
+        },
+        {
+          "id": 10,
+          "stableId": "44cff350-d486-4b14-8023-c38a18023897"
+        },
+        {
+          "stableId": "84bc4ae3-d28d-47ef-a095-73e172661f51",
+          "id": 11
+        },
+        {
+          "id": 12,
+          "stableId": "4fdbf0e3-38b0-4d7b-a3c9-c2f2bbd8c2af"
+        },
+        {
+          "stableId": "a1e4670b-b461-402d-ad63-a7fc9922823e",
+          "id": 13
+        }
+      ],
+      "id": 5,
+      "indice": 0,
+      "modulos": [
+        {
+          "id": 5,
+          "stableId": "691406a7-68cc-4c18-b5e3-ee91c13b6071"
+        },
+        {
+          "stableId": "7e716e32-715e-4b6a-8534-3d7ae4cfcaee",
+          "id": 6
+        },
+        {
+          "id": 7,
+          "stableId": "2c2eb689-81fb-4212-8a51-149a9df76f0c"
+        }
+      ],
+      "quizzes": [
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 1,
+          "resourceId": 3
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 2,
+          "resourceId": 6
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 3,
+          "resourceId": 9
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 4,
+          "resourceId": 12
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 5,
+          "resourceId": 15
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 6,
+          "resourceId": 18
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 7,
+          "resourceId": 21
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 8,
+          "resourceId": 24
+        },
+        {
+          "id": 9,
+          "resourceId": 27,
+          "correctas": [
+            1,
+            0,
+            0
+          ]
+        }
+      ],
+      "recursos": [
+        {
+          "id": 1,
+          "modulo": 5,
+          "stableId": "c1a4b78a-cba9-452c-b6d6-78450b54150b",
+          "title": "text 1.1",
+          "type": "text",
+          "unidad": 5
+        },
+        {
+          "unidad": 5,
+          "id": 2,
+          "modulo": 5,
+          "stableId": "425f1ac4-8abb-44e4-9232-63834729e4a2",
+          "title": "pdf 1.1",
+          "type": "pdf"
+        },
+        {
+          "modulo": 5,
+          "stableId": "a569a5bd-fe91-4229-b2cd-fec4abba383d",
+          "title": "quiz 1.1",
+          "type": "quiz",
+          "unidad": 5,
+          "id": 3
+        },
+        {
+          "id": 4,
+          "modulo": 5,
+          "stableId": "59f156d3-9917-4638-8e1d-c192b1ca97ca",
+          "title": "text 1.2",
+          "type": "text",
+          "unidad": 6
+        },
+        {
+          "id": 5,
+          "modulo": 5,
+          "stableId": "7fb3fbae-6a17-440e-97d0-dde4b5611852",
+          "title": "pdf 1.2",
+          "type": "pdf",
+          "unidad": 6
+        },
+        {
+          "modulo": 5,
+          "stableId": "599484c7-8541-41d6-8d14-1ad52a3d0d67",
+          "title": "quiz 1.2",
+          "type": "quiz",
+          "unidad": 6,
+          "id": 6
+        },
+        {
+          "title": "text 1.3",
+          "type": "text",
+          "unidad": 7,
+          "id": 7,
+          "modulo": 5,
+          "stableId": "2a447ae3-58df-4a0e-83e0-7e5f5c6ad464"
+        },
+        {
+          "stableId": "938925a3-381d-4e39-883d-b1ac4540d901",
+          "title": "pdf 1.3",
+          "type": "pdf",
+          "unidad": 7,
+          "id": 8,
+          "modulo": 5
+        },
+        {
+          "type": "quiz",
+          "unidad": 7,
+          "id": 9,
+          "modulo": 5,
+          "stableId": "c472d8c5-1522-47fc-a370-c26f3cfdcfb5",
+          "title": "quiz 1.3"
+        },
+        {
+          "id": 10,
+          "modulo": 6,
+          "stableId": "cca2d5bc-60de-48cb-88cd-8b56169584e6",
+          "title": "text 2.1",
+          "type": "text",
+          "unidad": 8
+        },
+        {
+          "id": 11,
+          "modulo": 6,
+          "stableId": "b65b6995-84b5-4dd5-9483-3cf685244a0e",
+          "title": "pdf 2.1",
+          "type": "pdf",
+          "unidad": 8
+        },
+        {
+          "unidad": 8,
+          "id": 12,
+          "modulo": 6,
+          "stableId": "f1f478e8-e152-4754-b14e-1d7c1b6820c0",
+          "title": "quiz 2.1",
+          "type": "quiz"
+        },
+        {
+          "id": 13,
+          "modulo": 6,
+          "stableId": "7d10094e-6e1d-4674-8fa5-021b1c35ba9f",
+          "title": "text 2.2",
+          "type": "text",
+          "unidad": 9
+        },
+        {
+          "modulo": 6,
+          "stableId": "34d5a864-6787-4eee-adae-df8c58e316d6",
+          "title": "pdf 2.2",
+          "type": "pdf",
+          "unidad": 9,
+          "id": 14
+        },
+        {
+          "stableId": "f3976c28-b3f6-4e5e-b8a0-11ff24f7c347",
+          "title": "quiz 2.2",
+          "type": "quiz",
+          "unidad": 9,
+          "id": 15,
+          "modulo": 6
+        },
+        {
+          "modulo": 6,
+          "stableId": "740920d0-2715-4486-afb3-0b77454c29a2",
+          "title": "text 2.3",
+          "type": "text",
+          "unidad": 10,
+          "id": 16
+        },
+        {
+          "modulo": 6,
+          "stableId": "9f81bcd8-b81c-4074-a195-c4e903b47f7d",
+          "title": "pdf 2.3",
+          "type": "pdf",
+          "unidad": 10,
+          "id": 17
+        },
+        {
+          "modulo": 6,
+          "stableId": "f5227b9d-7b19-4f30-9c2d-84ba6a8a6903",
+          "title": "quiz 2.3",
+          "type": "quiz",
+          "unidad": 10,
+          "id": 18
+        },
+        {
+          "type": "text",
+          "unidad": 11,
+          "id": 19,
+          "modulo": 7,
+          "stableId": "79944f5b-19de-40ae-82f2-292a81c1f3bb",
+          "title": "text 3.1"
+        },
+        {
+          "id": 20,
+          "modulo": 7,
+          "stableId": "30e69f61-5dad-4ef5-9e23-727f8c4c7df7",
+          "title": "pdf 3.1",
+          "type": "pdf",
+          "unidad": 11
+        },
+        {
+          "id": 21,
+          "modulo": 7,
+          "stableId": "1d82f8e7-416c-40d6-8c45-704a5159301f",
+          "title": "quiz 3.1",
+          "type": "quiz",
+          "unidad": 11
+        },
+        {
+          "id": 22,
+          "modulo": 7,
+          "stableId": "00df1a9f-aa61-4d0a-8769-3ff114326d25",
+          "title": "text 3.2",
+          "type": "text",
+          "unidad": 12
+        },
+        {
+          "id": 23,
+          "modulo": 7,
+          "stableId": "ff572e9e-1cbf-45f6-891c-caa1be7b5ab6",
+          "title": "pdf 3.2",
+          "type": "pdf",
+          "unidad": 12
+        },
+        {
+          "id": 24,
+          "modulo": 7,
+          "stableId": "9ea97051-c0b2-48d3-be5b-2a8cee43efed",
+          "title": "quiz 3.2",
+          "type": "quiz",
+          "unidad": 12
+        },
+        {
+          "unidad": 13,
+          "id": 25,
+          "modulo": 7,
+          "stableId": "5d1276de-0f42-4a76-bba6-26b7a7ff645f",
+          "title": "text 3.3",
+          "type": "text"
+        },
+        {
+          "id": 26,
+          "modulo": 7,
+          "stableId": "60fc74ed-87ae-4a53-9ed5-c0c8cdc216b9",
+          "title": "pdf 3.3",
+          "type": "pdf",
+          "unidad": 13
+        },
+        {
+          "unidad": 13,
+          "id": 27,
+          "modulo": 7,
+          "stableId": "1e78aba4-74c2-48c4-a5d8-1754208aab03",
+          "title": "quiz 3.3",
+          "type": "quiz"
+        }
+      ],
+      "slug": "ent2-c0",
+      "titulo": "Curso ent2-c0"
+    },
+    {
+      "modulos": [
+        {
+          "id": 8,
+          "stableId": "d381ed64-d5b2-463e-a7c6-a31a3e6df505"
+        },
+        {
+          "id": 9,
+          "stableId": "ff08cf53-6e71-4aae-b15a-70298b3ac153"
+        },
+        {
+          "id": 10,
+          "stableId": "f1694980-b802-4c1d-84ad-b32dc11c019b"
+        }
+      ],
+      "quizzes": [
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 10,
+          "resourceId": 30
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 11,
+          "resourceId": 33
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 12,
+          "resourceId": 36
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 13,
+          "resourceId": 39
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 14,
+          "resourceId": 42
+        },
+        {
+          "id": 15,
+          "resourceId": 45,
+          "correctas": [
+            1,
+            0,
+            0
+          ]
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 16,
+          "resourceId": 48
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 17,
+          "resourceId": 51
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 18,
+          "resourceId": 54
+        }
+      ],
+      "recursos": [
+        {
+          "id": 28,
+          "modulo": 8,
+          "stableId": "c1380c87-0f5c-409f-b035-5f1e83f1bb82",
+          "title": "text 1.1",
+          "type": "text",
+          "unidad": 14
+        },
+        {
+          "id": 29,
+          "modulo": 8,
+          "stableId": "d7c7b594-b501-4a24-a1b4-3f13966a8cdb",
+          "title": "pdf 1.1",
+          "type": "pdf",
+          "unidad": 14
+        },
+        {
+          "title": "quiz 1.1",
+          "type": "quiz",
+          "unidad": 14,
+          "id": 30,
+          "modulo": 8,
+          "stableId": "1e05c129-d63c-422a-95ac-84940ef9f1b3"
+        },
+        {
+          "id": 31,
+          "modulo": 8,
+          "stableId": "eb459f4f-f3fe-4776-b99b-b7f5f1fd54f5",
+          "title": "text 1.2",
+          "type": "text",
+          "unidad": 15
+        },
+        {
+          "id": 32,
+          "modulo": 8,
+          "stableId": "a41c7b25-9afe-4689-8970-e822e146336b",
+          "title": "pdf 1.2",
+          "type": "pdf",
+          "unidad": 15
+        },
+        {
+          "id": 33,
+          "modulo": 8,
+          "stableId": "200e645c-91d7-41e5-8868-46b686f46e86",
+          "title": "quiz 1.2",
+          "type": "quiz",
+          "unidad": 15
+        },
+        {
+          "title": "text 1.3",
+          "type": "text",
+          "unidad": 16,
+          "id": 34,
+          "modulo": 8,
+          "stableId": "4e3e4024-4927-4b3b-bd3b-19fc6fc40cff"
+        },
+        {
+          "id": 35,
+          "modulo": 8,
+          "stableId": "12ea21d6-3a19-4094-ab9b-96c9d4cfb2a9",
+          "title": "pdf 1.3",
+          "type": "pdf",
+          "unidad": 16
+        },
+        {
+          "title": "quiz 1.3",
+          "type": "quiz",
+          "unidad": 16,
+          "id": 36,
+          "modulo": 8,
+          "stableId": "f2984f50-5c78-49d0-80d0-aa33981a93b9"
+        },
+        {
+          "title": "text 2.1",
+          "type": "text",
+          "unidad": 17,
+          "id": 37,
+          "modulo": 9,
+          "stableId": "9e2c6bf6-af25-4527-8a08-6eca2401b020"
+        },
+        {
+          "title": "pdf 2.1",
+          "type": "pdf",
+          "unidad": 17,
+          "id": 38,
+          "modulo": 9,
+          "stableId": "e299907e-8dd0-4642-abb3-ab38aa1813c6"
+        },
+        {
+          "unidad": 17,
+          "id": 39,
+          "modulo": 9,
+          "stableId": "324ff920-9231-4e6a-8763-698b5e8b90e5",
+          "title": "quiz 2.1",
+          "type": "quiz"
+        },
+        {
+          "modulo": 9,
+          "stableId": "90d552ca-ec93-48cf-a13c-263199cb12b6",
+          "title": "text 2.2",
+          "type": "text",
+          "unidad": 18,
+          "id": 40
+        },
+        {
+          "title": "pdf 2.2",
+          "type": "pdf",
+          "unidad": 18,
+          "id": 41,
+          "modulo": 9,
+          "stableId": "34355ecf-12fd-4cf1-be8f-aa2ee5d4bf28"
+        },
+        {
+          "modulo": 9,
+          "stableId": "cde4b32f-17da-48e7-af86-2425597165b2",
+          "title": "quiz 2.2",
+          "type": "quiz",
+          "unidad": 18,
+          "id": 42
+        },
+        {
+          "stableId": "8e43062e-a130-4e5d-9fd8-04a939c7f219",
+          "title": "text 2.3",
+          "type": "text",
+          "unidad": 19,
+          "id": 43,
+          "modulo": 9
+        },
+        {
+          "unidad": 19,
+          "id": 44,
+          "modulo": 9,
+          "stableId": "150d577c-19f5-49c6-835c-ea33fde80bad",
+          "title": "pdf 2.3",
+          "type": "pdf"
+        },
+        {
+          "unidad": 19,
+          "id": 45,
+          "modulo": 9,
+          "stableId": "8393fd25-8a5c-40a0-af02-7be31fee5f14",
+          "title": "quiz 2.3",
+          "type": "quiz"
+        },
+        {
+          "id": 46,
+          "modulo": 10,
+          "stableId": "4e404528-5de2-4d70-a6a8-d00715c6e689",
+          "title": "text 3.1",
+          "type": "text",
+          "unidad": 20
+        },
+        {
+          "modulo": 10,
+          "stableId": "d3d3516a-98b9-4656-a050-d9f2a942fc6e",
+          "title": "pdf 3.1",
+          "type": "pdf",
+          "unidad": 20,
+          "id": 47
+        },
+        {
+          "type": "quiz",
+          "unidad": 20,
+          "id": 48,
+          "modulo": 10,
+          "stableId": "62d876b7-8cd0-48fe-b9be-bd665f94b20b",
+          "title": "quiz 3.1"
+        },
+        {
+          "id": 49,
+          "modulo": 10,
+          "stableId": "20f50d3d-cd0b-467e-a8b3-3f195c804a5d",
+          "title": "text 3.2",
+          "type": "text",
+          "unidad": 21
+        },
+        {
+          "id": 50,
+          "modulo": 10,
+          "stableId": "cf28555f-e22d-4059-b195-4393c650cfe4",
+          "title": "pdf 3.2",
+          "type": "pdf",
+          "unidad": 21
+        },
+        {
+          "modulo": 10,
+          "stableId": "0ac5e1af-b81d-41d0-aa38-94fc407565e9",
+          "title": "quiz 3.2",
+          "type": "quiz",
+          "unidad": 21,
+          "id": 51
+        },
+        {
+          "stableId": "bcfdaed2-20e0-40fe-b0d4-6a3085a0024d",
+          "title": "text 3.3",
+          "type": "text",
+          "unidad": 22,
+          "id": 52,
+          "modulo": 10
+        },
+        {
+          "title": "pdf 3.3",
+          "type": "pdf",
+          "unidad": 22,
+          "id": 53,
+          "modulo": 10,
+          "stableId": "e0f47956-f8f7-4d6f-bdf0-d9825f5a6376"
+        },
+        {
+          "id": 54,
+          "modulo": 10,
+          "stableId": "6ff57b2d-52ed-420a-b1f2-dba7bb61f01e",
+          "title": "quiz 3.3",
+          "type": "quiz",
+          "unidad": 22
+        }
+      ],
+      "slug": "ent2-c1",
+      "titulo": "Curso ent2-c1",
+      "unidades": [
+        {
+          "id": 14,
+          "stableId": "c765bc8a-1525-431f-9a32-d921e7955abe"
+        },
+        {
+          "id": 15,
+          "stableId": "fc26a5c9-86f1-4a11-acda-3c29d7783883"
+        },
+        {
+          "id": 16,
+          "stableId": "84ee5f01-de65-46eb-9867-e3ed88e67cc4"
+        },
+        {
+          "id": 17,
+          "stableId": "443f5ef1-9708-4f50-a523-de77d84f59fc"
+        },
+        {
+          "id": 18,
+          "stableId": "f8a3fa82-56d6-4a75-9b6c-0ea72583eb49"
+        },
+        {
+          "id": 19,
+          "stableId": "3022a1a7-7ae7-475d-8016-a76dae22fdad"
+        },
+        {
+          "id": 20,
+          "stableId": "e91925c0-e78b-444b-8971-3d87a1d99d59"
+        },
+        {
+          "id": 21,
+          "stableId": "b5aa4e62-8a75-4572-91de-c88fd6378c8c"
+        },
+        {
+          "id": 22,
+          "stableId": "e9cab258-9e3e-469e-9800-2f70345f1bf4"
+        }
+      ],
+      "id": 6,
+      "indice": 1
+    },
+    {
+      "modulos": [
+        {
+          "id": 11,
+          "stableId": "51734a19-11ec-4bbe-a2bd-84d814f7429c"
+        },
+        {
+          "id": 12,
+          "stableId": "47d1842a-70ed-4c40-b5ce-a8297f2162b5"
+        },
+        {
+          "id": 13,
+          "stableId": "9ab0e7bc-241e-43f2-8054-20f495635558"
+        }
+      ],
+      "quizzes": [
+        {
+          "id": 19,
+          "resourceId": 57,
+          "correctas": [
+            1,
+            0,
+            0
+          ]
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 20,
+          "resourceId": 60
+        },
+        {
+          "resourceId": 63,
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 21
+        },
+        {
+          "id": 22,
+          "resourceId": 66,
+          "correctas": [
+            1,
+            0,
+            0
+          ]
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 23,
+          "resourceId": 69
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 24,
+          "resourceId": 72
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 25,
+          "resourceId": 75
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 26,
+          "resourceId": 78
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 27,
+          "resourceId": 81
+        }
+      ],
+      "recursos": [
+        {
+          "modulo": 11,
+          "stableId": "fbb0d735-42ae-42d7-9198-ce1fc2ea1917",
+          "title": "text 1.1",
+          "type": "text",
+          "unidad": 23,
+          "id": 55
+        },
+        {
+          "id": 56,
+          "modulo": 11,
+          "stableId": "928dc4c3-920a-4570-bda7-a3d12253b83f",
+          "title": "pdf 1.1",
+          "type": "pdf",
+          "unidad": 23
+        },
+        {
+          "id": 57,
+          "modulo": 11,
+          "stableId": "a593cb36-8c57-4db0-a1e1-e3530e1527d4",
+          "title": "quiz 1.1",
+          "type": "quiz",
+          "unidad": 23
+        },
+        {
+          "unidad": 24,
+          "id": 58,
+          "modulo": 11,
+          "stableId": "fbb30c4b-a2b6-46dd-b873-14d68ce3f480",
+          "title": "text 1.2",
+          "type": "text"
+        },
+        {
+          "id": 59,
+          "modulo": 11,
+          "stableId": "9e07afc3-68ab-41ab-9f51-1d6a1bec239b",
+          "title": "pdf 1.2",
+          "type": "pdf",
+          "unidad": 24
+        },
+        {
+          "type": "quiz",
+          "unidad": 24,
+          "id": 60,
+          "modulo": 11,
+          "stableId": "754d69d9-e0e0-463e-b0f4-a326b74ab989",
+          "title": "quiz 1.2"
+        },
+        {
+          "id": 61,
+          "modulo": 11,
+          "stableId": "7c1b95f9-98cb-42a8-bce8-5e0a01b9e88f",
+          "title": "text 1.3",
+          "type": "text",
+          "unidad": 25
+        },
+        {
+          "modulo": 11,
+          "stableId": "2a9fbd3d-9e64-4a14-976b-9a941c204e25",
+          "title": "pdf 1.3",
+          "type": "pdf",
+          "unidad": 25,
+          "id": 62
+        },
+        {
+          "type": "quiz",
+          "unidad": 25,
+          "id": 63,
+          "modulo": 11,
+          "stableId": "7a96142b-029d-4e4f-9ca3-9daa13a4c8ec",
+          "title": "quiz 1.3"
+        },
+        {
+          "title": "text 2.1",
+          "type": "text",
+          "unidad": 26,
+          "id": 64,
+          "modulo": 12,
+          "stableId": "db27c656-c4ce-4820-92e5-ef16c7a1b4b5"
+        },
+        {
+          "stableId": "8cb2074b-bef5-4b13-8cb2-806eaa941cad",
+          "title": "pdf 2.1",
+          "type": "pdf",
+          "unidad": 26,
+          "id": 65,
+          "modulo": 12
+        },
+        {
+          "id": 66,
+          "modulo": 12,
+          "stableId": "2a4bacc9-6c15-4348-878e-66f9872f2733",
+          "title": "quiz 2.1",
+          "type": "quiz",
+          "unidad": 26
+        },
+        {
+          "unidad": 27,
+          "id": 67,
+          "modulo": 12,
+          "stableId": "0515cbaf-eea4-48e9-be43-b04a1a8d0da9",
+          "title": "text 2.2",
+          "type": "text"
+        },
+        {
+          "type": "pdf",
+          "unidad": 27,
+          "id": 68,
+          "modulo": 12,
+          "stableId": "7a045ca8-8b35-495f-9a2f-08945cbc8d3f",
+          "title": "pdf 2.2"
+        },
+        {
+          "type": "quiz",
+          "unidad": 27,
+          "id": 69,
+          "modulo": 12,
+          "stableId": "f374a8bf-2476-428d-b8cf-ae5d5fc36d2a",
+          "title": "quiz 2.2"
+        },
+        {
+          "id": 70,
+          "modulo": 12,
+          "stableId": "0c843294-da4e-46ca-8ca8-f46a74d43418",
+          "title": "text 2.3",
+          "type": "text",
+          "unidad": 28
+        },
+        {
+          "stableId": "f4bc5588-b9f5-4252-b1a1-8bf0068f7072",
+          "title": "pdf 2.3",
+          "type": "pdf",
+          "unidad": 28,
+          "id": 71,
+          "modulo": 12
+        },
+        {
+          "id": 72,
+          "modulo": 12,
+          "stableId": "1a235c2b-8e63-43f0-92fa-f714a54f5414",
+          "title": "quiz 2.3",
+          "type": "quiz",
+          "unidad": 28
+        },
+        {
+          "id": 73,
+          "modulo": 13,
+          "stableId": "70a491c0-22b4-4ad0-b0dd-0599e747bd01",
+          "title": "text 3.1",
+          "type": "text",
+          "unidad": 29
+        },
+        {
+          "id": 74,
+          "modulo": 13,
+          "stableId": "747847e2-482a-4598-8c76-981dca989049",
+          "title": "pdf 3.1",
+          "type": "pdf",
+          "unidad": 29
+        },
+        {
+          "title": "quiz 3.1",
+          "type": "quiz",
+          "unidad": 29,
+          "id": 75,
+          "modulo": 13,
+          "stableId": "295addb4-e17d-456d-abca-209fc8bc0124"
+        },
+        {
+          "modulo": 13,
+          "stableId": "7f8eef40-bcd6-4af1-9a80-ff4c6e1963c9",
+          "title": "text 3.2",
+          "type": "text",
+          "unidad": 30,
+          "id": 76
+        },
+        {
+          "unidad": 30,
+          "id": 77,
+          "modulo": 13,
+          "stableId": "dd95d4c1-60c7-47d4-bc30-beae8aca6ad9",
+          "title": "pdf 3.2",
+          "type": "pdf"
+        },
+        {
+          "title": "quiz 3.2",
+          "type": "quiz",
+          "unidad": 30,
+          "id": 78,
+          "modulo": 13,
+          "stableId": "87ddd8c7-d966-4cd8-aec7-02393132503a"
+        },
+        {
+          "title": "text 3.3",
+          "type": "text",
+          "unidad": 31,
+          "id": 79,
+          "modulo": 13,
+          "stableId": "6e903595-7651-40ef-80f8-e52b47029924"
+        },
+        {
+          "id": 80,
+          "modulo": 13,
+          "stableId": "19cfab66-c71e-4a70-aad2-1cb7fe3f79d9",
+          "title": "pdf 3.3",
+          "type": "pdf",
+          "unidad": 31
+        },
+        {
+          "id": 81,
+          "modulo": 13,
+          "stableId": "b5f97ba2-0396-4ad6-8a2b-d95ba2e5ff03",
+          "title": "quiz 3.3",
+          "type": "quiz",
+          "unidad": 31
+        }
+      ],
+      "slug": "ent2-c2",
+      "titulo": "Curso ent2-c2",
+      "unidades": [
+        {
+          "id": 23,
+          "stableId": "e3cab68c-2b52-485a-8267-d858b5d92fdf"
+        },
+        {
+          "id": 24,
+          "stableId": "c076572a-3ca3-4b7e-9d51-7bca143bb5ae"
+        },
+        {
+          "id": 25,
+          "stableId": "eeb4b0b6-da3a-43d0-86a4-80687175585c"
+        },
+        {
+          "id": 26,
+          "stableId": "d7630ffb-8689-4311-9f20-70bfe15b176b"
+        },
+        {
+          "id": 27,
+          "stableId": "89437dec-c8ff-4a9e-b3a1-f016637fc403"
+        },
+        {
+          "id": 28,
+          "stableId": "8edb1735-e3f1-4576-ba9e-2d3031421446"
+        },
+        {
+          "id": 29,
+          "stableId": "d101e9c2-0497-4d2a-89d2-ad948eaf6620"
+        },
+        {
+          "id": 30,
+          "stableId": "5dd83fd1-8455-4097-aabb-08e89ba178cf"
+        },
+        {
+          "id": 31,
+          "stableId": "e365bc34-1c60-418f-9462-cb48d188a8d9"
+        }
+      ],
+      "id": 7,
+      "indice": 2
+    },
+    {
+      "modulos": [
+        {
+          "id": 14,
+          "stableId": "8c5ffacf-a851-4927-a909-efae082b0ddc"
+        },
+        {
+          "id": 15,
+          "stableId": "9971ef5f-91d5-45eb-91f7-81136201eca4"
+        },
+        {
+          "id": 16,
+          "stableId": "156c04d0-bc7b-4c27-8826-1f056c3d0b26"
+        }
+      ],
+      "quizzes": [
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 28,
+          "resourceId": 84
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 29,
+          "resourceId": 87
+        },
+        {
+          "resourceId": 90,
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 30
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 31,
+          "resourceId": 93
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 32,
+          "resourceId": 96
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 33,
+          "resourceId": 99
+        },
+        {
+          "resourceId": 102,
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 34
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 35,
+          "resourceId": 105
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 36,
+          "resourceId": 108
+        }
+      ],
+      "recursos": [
+        {
+          "stableId": "b873b8de-19cb-485c-a3df-3c112062c187",
+          "title": "text 1.1",
+          "type": "text",
+          "unidad": 32,
+          "id": 82,
+          "modulo": 14
+        },
+        {
+          "id": 83,
+          "modulo": 14,
+          "stableId": "55b68d34-318e-412b-8273-13a24b9bbc97",
+          "title": "pdf 1.1",
+          "type": "pdf",
+          "unidad": 32
+        },
+        {
+          "type": "quiz",
+          "unidad": 32,
+          "id": 84,
+          "modulo": 14,
+          "stableId": "099c6319-012f-410b-a794-33579ccbbebc",
+          "title": "quiz 1.1"
+        },
+        {
+          "type": "text",
+          "unidad": 33,
+          "id": 85,
+          "modulo": 14,
+          "stableId": "8f406df6-082c-4792-a939-7f2273f1e0b0",
+          "title": "text 1.2"
+        },
+        {
+          "id": 86,
+          "modulo": 14,
+          "stableId": "f2079192-618d-41ab-a519-a88aaf8c6c00",
+          "title": "pdf 1.2",
+          "type": "pdf",
+          "unidad": 33
+        },
+        {
+          "unidad": 33,
+          "id": 87,
+          "modulo": 14,
+          "stableId": "a53ae066-2b8d-409e-8620-f4d765bf3738",
+          "title": "quiz 1.2",
+          "type": "quiz"
+        },
+        {
+          "id": 88,
+          "modulo": 14,
+          "stableId": "ea04c539-8a8e-4b07-bae7-6f6ec89c20b6",
+          "title": "text 1.3",
+          "type": "text",
+          "unidad": 34
+        },
+        {
+          "stableId": "ac4190df-b953-4573-a789-1c868386a7c6",
+          "title": "pdf 1.3",
+          "type": "pdf",
+          "unidad": 34,
+          "id": 89,
+          "modulo": 14
+        },
+        {
+          "id": 90,
+          "modulo": 14,
+          "stableId": "ba944403-48ec-4f32-af1b-9d883e4312e3",
+          "title": "quiz 1.3",
+          "type": "quiz",
+          "unidad": 34
+        },
+        {
+          "type": "text",
+          "unidad": 35,
+          "id": 91,
+          "modulo": 15,
+          "stableId": "424c4094-8384-4ec0-bff6-11fa3edc59db",
+          "title": "text 2.1"
+        },
+        {
+          "id": 92,
+          "modulo": 15,
+          "stableId": "94fa8d12-9205-45b1-b01a-b1d4db3ad968",
+          "title": "pdf 2.1",
+          "type": "pdf",
+          "unidad": 35
+        },
+        {
+          "id": 93,
+          "modulo": 15,
+          "stableId": "50435bb7-91c4-4e07-90a0-bd7808e864bf",
+          "title": "quiz 2.1",
+          "type": "quiz",
+          "unidad": 35
+        },
+        {
+          "id": 94,
+          "modulo": 15,
+          "stableId": "c7920b48-a12a-4e6e-b62f-3fe687415fb1",
+          "title": "text 2.2",
+          "type": "text",
+          "unidad": 36
+        },
+        {
+          "unidad": 36,
+          "id": 95,
+          "modulo": 15,
+          "stableId": "b516555b-48a2-4790-aef3-eb05717f4eda",
+          "title": "pdf 2.2",
+          "type": "pdf"
+        },
+        {
+          "id": 96,
+          "modulo": 15,
+          "stableId": "ab699edd-2eae-4923-b327-3bf8b8c3914e",
+          "title": "quiz 2.2",
+          "type": "quiz",
+          "unidad": 36
+        },
+        {
+          "type": "text",
+          "unidad": 37,
+          "id": 97,
+          "modulo": 15,
+          "stableId": "c4f5651f-4137-449a-9f8a-ec5f3e996672",
+          "title": "text 2.3"
+        },
+        {
+          "id": 98,
+          "modulo": 15,
+          "stableId": "92e5eb40-f410-414a-a7de-6a8d5bfb56ad",
+          "title": "pdf 2.3",
+          "type": "pdf",
+          "unidad": 37
+        },
+        {
+          "stableId": "e12c6bad-9ad8-4586-be2a-7881c8f7e664",
+          "title": "quiz 2.3",
+          "type": "quiz",
+          "unidad": 37,
+          "id": 99,
+          "modulo": 15
+        },
+        {
+          "modulo": 16,
+          "stableId": "62afc8a6-5d76-44c1-b9c9-d5ffdd1a2d9c",
+          "title": "text 3.1",
+          "type": "text",
+          "unidad": 38,
+          "id": 100
+        },
+        {
+          "type": "pdf",
+          "unidad": 38,
+          "id": 101,
+          "modulo": 16,
+          "stableId": "c09b9219-620b-46cb-8849-3da09f8683d8",
+          "title": "pdf 3.1"
+        },
+        {
+          "title": "quiz 3.1",
+          "type": "quiz",
+          "unidad": 38,
+          "id": 102,
+          "modulo": 16,
+          "stableId": "08c7b0ce-46b1-4c9f-b291-740c4116d195"
+        },
+        {
+          "id": 103,
+          "modulo": 16,
+          "stableId": "d47da0fb-cf83-442b-8280-f6f25bcca31d",
+          "title": "text 3.2",
+          "type": "text",
+          "unidad": 39
+        },
+        {
+          "id": 104,
+          "modulo": 16,
+          "stableId": "4637a47d-a2a2-4f17-81d8-f2f7b438f0b0",
+          "title": "pdf 3.2",
+          "type": "pdf",
+          "unidad": 39
+        },
+        {
+          "title": "quiz 3.2",
+          "type": "quiz",
+          "unidad": 39,
+          "id": 105,
+          "modulo": 16,
+          "stableId": "81d8479c-dec2-49dd-8b88-8e37b862fbc0"
+        },
+        {
+          "type": "text",
+          "unidad": 40,
+          "id": 106,
+          "modulo": 16,
+          "stableId": "a63f8273-94ef-443a-9cd3-8fc2f1ca5a88",
+          "title": "text 3.3"
+        },
+        {
+          "id": 107,
+          "modulo": 16,
+          "stableId": "83259580-4db7-4cf5-abf0-a32925c763fb",
+          "title": "pdf 3.3",
+          "type": "pdf",
+          "unidad": 40
+        },
+        {
+          "type": "quiz",
+          "unidad": 40,
+          "id": 108,
+          "modulo": 16,
+          "stableId": "9f874397-1793-45d6-b3ca-ea207b67f09e",
+          "title": "quiz 3.3"
+        }
+      ],
+      "slug": "ent2-c3",
+      "titulo": "Curso ent2-c3",
+      "unidades": [
+        {
+          "id": 32,
+          "stableId": "667f6489-b90d-45b1-acca-0ea0c0a6f784"
+        },
+        {
+          "id": 33,
+          "stableId": "074f69a2-50fc-42be-92c9-e6cc7b3c4767"
+        },
+        {
+          "id": 34,
+          "stableId": "4a61fcae-e07c-486b-9b6f-1215cc50df18"
+        },
+        {
+          "id": 35,
+          "stableId": "dae87f83-acbd-4122-b8e5-b62a5674a011"
+        },
+        {
+          "id": 36,
+          "stableId": "095828bd-3e74-4de1-b4c1-98be5c3a0fec"
+        },
+        {
+          "id": 37,
+          "stableId": "0281bd99-1705-4f8c-881f-0455b031eb71"
+        },
+        {
+          "id": 38,
+          "stableId": "322e5808-9f0e-40a7-92a3-33eef10a9cb0"
+        },
+        {
+          "id": 39,
+          "stableId": "ef8030f2-60cb-41cc-9042-9978b5c14bdd"
+        },
+        {
+          "id": 40,
+          "stableId": "65e99f3b-8d0c-43c5-8e20-fa1136055922"
+        }
+      ],
+      "id": 8,
+      "indice": 3
+    },
+    {
+      "recursos": [
+        {
+          "stableId": "5b757feb-7da0-4d49-b392-7dd11dc86c6d",
+          "title": "text 1.1",
+          "type": "text",
+          "unidad": 41,
+          "id": 109,
+          "modulo": 17
+        },
+        {
+          "type": "pdf",
+          "unidad": 41,
+          "id": 110,
+          "modulo": 17,
+          "stableId": "ae1edbdd-5225-4303-8961-d7e43b632cf4",
+          "title": "pdf 1.1"
+        },
+        {
+          "title": "quiz 1.1",
+          "type": "quiz",
+          "unidad": 41,
+          "id": 111,
+          "modulo": 17,
+          "stableId": "7793a667-a955-494f-bc4b-cf985b4e43eb"
+        },
+        {
+          "id": 112,
+          "modulo": 17,
+          "stableId": "74fd9fb8-bcee-4ce3-b899-636e7885ebdc",
+          "title": "text 1.2",
+          "type": "text",
+          "unidad": 42
+        },
+        {
+          "title": "pdf 1.2",
+          "type": "pdf",
+          "unidad": 42,
+          "id": 113,
+          "modulo": 17,
+          "stableId": "89060521-f498-411b-abc4-e37500d76ea5"
+        },
+        {
+          "id": 114,
+          "modulo": 17,
+          "stableId": "270a285c-930a-4cfb-96f5-549fd10e8e84",
+          "title": "quiz 1.2",
+          "type": "quiz",
+          "unidad": 42
+        },
+        {
+          "stableId": "c4c73f88-4e55-456f-84ff-0d0fb608963b",
+          "title": "text 1.3",
+          "type": "text",
+          "unidad": 43,
+          "id": 115,
+          "modulo": 17
+        },
+        {
+          "type": "pdf",
+          "unidad": 43,
+          "id": 116,
+          "modulo": 17,
+          "stableId": "b542b344-9cf7-40f5-9164-b2201a60abf4",
+          "title": "pdf 1.3"
+        },
+        {
+          "id": 117,
+          "modulo": 17,
+          "stableId": "b31aeb96-7661-40f0-860e-fe26c13cb82b",
+          "title": "quiz 1.3",
+          "type": "quiz",
+          "unidad": 43
+        },
+        {
+          "stableId": "f93521ec-93cc-4eda-bb8c-4b6f511d513d",
+          "title": "text 2.1",
+          "type": "text",
+          "unidad": 44,
+          "id": 118,
+          "modulo": 18
+        },
+        {
+          "modulo": 18,
+          "stableId": "5d2f7e4b-3b2c-489f-aaf8-ed66326c11df",
+          "title": "pdf 2.1",
+          "type": "pdf",
+          "unidad": 44,
+          "id": 119
+        },
+        {
+          "id": 120,
+          "modulo": 18,
+          "stableId": "f062598b-da81-4209-b88a-2cdcd050de44",
+          "title": "quiz 2.1",
+          "type": "quiz",
+          "unidad": 44
+        },
+        {
+          "id": 121,
+          "modulo": 18,
+          "stableId": "d521f813-91ce-4caf-9a4c-4b61ef903648",
+          "title": "text 2.2",
+          "type": "text",
+          "unidad": 45
+        },
+        {
+          "stableId": "55ae45df-2147-4705-a36c-52e3bab9d29c",
+          "title": "pdf 2.2",
+          "type": "pdf",
+          "unidad": 45,
+          "id": 122,
+          "modulo": 18
+        },
+        {
+          "id": 123,
+          "modulo": 18,
+          "stableId": "3f0ebe01-e20d-4e8c-9edc-20e74c5b87ee",
+          "title": "quiz 2.2",
+          "type": "quiz",
+          "unidad": 45
+        },
+        {
+          "title": "text 2.3",
+          "type": "text",
+          "unidad": 46,
+          "id": 124,
+          "modulo": 18,
+          "stableId": "2db89cf0-3ccc-450c-8178-8fec16c60c4a"
+        },
+        {
+          "title": "pdf 2.3",
+          "type": "pdf",
+          "unidad": 46,
+          "id": 125,
+          "modulo": 18,
+          "stableId": "a0712dae-c09c-4cbf-8d80-765459fbd07d"
+        },
+        {
+          "unidad": 46,
+          "id": 126,
+          "modulo": 18,
+          "stableId": "9c95e63c-65bd-43a3-b691-38e4d2d4d549",
+          "title": "quiz 2.3",
+          "type": "quiz"
+        },
+        {
+          "id": 127,
+          "modulo": 19,
+          "stableId": "49a7c3ef-33b6-4e17-9b50-ec1d034be61c",
+          "title": "text 3.1",
+          "type": "text",
+          "unidad": 47
+        },
+        {
+          "id": 128,
+          "modulo": 19,
+          "stableId": "f8691f63-72c4-4c9e-85c9-093f7a49fb90",
+          "title": "pdf 3.1",
+          "type": "pdf",
+          "unidad": 47
+        },
+        {
+          "stableId": "74e754b4-a0bd-42da-8682-9582dc8740de",
+          "title": "quiz 3.1",
+          "type": "quiz",
+          "unidad": 47,
+          "id": 129,
+          "modulo": 19
+        },
+        {
+          "unidad": 48,
+          "id": 130,
+          "modulo": 19,
+          "stableId": "09d9d0a7-8397-4a4e-b625-17b2f414ad81",
+          "title": "text 3.2",
+          "type": "text"
+        },
+        {
+          "id": 131,
+          "modulo": 19,
+          "stableId": "f8e1b388-1c64-4a68-8e9a-38bef1225592",
+          "title": "pdf 3.2",
+          "type": "pdf",
+          "unidad": 48
+        },
+        {
+          "unidad": 48,
+          "id": 132,
+          "modulo": 19,
+          "stableId": "e02d3110-f28e-4388-afe0-0863ac82f7f0",
+          "title": "quiz 3.2",
+          "type": "quiz"
+        },
+        {
+          "title": "text 3.3",
+          "type": "text",
+          "unidad": 49,
+          "id": 133,
+          "modulo": 19,
+          "stableId": "f48cb96d-2afd-4549-8c77-b24e098c920a"
+        },
+        {
+          "id": 134,
+          "modulo": 19,
+          "stableId": "164cc719-dd1e-465a-86ca-e80a3b964c8c",
+          "title": "pdf 3.3",
+          "type": "pdf",
+          "unidad": 49
+        },
+        {
+          "stableId": "ea32b308-9d69-4d26-a268-c9febe1fd967",
+          "title": "quiz 3.3",
+          "type": "quiz",
+          "unidad": 49,
+          "id": 135,
+          "modulo": 19
+        }
+      ],
+      "slug": "ent2-c4",
+      "titulo": "Curso ent2-c4",
+      "unidades": [
+        {
+          "id": 41,
+          "stableId": "365d57ca-76f9-4641-88cf-112a73b48fba"
+        },
+        {
+          "id": 42,
+          "stableId": "e6ec6069-0213-44c5-b07e-6462de531778"
+        },
+        {
+          "id": 43,
+          "stableId": "596902d0-3565-4ae3-8e3e-9dc8fd979433"
+        },
+        {
+          "stableId": "af797beb-4e58-49bf-a0be-e99705b062bc",
+          "id": 44
+        },
+        {
+          "id": 45,
+          "stableId": "78e1e1e7-7d5d-428f-95d6-f55259ad14b3"
+        },
+        {
+          "id": 46,
+          "stableId": "258c9b79-ea62-453c-b1a9-c04b6da40150"
+        },
+        {
+          "id": 47,
+          "stableId": "aa04f53c-8b65-4a17-927e-e68bfc629af2"
+        },
+        {
+          "id": 48,
+          "stableId": "bea866dc-f6e0-4332-9947-bf8cc2110e4e"
+        },
+        {
+          "id": 49,
+          "stableId": "10c2e37f-590a-4a91-9295-0a3ea928105b"
+        }
+      ],
+      "id": 9,
+      "indice": 4,
+      "modulos": [
+        {
+          "id": 17,
+          "stableId": "4636c766-e199-4d96-b459-e09f43e439bb"
+        },
+        {
+          "id": 18,
+          "stableId": "ffa4c595-c75d-4725-9826-a55013072f1d"
+        },
+        {
+          "id": 19,
+          "stableId": "518c03cc-62db-46bc-8de3-f18854bd8dce"
+        }
+      ],
+      "quizzes": [
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 37,
+          "resourceId": 111
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 38,
+          "resourceId": 114
+        },
+        {
+          "id": 39,
+          "resourceId": 117,
+          "correctas": [
+            1,
+            0,
+            0
+          ]
+        },
+        {
+          "resourceId": 120,
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 40
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 41,
+          "resourceId": 123
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 42,
+          "resourceId": 126
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 43,
+          "resourceId": 129
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 44,
+          "resourceId": 132
+        },
+        {
+          "id": 45,
+          "resourceId": 135,
+          "correctas": [
+            1,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "modulos": [
+        {
+          "id": 20,
+          "stableId": "cde9e6a7-1fb7-4d93-a2eb-b67f7e227936"
+        },
+        {
+          "id": 21,
+          "stableId": "e972eae5-1e17-4587-b45f-a11c5c66d869"
+        },
+        {
+          "id": 22,
+          "stableId": "02aa424e-bc45-4b4a-afb2-8efc201a6602"
+        }
+      ],
+      "quizzes": [
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 46,
+          "resourceId": 138
+        },
+        {
+          "id": 47,
+          "resourceId": 141,
+          "correctas": [
+            1,
+            0,
+            0
+          ]
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 48,
+          "resourceId": 144
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 49,
+          "resourceId": 147
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 50,
+          "resourceId": 150
+        },
+        {
+          "id": 51,
+          "resourceId": 153,
+          "correctas": [
+            1,
+            0,
+            0
+          ]
+        },
+        {
+          "resourceId": 156,
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 52
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 53,
+          "resourceId": 159
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 54,
+          "resourceId": 162
+        }
+      ],
+      "recursos": [
+        {
+          "id": 136,
+          "modulo": 20,
+          "stableId": "55580fc9-8161-4dbe-bf3b-71edf80e3219",
+          "title": "text 1.1",
+          "type": "text",
+          "unidad": 50
+        },
+        {
+          "type": "pdf",
+          "unidad": 50,
+          "id": 137,
+          "modulo": 20,
+          "stableId": "59755193-4ecb-42e9-8fe4-b5b23c016dd6",
+          "title": "pdf 1.1"
+        },
+        {
+          "id": 138,
+          "modulo": 20,
+          "stableId": "74e5b98b-2887-4346-8bc5-b2f788944b54",
+          "title": "quiz 1.1",
+          "type": "quiz",
+          "unidad": 50
+        },
+        {
+          "title": "text 1.2",
+          "type": "text",
+          "unidad": 51,
+          "id": 139,
+          "modulo": 20,
+          "stableId": "64707a8e-5807-4abf-8531-88f92276574b"
+        },
+        {
+          "id": 140,
+          "modulo": 20,
+          "stableId": "eb8b41c2-50bb-4f88-9d83-f4e32c6e3464",
+          "title": "pdf 1.2",
+          "type": "pdf",
+          "unidad": 51
+        },
+        {
+          "modulo": 20,
+          "stableId": "dc928ae5-66e9-43a2-a4de-cea044412c0f",
+          "title": "quiz 1.2",
+          "type": "quiz",
+          "unidad": 51,
+          "id": 141
+        },
+        {
+          "unidad": 52,
+          "id": 142,
+          "modulo": 20,
+          "stableId": "3ce7be77-1e48-45cb-bd0f-5f46e5a2f580",
+          "title": "text 1.3",
+          "type": "text"
+        },
+        {
+          "title": "pdf 1.3",
+          "type": "pdf",
+          "unidad": 52,
+          "id": 143,
+          "modulo": 20,
+          "stableId": "313c50ce-eaf3-4f95-800e-0e5f32063971"
+        },
+        {
+          "stableId": "eed91db3-fa19-4262-b6db-189268c04cd7",
+          "title": "quiz 1.3",
+          "type": "quiz",
+          "unidad": 52,
+          "id": 144,
+          "modulo": 20
+        },
+        {
+          "type": "text",
+          "unidad": 53,
+          "id": 145,
+          "modulo": 21,
+          "stableId": "e8b5f94e-05d3-44ee-a5fc-4ea5e37a6c35",
+          "title": "text 2.1"
+        },
+        {
+          "stableId": "8935b7a7-ba01-4f8b-a5dd-78e9aed95424",
+          "title": "pdf 2.1",
+          "type": "pdf",
+          "unidad": 53,
+          "id": 146,
+          "modulo": 21
+        },
+        {
+          "stableId": "07ed8f56-0e7a-4030-8009-669d9951876d",
+          "title": "quiz 2.1",
+          "type": "quiz",
+          "unidad": 53,
+          "id": 147,
+          "modulo": 21
+        },
+        {
+          "id": 148,
+          "modulo": 21,
+          "stableId": "3f647b05-8d4a-4d84-8dd5-42d9a15fd116",
+          "title": "text 2.2",
+          "type": "text",
+          "unidad": 54
+        },
+        {
+          "modulo": 21,
+          "stableId": "0a01dc73-d646-4760-a196-b399025e02a2",
+          "title": "pdf 2.2",
+          "type": "pdf",
+          "unidad": 54,
+          "id": 149
+        },
+        {
+          "stableId": "b28d7a02-820e-4a76-8156-a1945fadde6c",
+          "title": "quiz 2.2",
+          "type": "quiz",
+          "unidad": 54,
+          "id": 150,
+          "modulo": 21
+        },
+        {
+          "type": "text",
+          "unidad": 55,
+          "id": 151,
+          "modulo": 21,
+          "stableId": "e82e2811-c21f-4358-a25f-d96d82556e1f",
+          "title": "text 2.3"
+        },
+        {
+          "stableId": "8cc00961-cc50-4097-9e4b-59fd2b8bd855",
+          "title": "pdf 2.3",
+          "type": "pdf",
+          "unidad": 55,
+          "id": 152,
+          "modulo": 21
+        },
+        {
+          "id": 153,
+          "modulo": 21,
+          "stableId": "a578363e-918d-4c3a-b411-55e0a1df5d88",
+          "title": "quiz 2.3",
+          "type": "quiz",
+          "unidad": 55
+        },
+        {
+          "type": "text",
+          "unidad": 56,
+          "id": 154,
+          "modulo": 22,
+          "stableId": "621b7042-5823-4d0b-9746-6fddfa1ed4e8",
+          "title": "text 3.1"
+        },
+        {
+          "title": "pdf 3.1",
+          "type": "pdf",
+          "unidad": 56,
+          "id": 155,
+          "modulo": 22,
+          "stableId": "15588916-d8c0-4ab3-ae0e-d980433fbcc3"
+        },
+        {
+          "id": 156,
+          "modulo": 22,
+          "stableId": "d4f57c43-65bd-4ffd-994b-23fc54ee1788",
+          "title": "quiz 3.1",
+          "type": "quiz",
+          "unidad": 56
+        },
+        {
+          "title": "text 3.2",
+          "type": "text",
+          "unidad": 57,
+          "id": 157,
+          "modulo": 22,
+          "stableId": "b40acc0e-b490-4743-bd91-014a96f619fa"
+        },
+        {
+          "modulo": 22,
+          "stableId": "287b76e3-5091-444f-959c-915fbe4f3bd8",
+          "title": "pdf 3.2",
+          "type": "pdf",
+          "unidad": 57,
+          "id": 158
+        },
+        {
+          "id": 159,
+          "modulo": 22,
+          "stableId": "a4df32fa-3d6b-45e3-9020-3423b01b1f8e",
+          "title": "quiz 3.2",
+          "type": "quiz",
+          "unidad": 57
+        },
+        {
+          "modulo": 22,
+          "stableId": "7130e05d-3dd6-4898-8830-2ff9371bafa8",
+          "title": "text 3.3",
+          "type": "text",
+          "unidad": 58,
+          "id": 160
+        },
+        {
+          "type": "pdf",
+          "unidad": 58,
+          "id": 161,
+          "modulo": 22,
+          "stableId": "43982d00-9bcc-431e-8e0b-6d0c45c5b234",
+          "title": "pdf 3.3"
+        },
+        {
+          "id": 162,
+          "modulo": 22,
+          "stableId": "88f60cca-2739-4a17-afde-78e3915adf25",
+          "title": "quiz 3.3",
+          "type": "quiz",
+          "unidad": 58
+        }
+      ],
+      "slug": "ent2-c5",
+      "titulo": "Curso ent2-c5",
+      "unidades": [
+        {
+          "stableId": "fa553b50-93ce-4e8c-b6f5-1fb1826ed31b",
+          "id": 50
+        },
+        {
+          "id": 51,
+          "stableId": "a57afa89-4e37-4903-a830-8c93bad2c006"
+        },
+        {
+          "id": 52,
+          "stableId": "4095e1f5-0479-4c5d-bb82-3ce0ef2ef8ba"
+        },
+        {
+          "id": 53,
+          "stableId": "c990687c-e19a-4a62-8da5-e4c9ef649f0b"
+        },
+        {
+          "id": 54,
+          "stableId": "31a6f7f6-2d0b-4751-9ab5-567fed43479c"
+        },
+        {
+          "id": 55,
+          "stableId": "6f581874-293a-4d69-a49e-beec4d8dbe66"
+        },
+        {
+          "id": 56,
+          "stableId": "a189ff55-fbc0-49ce-9f5b-d2ac789fe926"
+        },
+        {
+          "id": 57,
+          "stableId": "c6a37a80-b61f-49c0-b99c-bd9308bb1fb1"
+        },
+        {
+          "id": 58,
+          "stableId": "911dfd2d-4584-4486-aa31-c1b18c9f630e"
+        }
+      ],
+      "id": 10,
+      "indice": 5
+    },
+    {
+      "titulo": "Curso ent2-c6",
+      "unidades": [
+        {
+          "id": 59,
+          "stableId": "307a9617-6e4c-442f-8368-91ea65ce06dd"
+        },
+        {
+          "id": 60,
+          "stableId": "4133c4fd-fbc1-426f-9fe6-4378d95e8337"
+        },
+        {
+          "id": 61,
+          "stableId": "a3f8f1af-4f98-4b5f-aa53-c7f30749222f"
+        },
+        {
+          "id": 62,
+          "stableId": "2b3ed1b5-7eb3-4754-89e1-c5275ac45bcb"
+        },
+        {
+          "id": 63,
+          "stableId": "fda0d90c-7cf0-414d-aaaf-43392a684ebf"
+        },
+        {
+          "id": 64,
+          "stableId": "1a1b41f6-cd44-41b6-a935-360d4b06c009"
+        },
+        {
+          "id": 65,
+          "stableId": "fd245b91-a51b-4aa5-9a7d-2f647e6da305"
+        },
+        {
+          "id": 66,
+          "stableId": "a878ff52-27d8-4cd4-bb19-98244eedc64d"
+        },
+        {
+          "stableId": "066ba009-fae7-4d9a-9334-fc8edb706ab2",
+          "id": 67
+        }
+      ],
+      "id": 11,
+      "indice": 6,
+      "modulos": [
+        {
+          "id": 23,
+          "stableId": "bac3c2f1-90de-4ecb-bc48-c223fe1161ae"
+        },
+        {
+          "id": 24,
+          "stableId": "239a70c9-e595-40ad-a38d-a29fcba9563b"
+        },
+        {
+          "stableId": "1bb00cca-828f-4e2c-bc10-636b1bc2cef2",
+          "id": 25
+        }
+      ],
+      "quizzes": [
+        {
+          "resourceId": 165,
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 55
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 56,
+          "resourceId": 168
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 57,
+          "resourceId": 171
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 58,
+          "resourceId": 174
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 59,
+          "resourceId": 177
+        },
+        {
+          "resourceId": 180,
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 60
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 61,
+          "resourceId": 183
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 62,
+          "resourceId": 186
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 63,
+          "resourceId": 189
+        }
+      ],
+      "recursos": [
+        {
+          "id": 163,
+          "modulo": 23,
+          "stableId": "2fd1a841-40ae-43e4-8fab-1d93d8896309",
+          "title": "text 1.1",
+          "type": "text",
+          "unidad": 59
+        },
+        {
+          "title": "pdf 1.1",
+          "type": "pdf",
+          "unidad": 59,
+          "id": 164,
+          "modulo": 23,
+          "stableId": "a1d1aaad-6a17-4340-a655-c15db86a341e"
+        },
+        {
+          "id": 165,
+          "modulo": 23,
+          "stableId": "c6cad348-b267-4236-bf16-5f42da6df561",
+          "title": "quiz 1.1",
+          "type": "quiz",
+          "unidad": 59
+        },
+        {
+          "unidad": 60,
+          "id": 166,
+          "modulo": 23,
+          "stableId": "6f8c1b4c-9ba3-467a-9cb0-58d8dc5a2e71",
+          "title": "text 1.2",
+          "type": "text"
+        },
+        {
+          "modulo": 23,
+          "stableId": "c5c9a733-3623-4df4-a843-6737b4b695a2",
+          "title": "pdf 1.2",
+          "type": "pdf",
+          "unidad": 60,
+          "id": 167
+        },
+        {
+          "title": "quiz 1.2",
+          "type": "quiz",
+          "unidad": 60,
+          "id": 168,
+          "modulo": 23,
+          "stableId": "511d22af-8aa2-44f0-9f64-d1344f57900d"
+        },
+        {
+          "id": 169,
+          "modulo": 23,
+          "stableId": "cab1f858-7bf9-4a02-a0bd-b310a20268ad",
+          "title": "text 1.3",
+          "type": "text",
+          "unidad": 61
+        },
+        {
+          "type": "pdf",
+          "unidad": 61,
+          "id": 170,
+          "modulo": 23,
+          "stableId": "af2d39f3-1312-497f-8bd6-16d913e777bf",
+          "title": "pdf 1.3"
+        },
+        {
+          "id": 171,
+          "modulo": 23,
+          "stableId": "a637fcb9-e90e-47bc-8593-b2203b2285d2",
+          "title": "quiz 1.3",
+          "type": "quiz",
+          "unidad": 61
+        },
+        {
+          "unidad": 62,
+          "id": 172,
+          "modulo": 24,
+          "stableId": "146f0f05-0d5d-4677-a4de-4d109ef7ee81",
+          "title": "text 2.1",
+          "type": "text"
+        },
+        {
+          "type": "pdf",
+          "unidad": 62,
+          "id": 173,
+          "modulo": 24,
+          "stableId": "fd3ee6dc-224c-4937-9a19-c959658e474b",
+          "title": "pdf 2.1"
+        },
+        {
+          "id": 174,
+          "modulo": 24,
+          "stableId": "3a00b2c3-7803-4c95-a68f-61b823a0f5b7",
+          "title": "quiz 2.1",
+          "type": "quiz",
+          "unidad": 62
+        },
+        {
+          "id": 175,
+          "modulo": 24,
+          "stableId": "793a4cb0-3afb-4182-96ce-98ebada0c094",
+          "title": "text 2.2",
+          "type": "text",
+          "unidad": 63
+        },
+        {
+          "id": 176,
+          "modulo": 24,
+          "stableId": "ecca21ea-af25-4646-bf5b-bc5406c729f3",
+          "title": "pdf 2.2",
+          "type": "pdf",
+          "unidad": 63
+        },
+        {
+          "title": "quiz 2.2",
+          "type": "quiz",
+          "unidad": 63,
+          "id": 177,
+          "modulo": 24,
+          "stableId": "ce46a7ed-dcf0-4e74-b067-a238622bd5dc"
+        },
+        {
+          "stableId": "2c9f20fb-0095-4072-bfdb-8994dee05339",
+          "title": "text 2.3",
+          "type": "text",
+          "unidad": 64,
+          "id": 178,
+          "modulo": 24
+        },
+        {
+          "id": 179,
+          "modulo": 24,
+          "stableId": "7347db38-b635-4a6e-8e8d-b2a182884252",
+          "title": "pdf 2.3",
+          "type": "pdf",
+          "unidad": 64
+        },
+        {
+          "id": 180,
+          "modulo": 24,
+          "stableId": "6014cad3-857c-47e2-a386-69231b8b8cd5",
+          "title": "quiz 2.3",
+          "type": "quiz",
+          "unidad": 64
+        },
+        {
+          "id": 181,
+          "modulo": 25,
+          "stableId": "d23b9f5a-0cd3-4973-ae0c-1c1a5501e7ce",
+          "title": "text 3.1",
+          "type": "text",
+          "unidad": 65
+        },
+        {
+          "stableId": "074c01a8-5813-419c-8b48-0a72d7ed0a29",
+          "title": "pdf 3.1",
+          "type": "pdf",
+          "unidad": 65,
+          "id": 182,
+          "modulo": 25
+        },
+        {
+          "title": "quiz 3.1",
+          "type": "quiz",
+          "unidad": 65,
+          "id": 183,
+          "modulo": 25,
+          "stableId": "fee41766-8919-48eb-9323-e7b995c540fc"
+        },
+        {
+          "id": 184,
+          "modulo": 25,
+          "stableId": "859e57e9-8a38-428d-b34f-ae2aa87ff2e8",
+          "title": "text 3.2",
+          "type": "text",
+          "unidad": 66
+        },
+        {
+          "unidad": 66,
+          "id": 185,
+          "modulo": 25,
+          "stableId": "36fcb866-1e11-4950-8775-e8d793dcae5f",
+          "title": "pdf 3.2",
+          "type": "pdf"
+        },
+        {
+          "id": 186,
+          "modulo": 25,
+          "stableId": "3b58b5d1-20b9-4b3c-bbd0-22eb2c115abe",
+          "title": "quiz 3.2",
+          "type": "quiz",
+          "unidad": 66
+        },
+        {
+          "modulo": 25,
+          "stableId": "3c8e22b1-b4c6-400b-ae96-03a860d6907c",
+          "title": "text 3.3",
+          "type": "text",
+          "unidad": 67,
+          "id": 187
+        },
+        {
+          "stableId": "e4a7c083-6f31-4168-b18a-bcc833bca6e4",
+          "title": "pdf 3.3",
+          "type": "pdf",
+          "unidad": 67,
+          "id": 188,
+          "modulo": 25
+        },
+        {
+          "stableId": "84518714-36b2-4368-b629-fc58da3e2763",
+          "title": "quiz 3.3",
+          "type": "quiz",
+          "unidad": 67,
+          "id": 189,
+          "modulo": 25
+        }
+      ],
+      "slug": "ent2-c6"
+    },
+    {
+      "modulos": [
+        {
+          "id": 26,
+          "stableId": "578f5c52-e646-4c59-876c-c29fc8261cef"
+        },
+        {
+          "id": 27,
+          "stableId": "e83d8e70-946d-4ab3-b61e-777de1dcc9de"
+        },
+        {
+          "id": 28,
+          "stableId": "46b00d13-ad62-4601-a472-4611ea7b11ee"
+        }
+      ],
+      "quizzes": [
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 64,
+          "resourceId": 192
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 65,
+          "resourceId": 195
+        },
+        {
+          "id": 66,
+          "resourceId": 198,
+          "correctas": [
+            1,
+            0,
+            0
+          ]
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 67,
+          "resourceId": 201
+        },
+        {
+          "id": 68,
+          "resourceId": 204,
+          "correctas": [
+            1,
+            0,
+            0
+          ]
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 69,
+          "resourceId": 207
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 70,
+          "resourceId": 210
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 71,
+          "resourceId": 213
+        },
+        {
+          "resourceId": 216,
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 72
+        }
+      ],
+      "recursos": [
+        {
+          "id": 190,
+          "modulo": 26,
+          "stableId": "b6979734-9dd6-4f61-81e1-422dbea03f2e",
+          "title": "text 1.1",
+          "type": "text",
+          "unidad": 68
+        },
+        {
+          "unidad": 68,
+          "id": 191,
+          "modulo": 26,
+          "stableId": "b8e44341-cc16-49dc-a8ef-3502414b54a7",
+          "title": "pdf 1.1",
+          "type": "pdf"
+        },
+        {
+          "id": 192,
+          "modulo": 26,
+          "stableId": "4e83e2ea-9e18-40e9-b191-4b9ce1940fe6",
+          "title": "quiz 1.1",
+          "type": "quiz",
+          "unidad": 68
+        },
+        {
+          "modulo": 26,
+          "stableId": "cff01854-9c76-4757-b216-3e040f0b1174",
+          "title": "text 1.2",
+          "type": "text",
+          "unidad": 69,
+          "id": 193
+        },
+        {
+          "id": 194,
+          "modulo": 26,
+          "stableId": "277e9dfa-54fe-4461-9a26-52835928a364",
+          "title": "pdf 1.2",
+          "type": "pdf",
+          "unidad": 69
+        },
+        {
+          "unidad": 69,
+          "id": 195,
+          "modulo": 26,
+          "stableId": "81728ade-f125-42f4-bf59-07d71056d215",
+          "title": "quiz 1.2",
+          "type": "quiz"
+        },
+        {
+          "stableId": "687e2259-d0e6-4eed-b1be-9586bab268a0",
+          "title": "text 1.3",
+          "type": "text",
+          "unidad": 70,
+          "id": 196,
+          "modulo": 26
+        },
+        {
+          "id": 197,
+          "modulo": 26,
+          "stableId": "b8bd6801-4f34-41b8-8b0f-573dbc103529",
+          "title": "pdf 1.3",
+          "type": "pdf",
+          "unidad": 70
+        },
+        {
+          "type": "quiz",
+          "unidad": 70,
+          "id": 198,
+          "modulo": 26,
+          "stableId": "fbf708dd-1bb5-42fa-bac2-ff1367ac90f3",
+          "title": "quiz 1.3"
+        },
+        {
+          "id": 199,
+          "modulo": 27,
+          "stableId": "8342ac25-10af-47b9-83d5-b29b7cc86d9c",
+          "title": "text 2.1",
+          "type": "text",
+          "unidad": 71
+        },
+        {
+          "unidad": 71,
+          "id": 200,
+          "modulo": 27,
+          "stableId": "5c3e008f-9168-4f8e-80e2-e2a30888e210",
+          "title": "pdf 2.1",
+          "type": "pdf"
+        },
+        {
+          "unidad": 71,
+          "id": 201,
+          "modulo": 27,
+          "stableId": "ebfe2964-999e-4429-889f-f221cf23d746",
+          "title": "quiz 2.1",
+          "type": "quiz"
+        },
+        {
+          "id": 202,
+          "modulo": 27,
+          "stableId": "1e3d6212-d5b6-4a8a-952a-122e7daa3a01",
+          "title": "text 2.2",
+          "type": "text",
+          "unidad": 72
+        },
+        {
+          "type": "pdf",
+          "unidad": 72,
+          "id": 203,
+          "modulo": 27,
+          "stableId": "0faea18e-6b94-4700-a512-ef4b96de4d5a",
+          "title": "pdf 2.2"
+        },
+        {
+          "unidad": 72,
+          "id": 204,
+          "modulo": 27,
+          "stableId": "17657a33-84a3-4af4-9efa-8dc29485929b",
+          "title": "quiz 2.2",
+          "type": "quiz"
+        },
+        {
+          "id": 205,
+          "modulo": 27,
+          "stableId": "0ce52803-2ab9-401d-bda0-091b68e1be37",
+          "title": "text 2.3",
+          "type": "text",
+          "unidad": 73
+        },
+        {
+          "title": "pdf 2.3",
+          "type": "pdf",
+          "unidad": 73,
+          "id": 206,
+          "modulo": 27,
+          "stableId": "109f36ec-286f-4a8c-b3d5-4a30670138a4"
+        },
+        {
+          "title": "quiz 2.3",
+          "type": "quiz",
+          "unidad": 73,
+          "id": 207,
+          "modulo": 27,
+          "stableId": "baf26327-3cc9-46af-9767-b332bd99b0e0"
+        },
+        {
+          "type": "text",
+          "unidad": 74,
+          "id": 208,
+          "modulo": 28,
+          "stableId": "fa78dec1-edcf-4886-b6b2-2dee72d9548d",
+          "title": "text 3.1"
+        },
+        {
+          "modulo": 28,
+          "stableId": "e97d4073-b133-4901-ae52-bbcf09155e9f",
+          "title": "pdf 3.1",
+          "type": "pdf",
+          "unidad": 74,
+          "id": 209
+        },
+        {
+          "unidad": 74,
+          "id": 210,
+          "modulo": 28,
+          "stableId": "cb3bc5dd-478f-49e6-8b3b-aa035345969c",
+          "title": "quiz 3.1",
+          "type": "quiz"
+        },
+        {
+          "id": 211,
+          "modulo": 28,
+          "stableId": "3ee5cfa7-a781-4053-9b9a-f2dd949576ab",
+          "title": "text 3.2",
+          "type": "text",
+          "unidad": 75
+        },
+        {
+          "id": 212,
+          "modulo": 28,
+          "stableId": "c47554f0-4cdf-41a8-9db3-6e1561bd4184",
+          "title": "pdf 3.2",
+          "type": "pdf",
+          "unidad": 75
+        },
+        {
+          "stableId": "a230ba99-f157-409a-8c4b-543cb680fd41",
+          "title": "quiz 3.2",
+          "type": "quiz",
+          "unidad": 75,
+          "id": 213,
+          "modulo": 28
+        },
+        {
+          "id": 214,
+          "modulo": 28,
+          "stableId": "c2d4acca-e63a-4025-9b35-6ce0768d4db7",
+          "title": "text 3.3",
+          "type": "text",
+          "unidad": 76
+        },
+        {
+          "title": "pdf 3.3",
+          "type": "pdf",
+          "unidad": 76,
+          "id": 215,
+          "modulo": 28,
+          "stableId": "936ce9d0-00af-40ca-a422-09f6c830ff0b"
+        },
+        {
+          "modulo": 28,
+          "stableId": "e6b2aee8-ec20-439d-aa6b-049e6bd7b1cf",
+          "title": "quiz 3.3",
+          "type": "quiz",
+          "unidad": 76,
+          "id": 216
+        }
+      ],
+      "slug": "ent2-c7",
+      "titulo": "Curso ent2-c7",
+      "unidades": [
+        {
+          "id": 68,
+          "stableId": "4c407c41-eef9-45db-8ec3-ae2d371976b6"
+        },
+        {
+          "id": 69,
+          "stableId": "359c5fd0-82f7-469d-98b3-5ad08d95e83d"
+        },
+        {
+          "id": 70,
+          "stableId": "0ce86c38-5336-4729-9b4c-4b8499c80fbc"
+        },
+        {
+          "id": 71,
+          "stableId": "0219b3cd-6bff-49b3-9177-e104aa96c732"
+        },
+        {
+          "stableId": "5c7e7ad1-3723-4f30-bd61-e0e5b1b902b5",
+          "id": 72
+        },
+        {
+          "id": 73,
+          "stableId": "b30ce883-39ca-44f5-af6c-8cb65dc9b779"
+        },
+        {
+          "id": 74,
+          "stableId": "5d51c07a-9939-4dc7-b9d5-fb74c0be67b3"
+        },
+        {
+          "id": 75,
+          "stableId": "9507a7f9-fc6a-46d2-9350-12157c338eee"
+        },
+        {
+          "id": 76,
+          "stableId": "7c4a07b6-fbc3-400f-986f-23e37a0f242d"
+        }
+      ],
+      "id": 12,
+      "indice": 7
+    },
+    {
+      "id": 13,
+      "indice": 8,
+      "modulos": [
+        {
+          "id": 29,
+          "stableId": "32e7af54-514b-43ae-a7e8-aa0c3a11bfe2"
+        },
+        {
+          "id": 30,
+          "stableId": "8dff7c7a-7599-4a7e-9115-82d8073c9ca1"
+        },
+        {
+          "id": 31,
+          "stableId": "430f4e34-1803-4fc6-b7bb-7ebf441ea0ba"
+        }
+      ],
+      "quizzes": [
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 73,
+          "resourceId": 219
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 74,
+          "resourceId": 222
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 75,
+          "resourceId": 225
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 76,
+          "resourceId": 228
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 77,
+          "resourceId": 231
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 78,
+          "resourceId": 234
+        },
+        {
+          "resourceId": 237,
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 79
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 80,
+          "resourceId": 240
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 81,
+          "resourceId": 243
+        }
+      ],
+      "recursos": [
+        {
+          "id": 217,
+          "modulo": 29,
+          "stableId": "8991080a-e96c-468f-bb14-9c840e635371",
+          "title": "text 1.1",
+          "type": "text",
+          "unidad": 77
+        },
+        {
+          "unidad": 77,
+          "id": 218,
+          "modulo": 29,
+          "stableId": "64d1dc1f-550b-443e-8d79-772a4bfbc887",
+          "title": "pdf 1.1",
+          "type": "pdf"
+        },
+        {
+          "type": "quiz",
+          "unidad": 77,
+          "id": 219,
+          "modulo": 29,
+          "stableId": "4a2ea9b7-bd24-47c4-b439-40d0e2faa16b",
+          "title": "quiz 1.1"
+        },
+        {
+          "id": 220,
+          "modulo": 29,
+          "stableId": "1b4b50a6-9cd6-4676-a400-5b5321dc3f9c",
+          "title": "text 1.2",
+          "type": "text",
+          "unidad": 78
+        },
+        {
+          "type": "pdf",
+          "unidad": 78,
+          "id": 221,
+          "modulo": 29,
+          "stableId": "ed505604-1367-4cd1-9704-81c46dcbed88",
+          "title": "pdf 1.2"
+        },
+        {
+          "id": 222,
+          "modulo": 29,
+          "stableId": "c2fdd7ce-3e66-4329-b21a-540d14c27aa3",
+          "title": "quiz 1.2",
+          "type": "quiz",
+          "unidad": 78
+        },
+        {
+          "unidad": 79,
+          "id": 223,
+          "modulo": 29,
+          "stableId": "ce9eca91-c9df-4009-8755-d0b7c8114664",
+          "title": "text 1.3",
+          "type": "text"
+        },
+        {
+          "id": 224,
+          "modulo": 29,
+          "stableId": "fe38b23d-3537-4b4c-bebe-94dd53958f49",
+          "title": "pdf 1.3",
+          "type": "pdf",
+          "unidad": 79
+        },
+        {
+          "id": 225,
+          "modulo": 29,
+          "stableId": "227a5cd7-27cb-4651-b2ca-fd6401f406b9",
+          "title": "quiz 1.3",
+          "type": "quiz",
+          "unidad": 79
+        },
+        {
+          "unidad": 80,
+          "id": 226,
+          "modulo": 30,
+          "stableId": "8a984350-63ee-4a6d-9696-dfaea51f44f1",
+          "title": "text 2.1",
+          "type": "text"
+        },
+        {
+          "id": 227,
+          "modulo": 30,
+          "stableId": "04c1b969-bfd3-46e3-9cfb-fe85d0258e04",
+          "title": "pdf 2.1",
+          "type": "pdf",
+          "unidad": 80
+        },
+        {
+          "id": 228,
+          "modulo": 30,
+          "stableId": "aae367b9-5291-4b31-bff6-8afb7a2e93f8",
+          "title": "quiz 2.1",
+          "type": "quiz",
+          "unidad": 80
+        },
+        {
+          "id": 229,
+          "modulo": 30,
+          "stableId": "94c267bb-5861-4871-9518-e81ed9fbb0c1",
+          "title": "text 2.2",
+          "type": "text",
+          "unidad": 81
+        },
+        {
+          "id": 230,
+          "modulo": 30,
+          "stableId": "b06fa03a-8eac-40a4-9910-07170043d0e3",
+          "title": "pdf 2.2",
+          "type": "pdf",
+          "unidad": 81
+        },
+        {
+          "id": 231,
+          "modulo": 30,
+          "stableId": "9a1ceea5-e1c9-430b-90da-059f4a3030eb",
+          "title": "quiz 2.2",
+          "type": "quiz",
+          "unidad": 81
+        },
+        {
+          "type": "text",
+          "unidad": 82,
+          "id": 232,
+          "modulo": 30,
+          "stableId": "14262dfd-2bf3-4e32-86a1-d51ffc1e1fe9",
+          "title": "text 2.3"
+        },
+        {
+          "id": 233,
+          "modulo": 30,
+          "stableId": "aa905ef0-4cb8-4778-be23-d1261e22ca4c",
+          "title": "pdf 2.3",
+          "type": "pdf",
+          "unidad": 82
+        },
+        {
+          "modulo": 30,
+          "stableId": "5982e641-3d55-400c-b033-d298b07ebccc",
+          "title": "quiz 2.3",
+          "type": "quiz",
+          "unidad": 82,
+          "id": 234
+        },
+        {
+          "stableId": "bec2ab3f-0a05-413d-9bf6-7eab2ca8b47b",
+          "title": "text 3.1",
+          "type": "text",
+          "unidad": 83,
+          "id": 235,
+          "modulo": 31
+        },
+        {
+          "id": 236,
+          "modulo": 31,
+          "stableId": "5a5d5e98-1e71-4b9b-a6ea-64fe2eebc298",
+          "title": "pdf 3.1",
+          "type": "pdf",
+          "unidad": 83
+        },
+        {
+          "type": "quiz",
+          "unidad": 83,
+          "id": 237,
+          "modulo": 31,
+          "stableId": "731ec70a-0041-436a-9ca0-6587180cfed4",
+          "title": "quiz 3.1"
+        },
+        {
+          "type": "text",
+          "unidad": 84,
+          "id": 238,
+          "modulo": 31,
+          "stableId": "9acd77e6-9e5a-49ff-8aed-46cf08481f10",
+          "title": "text 3.2"
+        },
+        {
+          "id": 239,
+          "modulo": 31,
+          "stableId": "3598840e-0e2f-42fd-a498-60d5d442666c",
+          "title": "pdf 3.2",
+          "type": "pdf",
+          "unidad": 84
+        },
+        {
+          "id": 240,
+          "modulo": 31,
+          "stableId": "0736e006-9bc1-43f3-9d1f-d6c4b0c8a81d",
+          "title": "quiz 3.2",
+          "type": "quiz",
+          "unidad": 84
+        },
+        {
+          "id": 241,
+          "modulo": 31,
+          "stableId": "5dc816b2-78b7-492a-a0ff-68b10ceca9b4",
+          "title": "text 3.3",
+          "type": "text",
+          "unidad": 85
+        },
+        {
+          "type": "pdf",
+          "unidad": 85,
+          "id": 242,
+          "modulo": 31,
+          "stableId": "0b3bfb44-7bbf-4773-b581-f3ca2df36176",
+          "title": "pdf 3.3"
+        },
+        {
+          "id": 243,
+          "modulo": 31,
+          "stableId": "48989b42-8fbe-4385-83e4-b958f75832b5",
+          "title": "quiz 3.3",
+          "type": "quiz",
+          "unidad": 85
+        }
+      ],
+      "slug": "ent2-c8",
+      "titulo": "Curso ent2-c8",
+      "unidades": [
+        {
+          "id": 77,
+          "stableId": "4762d69a-1425-411a-9767-5f06cd2c01f1"
+        },
+        {
+          "id": 78,
+          "stableId": "f884386a-6b51-423a-b26e-18316e84c5d7"
+        },
+        {
+          "id": 79,
+          "stableId": "600f82dc-fa24-45bd-b56d-296fa06f8cd7"
+        },
+        {
+          "id": 80,
+          "stableId": "4eda070d-764a-483d-9f4b-f7852a02dc9a"
+        },
+        {
+          "stableId": "7c2580c2-8c79-4bce-b9c7-92e1b4bd44ad",
+          "id": 81
+        },
+        {
+          "id": 82,
+          "stableId": "5c03af5c-dbd5-470d-a960-7e3390e5e3bd"
+        },
+        {
+          "id": 83,
+          "stableId": "b8842183-5267-41a2-9061-23dcf89fd747"
+        },
+        {
+          "id": 84,
+          "stableId": "44c7e200-d459-434e-a3ab-1449ebc98971"
+        },
+        {
+          "id": 85,
+          "stableId": "7e8d76ad-81eb-4975-a04d-c2c04e3fefa8"
+        }
+      ]
+    },
+    {
+      "modulos": [
+        {
+          "id": 32,
+          "stableId": "4798e36e-0dd7-43f5-869a-f9fcc1458e56"
+        },
+        {
+          "stableId": "a92cf900-7a5f-4a33-8a49-29b53c390444",
+          "id": 33
+        },
+        {
+          "id": 34,
+          "stableId": "4908720e-fd14-4dcb-9696-b423d8706622"
+        }
+      ],
+      "quizzes": [
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 82,
+          "resourceId": 246
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 83,
+          "resourceId": 249
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 84,
+          "resourceId": 252
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 85,
+          "resourceId": 255
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 86,
+          "resourceId": 258
+        },
+        {
+          "resourceId": 261,
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 87
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 88,
+          "resourceId": 264
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 89,
+          "resourceId": 267
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 90,
+          "resourceId": 270
+        }
+      ],
+      "recursos": [
+        {
+          "id": 244,
+          "modulo": 32,
+          "stableId": "225ecff6-ce6a-4b5e-9a8d-65b1f7032841",
+          "title": "text 1.1",
+          "type": "text",
+          "unidad": 86
+        },
+        {
+          "type": "pdf",
+          "unidad": 86,
+          "id": 245,
+          "modulo": 32,
+          "stableId": "c74ebc38-6d64-4080-aa15-1bff45b3ddb9",
+          "title": "pdf 1.1"
+        },
+        {
+          "title": "quiz 1.1",
+          "type": "quiz",
+          "unidad": 86,
+          "id": 246,
+          "modulo": 32,
+          "stableId": "135062ab-689e-4768-b833-dc480daccd23"
+        },
+        {
+          "modulo": 32,
+          "stableId": "fc38d6cf-2aea-411b-983e-41ea09e73ca3",
+          "title": "text 1.2",
+          "type": "text",
+          "unidad": 87,
+          "id": 247
+        },
+        {
+          "id": 248,
+          "modulo": 32,
+          "stableId": "8d40fb5c-dccf-4444-9564-f7edb400613c",
+          "title": "pdf 1.2",
+          "type": "pdf",
+          "unidad": 87
+        },
+        {
+          "modulo": 32,
+          "stableId": "7aa91e27-9d99-42f2-976c-3cc70e7d5005",
+          "title": "quiz 1.2",
+          "type": "quiz",
+          "unidad": 87,
+          "id": 249
+        },
+        {
+          "stableId": "faf5f46e-2713-4faa-8ac2-a1eb381d0cec",
+          "title": "text 1.3",
+          "type": "text",
+          "unidad": 88,
+          "id": 250,
+          "modulo": 32
+        },
+        {
+          "id": 251,
+          "modulo": 32,
+          "stableId": "76011380-1e7d-4ef4-b267-1d84fee92fda",
+          "title": "pdf 1.3",
+          "type": "pdf",
+          "unidad": 88
+        },
+        {
+          "modulo": 32,
+          "stableId": "11c68e48-0b0b-48ef-8a70-9e5727d0bc24",
+          "title": "quiz 1.3",
+          "type": "quiz",
+          "unidad": 88,
+          "id": 252
+        },
+        {
+          "id": 253,
+          "modulo": 33,
+          "stableId": "2bb5195a-158f-4e44-83b7-defc37f4170f",
+          "title": "text 2.1",
+          "type": "text",
+          "unidad": 89
+        },
+        {
+          "type": "pdf",
+          "unidad": 89,
+          "id": 254,
+          "modulo": 33,
+          "stableId": "e44b4e4f-1fce-482d-beb2-c8d2446b4e7a",
+          "title": "pdf 2.1"
+        },
+        {
+          "id": 255,
+          "modulo": 33,
+          "stableId": "64a01870-6d8e-4b00-aa25-29c94300e17d",
+          "title": "quiz 2.1",
+          "type": "quiz",
+          "unidad": 89
+        },
+        {
+          "unidad": 90,
+          "id": 256,
+          "modulo": 33,
+          "stableId": "62ce22c7-f403-4fc3-b149-08a79e5396db",
+          "title": "text 2.2",
+          "type": "text"
+        },
+        {
+          "type": "pdf",
+          "unidad": 90,
+          "id": 257,
+          "modulo": 33,
+          "stableId": "8a8fcfeb-462f-44f0-92a7-c24b8deb8e2e",
+          "title": "pdf 2.2"
+        },
+        {
+          "title": "quiz 2.2",
+          "type": "quiz",
+          "unidad": 90,
+          "id": 258,
+          "modulo": 33,
+          "stableId": "f323a5f4-8260-4de3-bbb0-d35e235623fd"
+        },
+        {
+          "id": 259,
+          "modulo": 33,
+          "stableId": "2ffd2daf-0c1b-4e82-901b-5f26ff6830d9",
+          "title": "text 2.3",
+          "type": "text",
+          "unidad": 91
+        },
+        {
+          "id": 260,
+          "modulo": 33,
+          "stableId": "641efb24-9dab-4035-af56-4fc9035d4843",
+          "title": "pdf 2.3",
+          "type": "pdf",
+          "unidad": 91
+        },
+        {
+          "type": "quiz",
+          "unidad": 91,
+          "id": 261,
+          "modulo": 33,
+          "stableId": "3e217663-2928-463e-9b4a-678dddd8f60c",
+          "title": "quiz 2.3"
+        },
+        {
+          "modulo": 34,
+          "stableId": "c877d892-84eb-4d7f-a25b-0a62f61110dd",
+          "title": "text 3.1",
+          "type": "text",
+          "unidad": 92,
+          "id": 262
+        },
+        {
+          "modulo": 34,
+          "stableId": "82a9bb65-631f-4d4c-b4e9-b0cc075eee31",
+          "title": "pdf 3.1",
+          "type": "pdf",
+          "unidad": 92,
+          "id": 263
+        },
+        {
+          "title": "quiz 3.1",
+          "type": "quiz",
+          "unidad": 92,
+          "id": 264,
+          "modulo": 34,
+          "stableId": "1f56ca63-0ccd-4621-8621-b63af41825a5"
+        },
+        {
+          "modulo": 34,
+          "stableId": "8abd1bac-dbf2-471e-a133-ed72c94a6cc9",
+          "title": "text 3.2",
+          "type": "text",
+          "unidad": 93,
+          "id": 265
+        },
+        {
+          "unidad": 93,
+          "id": 266,
+          "modulo": 34,
+          "stableId": "81742a8a-8c21-452e-a370-bba40f4fcd84",
+          "title": "pdf 3.2",
+          "type": "pdf"
+        },
+        {
+          "id": 267,
+          "modulo": 34,
+          "stableId": "b5617955-692c-469a-b1e8-65112ba53a5f",
+          "title": "quiz 3.2",
+          "type": "quiz",
+          "unidad": 93
+        },
+        {
+          "unidad": 94,
+          "id": 268,
+          "modulo": 34,
+          "stableId": "7a82f31d-84bf-41ea-a328-62fd8ce600e5",
+          "title": "text 3.3",
+          "type": "text"
+        },
+        {
+          "modulo": 34,
+          "stableId": "4267e77a-443f-4285-878f-303a310a018b",
+          "title": "pdf 3.3",
+          "type": "pdf",
+          "unidad": 94,
+          "id": 269
+        },
+        {
+          "stableId": "2ae6e4c0-d567-49f4-b2e3-e3253f22d050",
+          "title": "quiz 3.3",
+          "type": "quiz",
+          "unidad": 94,
+          "id": 270,
+          "modulo": 34
+        }
+      ],
+      "slug": "ent2-c9",
+      "titulo": "Curso ent2-c9",
+      "unidades": [
+        {
+          "id": 86,
+          "stableId": "b93a2284-8ae8-4ccb-93bc-ea16be563cac"
+        },
+        {
+          "id": 87,
+          "stableId": "c4fbe18b-09db-40fe-bc07-819c42274847"
+        },
+        {
+          "id": 88,
+          "stableId": "39ca130d-967e-4458-986c-aa75362e5811"
+        },
+        {
+          "id": 89,
+          "stableId": "3c5966ee-6799-492a-af9e-486fa88c16db"
+        },
+        {
+          "id": 90,
+          "stableId": "24ce4128-0ff2-4bba-9d2e-848ec5481151"
+        },
+        {
+          "id": 91,
+          "stableId": "4960dea3-18ac-401c-b769-fe75f057e4e2"
+        },
+        {
+          "id": 92,
+          "stableId": "91db6a09-9009-4000-aa36-15c111aa5f3a"
+        },
+        {
+          "id": 93,
+          "stableId": "cde30381-25a5-4cec-ac69-0616da47f887"
+        },
+        {
+          "id": 94,
+          "stableId": "ad551b8e-121c-4615-8385-e83100d489fb"
+        }
+      ],
+      "id": 14,
+      "indice": 9
+    },
+    {
+      "id": 15,
+      "indice": 10,
+      "modulos": [
+        {
+          "id": 35,
+          "stableId": "c13dc617-eac2-49c8-9d52-9f3f5766bb6d"
+        },
+        {
+          "id": 36,
+          "stableId": "75d08b47-3e74-45c2-ab2f-8c17453ff4ae"
+        },
+        {
+          "stableId": "1f1183c2-04a2-4ef9-b1ef-f939f47c7ee9",
+          "id": 37
+        }
+      ],
+      "quizzes": [
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 91,
+          "resourceId": 273
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 92,
+          "resourceId": 276
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 93,
+          "resourceId": 279
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 94,
+          "resourceId": 282
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 95,
+          "resourceId": 285
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 96,
+          "resourceId": 288
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 97,
+          "resourceId": 291
+        },
+        {
+          "id": 98,
+          "resourceId": 294,
+          "correctas": [
+            1,
+            0,
+            0
+          ]
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 99,
+          "resourceId": 297
+        }
+      ],
+      "recursos": [
+        {
+          "id": 271,
+          "modulo": 35,
+          "stableId": "1031c534-c043-4f38-badc-468b8a1e4298",
+          "title": "text 1.1",
+          "type": "text",
+          "unidad": 95
+        },
+        {
+          "title": "pdf 1.1",
+          "type": "pdf",
+          "unidad": 95,
+          "id": 272,
+          "modulo": 35,
+          "stableId": "5bcc0052-cbbe-46ca-9709-a4219d92fe44"
+        },
+        {
+          "modulo": 35,
+          "stableId": "82a34536-1d06-4abe-a7e0-b4472110e304",
+          "title": "quiz 1.1",
+          "type": "quiz",
+          "unidad": 95,
+          "id": 273
+        },
+        {
+          "unidad": 96,
+          "id": 274,
+          "modulo": 35,
+          "stableId": "cac085fd-c627-4282-8056-1b9f29e4a549",
+          "title": "text 1.2",
+          "type": "text"
+        },
+        {
+          "unidad": 96,
+          "id": 275,
+          "modulo": 35,
+          "stableId": "b1dcc016-ef0f-4236-a4ed-04f932ede7f9",
+          "title": "pdf 1.2",
+          "type": "pdf"
+        },
+        {
+          "id": 276,
+          "modulo": 35,
+          "stableId": "aad7b6c2-d6e0-4e7f-91f4-3659f3075eb3",
+          "title": "quiz 1.2",
+          "type": "quiz",
+          "unidad": 96
+        },
+        {
+          "id": 277,
+          "modulo": 35,
+          "stableId": "34fb1824-14ae-4220-b7f1-c1cf369d0857",
+          "title": "text 1.3",
+          "type": "text",
+          "unidad": 97
+        },
+        {
+          "stableId": "f9c86714-466b-418c-a347-458210d96dac",
+          "title": "pdf 1.3",
+          "type": "pdf",
+          "unidad": 97,
+          "id": 278,
+          "modulo": 35
+        },
+        {
+          "title": "quiz 1.3",
+          "type": "quiz",
+          "unidad": 97,
+          "id": 279,
+          "modulo": 35,
+          "stableId": "45319464-9ad1-422b-bf99-94cf92017a3a"
+        },
+        {
+          "id": 280,
+          "modulo": 36,
+          "stableId": "52b0703f-f2ca-43c5-a4f8-aa5489ff8f7c",
+          "title": "text 2.1",
+          "type": "text",
+          "unidad": 98
+        },
+        {
+          "id": 281,
+          "modulo": 36,
+          "stableId": "314dc0c2-421b-46af-9019-3a81c0700fe8",
+          "title": "pdf 2.1",
+          "type": "pdf",
+          "unidad": 98
+        },
+        {
+          "id": 282,
+          "modulo": 36,
+          "stableId": "cddead8f-2447-4d83-9288-772ac4de1e11",
+          "title": "quiz 2.1",
+          "type": "quiz",
+          "unidad": 98
+        },
+        {
+          "stableId": "d767df74-29b3-4361-b5cd-d6ac32996815",
+          "title": "text 2.2",
+          "type": "text",
+          "unidad": 99,
+          "id": 283,
+          "modulo": 36
+        },
+        {
+          "type": "pdf",
+          "unidad": 99,
+          "id": 284,
+          "modulo": 36,
+          "stableId": "b81f3d33-3a89-422b-a063-403103a7d90d",
+          "title": "pdf 2.2"
+        },
+        {
+          "unidad": 99,
+          "id": 285,
+          "modulo": 36,
+          "stableId": "99d17b16-b5d2-40a5-a354-48a91e6f4708",
+          "title": "quiz 2.2",
+          "type": "quiz"
+        },
+        {
+          "title": "text 2.3",
+          "type": "text",
+          "unidad": 100,
+          "id": 286,
+          "modulo": 36,
+          "stableId": "41fbcd5e-1a16-4eb7-8fca-71af48246764"
+        },
+        {
+          "type": "pdf",
+          "unidad": 100,
+          "id": 287,
+          "modulo": 36,
+          "stableId": "6f1bfe18-6def-4f13-9134-5a47141b9c54",
+          "title": "pdf 2.3"
+        },
+        {
+          "id": 288,
+          "modulo": 36,
+          "stableId": "3754aea2-9b08-4584-9f1a-b41c276c2204",
+          "title": "quiz 2.3",
+          "type": "quiz",
+          "unidad": 100
+        },
+        {
+          "title": "text 3.1",
+          "type": "text",
+          "unidad": 101,
+          "id": 289,
+          "modulo": 37,
+          "stableId": "3d7c2475-a880-4927-95e9-479064f0bd51"
+        },
+        {
+          "id": 290,
+          "modulo": 37,
+          "stableId": "09a074e7-dce5-429f-8777-e6e8b94308ca",
+          "title": "pdf 3.1",
+          "type": "pdf",
+          "unidad": 101
+        },
+        {
+          "id": 291,
+          "modulo": 37,
+          "stableId": "689bd8f1-99ad-4acd-917e-2efcee5127f2",
+          "title": "quiz 3.1",
+          "type": "quiz",
+          "unidad": 101
+        },
+        {
+          "title": "text 3.2",
+          "type": "text",
+          "unidad": 102,
+          "id": 292,
+          "modulo": 37,
+          "stableId": "f9582ca5-517c-4fb5-9860-1b357499245c"
+        },
+        {
+          "unidad": 102,
+          "id": 293,
+          "modulo": 37,
+          "stableId": "47d3beb6-e556-4d7a-a79e-36f2b552a693",
+          "title": "pdf 3.2",
+          "type": "pdf"
+        },
+        {
+          "modulo": 37,
+          "stableId": "15135948-9a26-4fc9-837f-061b03db99c1",
+          "title": "quiz 3.2",
+          "type": "quiz",
+          "unidad": 102,
+          "id": 294
+        },
+        {
+          "modulo": 37,
+          "stableId": "d979b05b-ae8d-49ef-a5d5-e189712124cc",
+          "title": "text 3.3",
+          "type": "text",
+          "unidad": 103,
+          "id": 295
+        },
+        {
+          "type": "pdf",
+          "unidad": 103,
+          "id": 296,
+          "modulo": 37,
+          "stableId": "bd6ce08c-2220-4ee5-a3fe-102f8e5dd68f",
+          "title": "pdf 3.3"
+        },
+        {
+          "id": 297,
+          "modulo": 37,
+          "stableId": "2dc9f58f-f54a-4134-9d47-0f4dc96056bb",
+          "title": "quiz 3.3",
+          "type": "quiz",
+          "unidad": 103
+        }
+      ],
+      "slug": "ent2-c10",
+      "titulo": "Curso ent2-c10",
+      "unidades": [
+        {
+          "id": 95,
+          "stableId": "72eeb54e-aae4-48b8-a70d-7e7e2b9d12a4"
+        },
+        {
+          "id": 96,
+          "stableId": "cdd8782d-465b-45f5-8cd5-5695cb2f534f"
+        },
+        {
+          "id": 97,
+          "stableId": "203821fb-4718-4752-9d62-59b8e3759790"
+        },
+        {
+          "stableId": "404ca01a-8745-4c0d-84e5-9ea9a44f5d69",
+          "id": 98
+        },
+        {
+          "id": 99,
+          "stableId": "ebd0bac6-3bfa-4607-9a0d-49f0040d91f6"
+        },
+        {
+          "id": 100,
+          "stableId": "aea537b0-3046-4536-8494-bfb677f7bf3d"
+        },
+        {
+          "stableId": "4265a870-0b50-4a7b-b610-b8a008c53854",
+          "id": 101
+        },
+        {
+          "id": 102,
+          "stableId": "24a7a95a-4576-4481-a069-23eb2d73af53"
+        },
+        {
+          "id": 103,
+          "stableId": "c7650724-fe8c-4332-af39-0d799ffa1201"
+        }
+      ]
+    },
+    {
+      "modulos": [
+        {
+          "id": 38,
+          "stableId": "bf462f3b-71c9-433b-b3d2-cdb581717e55"
+        },
+        {
+          "id": 39,
+          "stableId": "65974813-356f-426f-864f-336483d17c7d"
+        },
+        {
+          "id": 40,
+          "stableId": "d8ca473c-5653-4aee-ab0f-1e4dc248dfce"
+        }
+      ],
+      "quizzes": [
+        {
+          "id": 100,
+          "resourceId": 300,
+          "correctas": [
+            1,
+            0,
+            0
+          ]
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 101,
+          "resourceId": 303
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 102,
+          "resourceId": 306
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 103,
+          "resourceId": 309
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 104,
+          "resourceId": 312
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 105,
+          "resourceId": 315
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 106,
+          "resourceId": 318
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 107,
+          "resourceId": 321
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 108,
+          "resourceId": 324
+        }
+      ],
+      "recursos": [
+        {
+          "title": "text 1.1",
+          "type": "text",
+          "unidad": 104,
+          "id": 298,
+          "modulo": 38,
+          "stableId": "41a846e6-beec-42e9-92bc-79c28f29040f"
+        },
+        {
+          "type": "pdf",
+          "unidad": 104,
+          "id": 299,
+          "modulo": 38,
+          "stableId": "31e4dc73-9962-412f-82ef-cce4e0abc00f",
+          "title": "pdf 1.1"
+        },
+        {
+          "id": 300,
+          "modulo": 38,
+          "stableId": "5c2052a8-06ba-4b2b-8d30-fff86c26a1bb",
+          "title": "quiz 1.1",
+          "type": "quiz",
+          "unidad": 104
+        },
+        {
+          "stableId": "59af27a6-28c8-4c18-b5fc-d7acab8ae86b",
+          "title": "text 1.2",
+          "type": "text",
+          "unidad": 105,
+          "id": 301,
+          "modulo": 38
+        },
+        {
+          "id": 302,
+          "modulo": 38,
+          "stableId": "92b591f7-ff2a-47bc-afe1-8d5d7e4b76cb",
+          "title": "pdf 1.2",
+          "type": "pdf",
+          "unidad": 105
+        },
+        {
+          "title": "quiz 1.2",
+          "type": "quiz",
+          "unidad": 105,
+          "id": 303,
+          "modulo": 38,
+          "stableId": "6bb86b52-1695-43a1-ac34-fc4a540fdd05"
+        },
+        {
+          "title": "text 1.3",
+          "type": "text",
+          "unidad": 106,
+          "id": 304,
+          "modulo": 38,
+          "stableId": "7d601da1-c9c2-461e-be00-7e6ce8380ce1"
+        },
+        {
+          "modulo": 38,
+          "stableId": "38f5beab-fdca-4db1-9764-67eb93981222",
+          "title": "pdf 1.3",
+          "type": "pdf",
+          "unidad": 106,
+          "id": 305
+        },
+        {
+          "id": 306,
+          "modulo": 38,
+          "stableId": "051dc0d6-63a5-4c52-ba4b-634585cfcc62",
+          "title": "quiz 1.3",
+          "type": "quiz",
+          "unidad": 106
+        },
+        {
+          "title": "text 2.1",
+          "type": "text",
+          "unidad": 107,
+          "id": 307,
+          "modulo": 39,
+          "stableId": "8b25c5bd-75a6-4ed9-99ac-8dea728d7e76"
+        },
+        {
+          "modulo": 39,
+          "stableId": "5ae52fbb-bbaf-48c4-9b30-cb8ab8220219",
+          "title": "pdf 2.1",
+          "type": "pdf",
+          "unidad": 107,
+          "id": 308
+        },
+        {
+          "id": 309,
+          "modulo": 39,
+          "stableId": "4f6e59ea-960b-4d62-a322-8f0be1c1cecf",
+          "title": "quiz 2.1",
+          "type": "quiz",
+          "unidad": 107
+        },
+        {
+          "stableId": "dbbc3a74-2ecc-4f94-9bfe-bfa335c32d50",
+          "title": "text 2.2",
+          "type": "text",
+          "unidad": 108,
+          "id": 310,
+          "modulo": 39
+        },
+        {
+          "id": 311,
+          "modulo": 39,
+          "stableId": "055e920f-34d3-4da7-a68c-d06db7b8ec55",
+          "title": "pdf 2.2",
+          "type": "pdf",
+          "unidad": 108
+        },
+        {
+          "id": 312,
+          "modulo": 39,
+          "stableId": "7741dee3-7034-4f01-9fc3-f57152ff25a5",
+          "title": "quiz 2.2",
+          "type": "quiz",
+          "unidad": 108
+        },
+        {
+          "type": "text",
+          "unidad": 109,
+          "id": 313,
+          "modulo": 39,
+          "stableId": "7634ec8d-17c7-4194-96dd-e3c5180df3e5",
+          "title": "text 2.3"
+        },
+        {
+          "stableId": "0a22c0c1-0a62-4c3b-9b6c-a469620e94e6",
+          "title": "pdf 2.3",
+          "type": "pdf",
+          "unidad": 109,
+          "id": 314,
+          "modulo": 39
+        },
+        {
+          "unidad": 109,
+          "id": 315,
+          "modulo": 39,
+          "stableId": "96b84c5e-156b-4eab-bee3-cd8ddac95c10",
+          "title": "quiz 2.3",
+          "type": "quiz"
+        },
+        {
+          "modulo": 40,
+          "stableId": "683c0fd7-cb8e-4533-8dc7-c3b1da4241c2",
+          "title": "text 3.1",
+          "type": "text",
+          "unidad": 110,
+          "id": 316
+        },
+        {
+          "unidad": 110,
+          "id": 317,
+          "modulo": 40,
+          "stableId": "21a57a12-d596-4155-818f-4e3c197422f3",
+          "title": "pdf 3.1",
+          "type": "pdf"
+        },
+        {
+          "id": 318,
+          "modulo": 40,
+          "stableId": "a22c49ee-bab3-4a9c-9b94-a18f28ba1ce4",
+          "title": "quiz 3.1",
+          "type": "quiz",
+          "unidad": 110
+        },
+        {
+          "type": "text",
+          "unidad": 111,
+          "id": 319,
+          "modulo": 40,
+          "stableId": "c7b77a30-65f9-461d-aacc-e5e69c9b76d0",
+          "title": "text 3.2"
+        },
+        {
+          "type": "pdf",
+          "unidad": 111,
+          "id": 320,
+          "modulo": 40,
+          "stableId": "3c4b09aa-f03e-49b9-8a83-73d035ec5a6e",
+          "title": "pdf 3.2"
+        },
+        {
+          "id": 321,
+          "modulo": 40,
+          "stableId": "9121946d-53b5-4ba8-99fe-a45a396a3a41",
+          "title": "quiz 3.2",
+          "type": "quiz",
+          "unidad": 111
+        },
+        {
+          "id": 322,
+          "modulo": 40,
+          "stableId": "785da8d7-5cd9-4f77-bf62-53a8f96abc1f",
+          "title": "text 3.3",
+          "type": "text",
+          "unidad": 112
+        },
+        {
+          "id": 323,
+          "modulo": 40,
+          "stableId": "adf64bf6-67ac-464e-a368-45d1dca68b54",
+          "title": "pdf 3.3",
+          "type": "pdf",
+          "unidad": 112
+        },
+        {
+          "type": "quiz",
+          "unidad": 112,
+          "id": 324,
+          "modulo": 40,
+          "stableId": "53d831f6-aec9-41e3-b40a-726a2872c6b4",
+          "title": "quiz 3.3"
+        }
+      ],
+      "slug": "ent2-c11",
+      "titulo": "Curso ent2-c11",
+      "unidades": [
+        {
+          "id": 104,
+          "stableId": "9b8480c6-d628-4bb4-9c88-7dae09ff5ab8"
+        },
+        {
+          "id": 105,
+          "stableId": "3896b767-e8b3-423c-aff3-751b7f59df03"
+        },
+        {
+          "id": 106,
+          "stableId": "04ccebfa-3a32-4179-93a5-643058ad7b01"
+        },
+        {
+          "id": 107,
+          "stableId": "6c520de0-277d-4523-b728-730086ebbfb3"
+        },
+        {
+          "id": 108,
+          "stableId": "7518ea4e-98b2-41bc-963d-974e3ad6173c"
+        },
+        {
+          "id": 109,
+          "stableId": "0bf1fa5b-c73d-4a5c-9207-66fe9d129d74"
+        },
+        {
+          "id": 110,
+          "stableId": "85a084b7-6aa7-49a9-8169-9786b08cb09d"
+        },
+        {
+          "stableId": "7df9e73f-ed04-4eae-94de-dc050942204f",
+          "id": 111
+        },
+        {
+          "id": 112,
+          "stableId": "ef72d2c2-ec41-497a-b30e-9e3feb3a7a3b"
+        }
+      ],
+      "id": 16,
+      "indice": 11
+    },
+    {
+      "indice": 12,
+      "modulos": [
+        {
+          "id": 41,
+          "stableId": "59cdad6a-81d6-468c-a984-144ecefb332f"
+        },
+        {
+          "id": 42,
+          "stableId": "1c2dfe55-2752-46b7-b3ce-ba1e145d3cc8"
+        },
+        {
+          "id": 43,
+          "stableId": "62329024-5f6c-4e4e-b4a2-4c258449555c"
+        }
+      ],
+      "quizzes": [
+        {
+          "id": 109,
+          "resourceId": 327,
+          "correctas": [
+            1,
+            0,
+            0
+          ]
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 110,
+          "resourceId": 330
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 111,
+          "resourceId": 333
+        },
+        {
+          "id": 112,
+          "resourceId": 336,
+          "correctas": [
+            1,
+            0,
+            0
+          ]
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 113,
+          "resourceId": 339
+        },
+        {
+          "id": 114,
+          "resourceId": 342,
+          "correctas": [
+            1,
+            0,
+            0
+          ]
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 115,
+          "resourceId": 345
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 116,
+          "resourceId": 348
+        },
+        {
+          "id": 117,
+          "resourceId": 351,
+          "correctas": [
+            1,
+            0,
+            0
+          ]
+        }
+      ],
+      "recursos": [
+        {
+          "id": 325,
+          "modulo": 41,
+          "stableId": "56229488-47e6-486a-baf8-ea709fb8cbda",
+          "title": "text 1.1",
+          "type": "text",
+          "unidad": 113
+        },
+        {
+          "id": 326,
+          "modulo": 41,
+          "stableId": "7113c8d4-21d7-4195-9ec8-fe65f3f49f08",
+          "title": "pdf 1.1",
+          "type": "pdf",
+          "unidad": 113
+        },
+        {
+          "title": "quiz 1.1",
+          "type": "quiz",
+          "unidad": 113,
+          "id": 327,
+          "modulo": 41,
+          "stableId": "7b42635a-912d-41a4-98b7-332420bda27a"
+        },
+        {
+          "modulo": 41,
+          "stableId": "41e56f3c-47ec-46dc-b96e-4b7e7d1e1c3f",
+          "title": "text 1.2",
+          "type": "text",
+          "unidad": 114,
+          "id": 328
+        },
+        {
+          "id": 329,
+          "modulo": 41,
+          "stableId": "c4a7cde8-672d-4626-b5c3-8cffa509238d",
+          "title": "pdf 1.2",
+          "type": "pdf",
+          "unidad": 114
+        },
+        {
+          "modulo": 41,
+          "stableId": "4f9ec4ec-e333-4b75-97c1-67456a4e75b2",
+          "title": "quiz 1.2",
+          "type": "quiz",
+          "unidad": 114,
+          "id": 330
+        },
+        {
+          "modulo": 41,
+          "stableId": "6a58dd73-827d-4751-8b71-0951daa09d8d",
+          "title": "text 1.3",
+          "type": "text",
+          "unidad": 115,
+          "id": 331
+        },
+        {
+          "stableId": "97616a62-2b63-4b26-bb00-6ab1fb8a7f84",
+          "title": "pdf 1.3",
+          "type": "pdf",
+          "unidad": 115,
+          "id": 332,
+          "modulo": 41
+        },
+        {
+          "stableId": "0901f133-15fe-4f91-b5ce-61c911bf4955",
+          "title": "quiz 1.3",
+          "type": "quiz",
+          "unidad": 115,
+          "id": 333,
+          "modulo": 41
+        },
+        {
+          "type": "text",
+          "unidad": 116,
+          "id": 334,
+          "modulo": 42,
+          "stableId": "78b5ecbb-9687-4026-a596-b3ca43ad638a",
+          "title": "text 2.1"
+        },
+        {
+          "title": "pdf 2.1",
+          "type": "pdf",
+          "unidad": 116,
+          "id": 335,
+          "modulo": 42,
+          "stableId": "e02fcedf-059e-4c1c-bc8c-e008075b9673"
+        },
+        {
+          "type": "quiz",
+          "unidad": 116,
+          "id": 336,
+          "modulo": 42,
+          "stableId": "16129291-70d7-46d1-9a34-1bbfa283d966",
+          "title": "quiz 2.1"
+        },
+        {
+          "id": 337,
+          "modulo": 42,
+          "stableId": "2efbd301-f8ca-417f-8cd2-07cf590cb435",
+          "title": "text 2.2",
+          "type": "text",
+          "unidad": 117
+        },
+        {
+          "modulo": 42,
+          "stableId": "1eb1dd79-d911-4ccf-b663-b5e28414afac",
+          "title": "pdf 2.2",
+          "type": "pdf",
+          "unidad": 117,
+          "id": 338
+        },
+        {
+          "stableId": "c20b732b-aa4d-4dbf-a088-b94cb0bbefd6",
+          "title": "quiz 2.2",
+          "type": "quiz",
+          "unidad": 117,
+          "id": 339,
+          "modulo": 42
+        },
+        {
+          "id": 340,
+          "modulo": 42,
+          "stableId": "605793d2-f2f5-4bb3-a492-bc0a79014aaa",
+          "title": "text 2.3",
+          "type": "text",
+          "unidad": 118
+        },
+        {
+          "id": 341,
+          "modulo": 42,
+          "stableId": "680e86cb-3b2b-406d-9d44-6b5652b4b8c1",
+          "title": "pdf 2.3",
+          "type": "pdf",
+          "unidad": 118
+        },
+        {
+          "modulo": 42,
+          "stableId": "eebce7a6-c263-43a2-9b9d-d75fca6e6089",
+          "title": "quiz 2.3",
+          "type": "quiz",
+          "unidad": 118,
+          "id": 342
+        },
+        {
+          "modulo": 43,
+          "stableId": "17aec977-26ec-458b-8687-085bc03aa90a",
+          "title": "text 3.1",
+          "type": "text",
+          "unidad": 119,
+          "id": 343
+        },
+        {
+          "type": "pdf",
+          "unidad": 119,
+          "id": 344,
+          "modulo": 43,
+          "stableId": "dc6d5ca5-a7be-4782-ba4c-53505bde6fb4",
+          "title": "pdf 3.1"
+        },
+        {
+          "unidad": 119,
+          "id": 345,
+          "modulo": 43,
+          "stableId": "24cc278a-6f84-448d-8fde-1ca12b9e7653",
+          "title": "quiz 3.1",
+          "type": "quiz"
+        },
+        {
+          "id": 346,
+          "modulo": 43,
+          "stableId": "c7626a95-42dc-4d68-851a-7a3132ba765b",
+          "title": "text 3.2",
+          "type": "text",
+          "unidad": 120
+        },
+        {
+          "id": 347,
+          "modulo": 43,
+          "stableId": "d04a93d4-4ecf-4abf-9702-572b49b25cb5",
+          "title": "pdf 3.2",
+          "type": "pdf",
+          "unidad": 120
+        },
+        {
+          "title": "quiz 3.2",
+          "type": "quiz",
+          "unidad": 120,
+          "id": 348,
+          "modulo": 43,
+          "stableId": "eff61141-ae74-4d6c-a5e4-db20c214b36e"
+        },
+        {
+          "title": "text 3.3",
+          "type": "text",
+          "unidad": 121,
+          "id": 349,
+          "modulo": 43,
+          "stableId": "f31e8b5c-2d1e-45d8-bee4-da7cfdb6f487"
+        },
+        {
+          "modulo": 43,
+          "stableId": "ecc49bb6-14c2-4735-9065-5b4cd310f334",
+          "title": "pdf 3.3",
+          "type": "pdf",
+          "unidad": 121,
+          "id": 350
+        },
+        {
+          "type": "quiz",
+          "unidad": 121,
+          "id": 351,
+          "modulo": 43,
+          "stableId": "bebb7da0-a18e-4d84-835f-2c7b44fce6ad",
+          "title": "quiz 3.3"
+        }
+      ],
+      "slug": "ent2-c12",
+      "titulo": "Curso ent2-c12",
+      "unidades": [
+        {
+          "stableId": "f3e22f7c-2d44-4431-ad67-8bf67ba99af2",
+          "id": 113
+        },
+        {
+          "id": 114,
+          "stableId": "340fd8c5-32c2-4863-be24-7be81ff70fce"
+        },
+        {
+          "id": 115,
+          "stableId": "1c908da4-aa51-4b94-a177-4203f8b56d2b"
+        },
+        {
+          "id": 116,
+          "stableId": "12c0bb10-d860-4e28-bee8-0f8260fb82c6"
+        },
+        {
+          "stableId": "bfb03715-d81c-4a80-b199-950f00659804",
+          "id": 117
+        },
+        {
+          "stableId": "b78a7cc2-51c0-4e61-8103-13ae23fa153f",
+          "id": 118
+        },
+        {
+          "id": 119,
+          "stableId": "367ae50b-b862-43be-b5bf-2f327d2063c1"
+        },
+        {
+          "id": 120,
+          "stableId": "f55da50c-ba34-4d9e-96fd-839f4a34ca0f"
+        },
+        {
+          "id": 121,
+          "stableId": "72cd012a-897a-4de0-8faf-dede23080cdc"
+        }
+      ],
+      "id": 17
+    },
+    {
+      "titulo": "Curso ent2-c13",
+      "unidades": [
+        {
+          "id": 122,
+          "stableId": "c5b50561-7667-4dff-80ca-1db12478fe4c"
+        },
+        {
+          "stableId": "29f1207c-b776-438e-9a7b-38583f2f11c0",
+          "id": 123
+        },
+        {
+          "stableId": "3807c3a9-7935-4d1d-96cd-631946e88e87",
+          "id": 124
+        },
+        {
+          "id": 125,
+          "stableId": "bb03c7c4-5fd9-4b6b-9fa2-ebdc15c2f549"
+        },
+        {
+          "id": 126,
+          "stableId": "54cb7e98-2c5e-432b-8c5a-12721d6b2288"
+        },
+        {
+          "id": 127,
+          "stableId": "bf5143c9-7d05-4d27-b5eb-b34b917a9d8f"
+        },
+        {
+          "id": 128,
+          "stableId": "efd6d4b8-3cf3-411a-ac70-58e18a985e37"
+        },
+        {
+          "id": 129,
+          "stableId": "c5a0febe-0c63-4505-bfa6-012026cf19b1"
+        },
+        {
+          "stableId": "4651481e-8b93-4bf1-8c9b-35d9d84a9c11",
+          "id": 130
+        }
+      ],
+      "id": 18,
+      "indice": 13,
+      "modulos": [
+        {
+          "stableId": "4046d4fe-e822-4a0d-bb0a-e0e02ab63af1",
+          "id": 44
+        },
+        {
+          "stableId": "932f2290-5981-4aa0-8e69-4354e423af0f",
+          "id": 45
+        },
+        {
+          "id": 46,
+          "stableId": "7bc9b369-f2b9-44de-800b-b08ce2fec111"
+        }
+      ],
+      "quizzes": [
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 118,
+          "resourceId": 354
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 119,
+          "resourceId": 357
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 120,
+          "resourceId": 360
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 121,
+          "resourceId": 363
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 122,
+          "resourceId": 366
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 123,
+          "resourceId": 369
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 124,
+          "resourceId": 372
+        },
+        {
+          "id": 125,
+          "resourceId": 375,
+          "correctas": [
+            1,
+            0,
+            0
+          ]
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 126,
+          "resourceId": 378
+        }
+      ],
+      "recursos": [
+        {
+          "stableId": "4365c388-1f0b-48a9-a97d-7216120d3a80",
+          "title": "text 1.1",
+          "type": "text",
+          "unidad": 122,
+          "id": 352,
+          "modulo": 44
+        },
+        {
+          "title": "pdf 1.1",
+          "type": "pdf",
+          "unidad": 122,
+          "id": 353,
+          "modulo": 44,
+          "stableId": "e8cea987-54d1-4a25-b46d-d00c45db6bbc"
+        },
+        {
+          "stableId": "37c00495-8e77-4079-ba32-ce320dad2804",
+          "title": "quiz 1.1",
+          "type": "quiz",
+          "unidad": 122,
+          "id": 354,
+          "modulo": 44
+        },
+        {
+          "type": "text",
+          "unidad": 123,
+          "id": 355,
+          "modulo": 44,
+          "stableId": "4a0fc26c-0e7d-4572-990f-c6184aa7ddcb",
+          "title": "text 1.2"
+        },
+        {
+          "title": "pdf 1.2",
+          "type": "pdf",
+          "unidad": 123,
+          "id": 356,
+          "modulo": 44,
+          "stableId": "a656d55a-e55f-4d05-8ae0-db6a3737b77b"
+        },
+        {
+          "modulo": 44,
+          "stableId": "e142f96f-68b0-4c09-a652-1219485870bb",
+          "title": "quiz 1.2",
+          "type": "quiz",
+          "unidad": 123,
+          "id": 357
+        },
+        {
+          "id": 358,
+          "modulo": 44,
+          "stableId": "632ad394-c501-4382-b6ac-080db04bf362",
+          "title": "text 1.3",
+          "type": "text",
+          "unidad": 124
+        },
+        {
+          "stableId": "cf3661f6-2e9b-4db9-8f8c-0acf457fae07",
+          "title": "pdf 1.3",
+          "type": "pdf",
+          "unidad": 124,
+          "id": 359,
+          "modulo": 44
+        },
+        {
+          "type": "quiz",
+          "unidad": 124,
+          "id": 360,
+          "modulo": 44,
+          "stableId": "5694369f-cc97-46fe-9ab6-b29df8deabe8",
+          "title": "quiz 1.3"
+        },
+        {
+          "modulo": 45,
+          "stableId": "e2b73f64-9445-4cd9-9ad3-16df91c65ce0",
+          "title": "text 2.1",
+          "type": "text",
+          "unidad": 125,
+          "id": 361
+        },
+        {
+          "unidad": 125,
+          "id": 362,
+          "modulo": 45,
+          "stableId": "22a65c65-c939-4551-9e5c-150b67e1d25a",
+          "title": "pdf 2.1",
+          "type": "pdf"
+        },
+        {
+          "id": 363,
+          "modulo": 45,
+          "stableId": "277f6202-dcda-4668-bc8d-9b3c7d0f2b75",
+          "title": "quiz 2.1",
+          "type": "quiz",
+          "unidad": 125
+        },
+        {
+          "unidad": 126,
+          "id": 364,
+          "modulo": 45,
+          "stableId": "f765a987-f623-4e30-99cd-676723a76e29",
+          "title": "text 2.2",
+          "type": "text"
+        },
+        {
+          "unidad": 126,
+          "id": 365,
+          "modulo": 45,
+          "stableId": "572691b6-a067-47e6-9b4d-4ef252db494a",
+          "title": "pdf 2.2",
+          "type": "pdf"
+        },
+        {
+          "unidad": 126,
+          "id": 366,
+          "modulo": 45,
+          "stableId": "7d8e70b8-08b9-4a4d-b304-0a356975eadb",
+          "title": "quiz 2.2",
+          "type": "quiz"
+        },
+        {
+          "id": 367,
+          "modulo": 45,
+          "stableId": "cf0109b4-7595-4f1c-bb73-1818f3fe1865",
+          "title": "text 2.3",
+          "type": "text",
+          "unidad": 127
+        },
+        {
+          "stableId": "954f5e3e-c0f9-4253-a18d-9f1d42f57a60",
+          "title": "pdf 2.3",
+          "type": "pdf",
+          "unidad": 127,
+          "id": 368,
+          "modulo": 45
+        },
+        {
+          "type": "quiz",
+          "unidad": 127,
+          "id": 369,
+          "modulo": 45,
+          "stableId": "db797bb1-5937-4617-97db-2cd2d99dfda3",
+          "title": "quiz 2.3"
+        },
+        {
+          "id": 370,
+          "modulo": 46,
+          "stableId": "125212ab-5f09-4d9c-bdd2-f07d5d3afeaa",
+          "title": "text 3.1",
+          "type": "text",
+          "unidad": 128
+        },
+        {
+          "stableId": "2657dc2c-7ed8-4b9c-9514-929f3cb362f6",
+          "title": "pdf 3.1",
+          "type": "pdf",
+          "unidad": 128,
+          "id": 371,
+          "modulo": 46
+        },
+        {
+          "type": "quiz",
+          "unidad": 128,
+          "id": 372,
+          "modulo": 46,
+          "stableId": "6c9bce4f-f349-49a0-ba3f-26fee7e78c95",
+          "title": "quiz 3.1"
+        },
+        {
+          "stableId": "c3d86240-38b2-40c7-ac40-4e0ff821c82e",
+          "title": "text 3.2",
+          "type": "text",
+          "unidad": 129,
+          "id": 373,
+          "modulo": 46
+        },
+        {
+          "stableId": "0d436b73-f1e3-486e-ac5f-9fcab97a4a15",
+          "title": "pdf 3.2",
+          "type": "pdf",
+          "unidad": 129,
+          "id": 374,
+          "modulo": 46
+        },
+        {
+          "type": "quiz",
+          "unidad": 129,
+          "id": 375,
+          "modulo": 46,
+          "stableId": "4870247c-0526-4afb-96c2-087025db6c26",
+          "title": "quiz 3.2"
+        },
+        {
+          "id": 376,
+          "modulo": 46,
+          "stableId": "036b59a3-4d24-4ba3-a944-7cbcaf4c392f",
+          "title": "text 3.3",
+          "type": "text",
+          "unidad": 130
+        },
+        {
+          "id": 377,
+          "modulo": 46,
+          "stableId": "2cdcfb68-b331-4c83-b2e1-9e21298d2532",
+          "title": "pdf 3.3",
+          "type": "pdf",
+          "unidad": 130
+        },
+        {
+          "type": "quiz",
+          "unidad": 130,
+          "id": 378,
+          "modulo": 46,
+          "stableId": "504f53a8-a3d7-4b0f-a43b-2f2c5f4603eb",
+          "title": "quiz 3.3"
+        }
+      ],
+      "slug": "ent2-c13"
+    },
+    {
+      "indice": 14,
+      "modulos": [
+        {
+          "id": 47,
+          "stableId": "f7402b26-e1b8-4826-ad80-8032a3391c2c"
+        },
+        {
+          "id": 48,
+          "stableId": "8ecad8a9-1f72-4a91-928f-d2c3aef819e8"
+        },
+        {
+          "id": 49,
+          "stableId": "1358fbc6-7969-4818-83d3-3030b90769e2"
+        }
+      ],
+      "quizzes": [
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 127,
+          "resourceId": 381
+        },
+        {
+          "resourceId": 384,
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 128
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 129,
+          "resourceId": 387
+        },
+        {
+          "id": 130,
+          "resourceId": 390,
+          "correctas": [
+            1,
+            0,
+            0
+          ]
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 131,
+          "resourceId": 393
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 132,
+          "resourceId": 396
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 133,
+          "resourceId": 399
+        },
+        {
+          "resourceId": 402,
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 134
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 135,
+          "resourceId": 405
+        }
+      ],
+      "recursos": [
+        {
+          "modulo": 47,
+          "stableId": "05f03368-61e2-411e-b842-2515f753558a",
+          "title": "text 1.1",
+          "type": "text",
+          "unidad": 131,
+          "id": 379
+        },
+        {
+          "id": 380,
+          "modulo": 47,
+          "stableId": "66c974f5-7740-4be2-9620-ac0809e31057",
+          "title": "pdf 1.1",
+          "type": "pdf",
+          "unidad": 131
+        },
+        {
+          "title": "quiz 1.1",
+          "type": "quiz",
+          "unidad": 131,
+          "id": 381,
+          "modulo": 47,
+          "stableId": "d86054bc-ac66-4735-8046-ad2fb342ad74"
+        },
+        {
+          "id": 382,
+          "modulo": 47,
+          "stableId": "e0501de5-a28f-4830-9405-7970cdac8be8",
+          "title": "text 1.2",
+          "type": "text",
+          "unidad": 132
+        },
+        {
+          "id": 383,
+          "modulo": 47,
+          "stableId": "9067fe56-0fb7-46a0-a998-3b849c3c013d",
+          "title": "pdf 1.2",
+          "type": "pdf",
+          "unidad": 132
+        },
+        {
+          "modulo": 47,
+          "stableId": "6aa5bb37-b633-4463-b5c3-e5312879e2b6",
+          "title": "quiz 1.2",
+          "type": "quiz",
+          "unidad": 132,
+          "id": 384
+        },
+        {
+          "type": "text",
+          "unidad": 133,
+          "id": 385,
+          "modulo": 47,
+          "stableId": "b5e53572-fe81-4d36-a474-135760bd46a7",
+          "title": "text 1.3"
+        },
+        {
+          "id": 386,
+          "modulo": 47,
+          "stableId": "00dc740e-1127-49ce-88cf-e0c5f0f5cf28",
+          "title": "pdf 1.3",
+          "type": "pdf",
+          "unidad": 133
+        },
+        {
+          "id": 387,
+          "modulo": 47,
+          "stableId": "a95a2748-1db6-4b0b-af46-b6d80baec309",
+          "title": "quiz 1.3",
+          "type": "quiz",
+          "unidad": 133
+        },
+        {
+          "id": 388,
+          "modulo": 48,
+          "stableId": "a16153dd-918d-427f-8158-64ecfc3b67af",
+          "title": "text 2.1",
+          "type": "text",
+          "unidad": 134
+        },
+        {
+          "id": 389,
+          "modulo": 48,
+          "stableId": "25a87c7b-c71f-419c-9b9e-9b95ab20451a",
+          "title": "pdf 2.1",
+          "type": "pdf",
+          "unidad": 134
+        },
+        {
+          "id": 390,
+          "modulo": 48,
+          "stableId": "05b70798-5625-4171-a225-b97ef52c49f6",
+          "title": "quiz 2.1",
+          "type": "quiz",
+          "unidad": 134
+        },
+        {
+          "modulo": 48,
+          "stableId": "294e1815-362c-49da-89ef-1a199d2c0469",
+          "title": "text 2.2",
+          "type": "text",
+          "unidad": 135,
+          "id": 391
+        },
+        {
+          "id": 392,
+          "modulo": 48,
+          "stableId": "c733578b-d3b1-4e6a-9bcc-5dc61d34e820",
+          "title": "pdf 2.2",
+          "type": "pdf",
+          "unidad": 135
+        },
+        {
+          "id": 393,
+          "modulo": 48,
+          "stableId": "a5667619-f0c9-4c8c-b760-e3e00a18a6dc",
+          "title": "quiz 2.2",
+          "type": "quiz",
+          "unidad": 135
+        },
+        {
+          "modulo": 48,
+          "stableId": "3be311b6-cbfa-415d-b327-be2d18a401df",
+          "title": "text 2.3",
+          "type": "text",
+          "unidad": 136,
+          "id": 394
+        },
+        {
+          "unidad": 136,
+          "id": 395,
+          "modulo": 48,
+          "stableId": "8a69802f-8235-4ce1-9567-d472d33793ae",
+          "title": "pdf 2.3",
+          "type": "pdf"
+        },
+        {
+          "stableId": "8c22beca-fb85-433b-beff-96a24c415efb",
+          "title": "quiz 2.3",
+          "type": "quiz",
+          "unidad": 136,
+          "id": 396,
+          "modulo": 48
+        },
+        {
+          "id": 397,
+          "modulo": 49,
+          "stableId": "44f3a24f-1e4e-4db8-b855-7759f9bb1023",
+          "title": "text 3.1",
+          "type": "text",
+          "unidad": 137
+        },
+        {
+          "id": 398,
+          "modulo": 49,
+          "stableId": "b2a7ede5-9d28-4c7e-b17f-11927af1f8f5",
+          "title": "pdf 3.1",
+          "type": "pdf",
+          "unidad": 137
+        },
+        {
+          "stableId": "28fad54b-5eb0-4ef0-985b-31b302b6c51b",
+          "title": "quiz 3.1",
+          "type": "quiz",
+          "unidad": 137,
+          "id": 399,
+          "modulo": 49
+        },
+        {
+          "title": "text 3.2",
+          "type": "text",
+          "unidad": 138,
+          "id": 400,
+          "modulo": 49,
+          "stableId": "53b1222b-5bc7-43be-b159-8d295b036a88"
+        },
+        {
+          "type": "pdf",
+          "unidad": 138,
+          "id": 401,
+          "modulo": 49,
+          "stableId": "2ea11be3-4e1a-4ef8-b1c7-c9dfa6ff6243",
+          "title": "pdf 3.2"
+        },
+        {
+          "id": 402,
+          "modulo": 49,
+          "stableId": "d82fe521-e544-4873-8cca-7ae653be68ec",
+          "title": "quiz 3.2",
+          "type": "quiz",
+          "unidad": 138
+        },
+        {
+          "id": 403,
+          "modulo": 49,
+          "stableId": "c97c445a-ac17-45d7-b937-f0fccbbf33a9",
+          "title": "text 3.3",
+          "type": "text",
+          "unidad": 139
+        },
+        {
+          "id": 404,
+          "modulo": 49,
+          "stableId": "2b406201-c357-47f7-b73e-7c79c858ed9f",
+          "title": "pdf 3.3",
+          "type": "pdf",
+          "unidad": 139
+        },
+        {
+          "unidad": 139,
+          "id": 405,
+          "modulo": 49,
+          "stableId": "0766096a-1b28-4534-8af0-2f5fbf4d9f6a",
+          "title": "quiz 3.3",
+          "type": "quiz"
+        }
+      ],
+      "slug": "ent2-c14",
+      "titulo": "Curso ent2-c14",
+      "unidades": [
+        {
+          "stableId": "1c9f31f8-7991-4477-ad89-8a502c75befd",
+          "id": 131
+        },
+        {
+          "id": 132,
+          "stableId": "74398342-3f2e-4632-8971-de7ad8c0f848"
+        },
+        {
+          "id": 133,
+          "stableId": "b2b3404f-f87a-4100-951b-2e2b4da199db"
+        },
+        {
+          "stableId": "2414224f-378e-4f09-bd1a-b887e3d9296c",
+          "id": 134
+        },
+        {
+          "id": 135,
+          "stableId": "5468fb62-797d-4d55-9a5f-3c4996ea6cdf"
+        },
+        {
+          "id": 136,
+          "stableId": "e04bcc8f-78b6-49ab-982f-2a94e5183a57"
+        },
+        {
+          "id": 137,
+          "stableId": "66d98789-5153-4a6f-ab18-475eb5ad4a0a"
+        },
+        {
+          "stableId": "692f95c9-1e81-45c2-a06b-7233532c051c",
+          "id": 138
+        },
+        {
+          "id": 139,
+          "stableId": "038aca3b-a519-457c-8582-b7c1f7a88fe3"
+        }
+      ],
+      "id": 19
+    },
+    {
+      "modulos": [
+        {
+          "stableId": "6093036a-9518-445e-81f5-2b43002043f3",
+          "id": 50
+        },
+        {
+          "id": 51,
+          "stableId": "167a12e8-bebe-4c6b-ba13-f4798dcca26c"
+        },
+        {
+          "id": 52,
+          "stableId": "442acb7e-51c1-4772-a214-693ddfd796f8"
+        }
+      ],
+      "quizzes": [
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 136,
+          "resourceId": 408
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 137,
+          "resourceId": 411
+        },
+        {
+          "resourceId": 414,
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 138
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 139,
+          "resourceId": 417
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 140,
+          "resourceId": 420
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 141,
+          "resourceId": 423
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 142,
+          "resourceId": 426
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 143,
+          "resourceId": 429
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 144,
+          "resourceId": 432
+        }
+      ],
+      "recursos": [
+        {
+          "id": 406,
+          "modulo": 50,
+          "stableId": "c3669378-566c-4166-aff1-82a231c726e9",
+          "title": "text 1.1",
+          "type": "text",
+          "unidad": 140
+        },
+        {
+          "id": 407,
+          "modulo": 50,
+          "stableId": "b191efc2-8638-401e-8d40-804cba1a1bfa",
+          "title": "pdf 1.1",
+          "type": "pdf",
+          "unidad": 140
+        },
+        {
+          "stableId": "82329863-e42f-48b8-8277-9d9ad349134f",
+          "title": "quiz 1.1",
+          "type": "quiz",
+          "unidad": 140,
+          "id": 408,
+          "modulo": 50
+        },
+        {
+          "title": "text 1.2",
+          "type": "text",
+          "unidad": 141,
+          "id": 409,
+          "modulo": 50,
+          "stableId": "21fc7e51-c31e-4979-abbe-4c047e5fe4ac"
+        },
+        {
+          "unidad": 141,
+          "id": 410,
+          "modulo": 50,
+          "stableId": "2b35145c-2838-4159-a102-51f0e81445b6",
+          "title": "pdf 1.2",
+          "type": "pdf"
+        },
+        {
+          "modulo": 50,
+          "stableId": "80cbdb80-b046-4c4d-920f-3a611c54ed6f",
+          "title": "quiz 1.2",
+          "type": "quiz",
+          "unidad": 141,
+          "id": 411
+        },
+        {
+          "id": 412,
+          "modulo": 50,
+          "stableId": "9610fea0-a095-40be-8e0a-f84f5d607408",
+          "title": "text 1.3",
+          "type": "text",
+          "unidad": 142
+        },
+        {
+          "id": 413,
+          "modulo": 50,
+          "stableId": "ab26bc8f-9f6f-4397-9a06-dbc4c9eef443",
+          "title": "pdf 1.3",
+          "type": "pdf",
+          "unidad": 142
+        },
+        {
+          "type": "quiz",
+          "unidad": 142,
+          "id": 414,
+          "modulo": 50,
+          "stableId": "da075906-913f-48cd-868b-1329705e803f",
+          "title": "quiz 1.3"
+        },
+        {
+          "modulo": 51,
+          "stableId": "79ee0288-3294-44a1-94cf-98b7cb27e90f",
+          "title": "text 2.1",
+          "type": "text",
+          "unidad": 143,
+          "id": 415
+        },
+        {
+          "unidad": 143,
+          "id": 416,
+          "modulo": 51,
+          "stableId": "d3af5741-f31c-4b62-86e4-aa1150133bb1",
+          "title": "pdf 2.1",
+          "type": "pdf"
+        },
+        {
+          "stableId": "0f865972-d655-4c0c-8dbc-b90e3b87045c",
+          "title": "quiz 2.1",
+          "type": "quiz",
+          "unidad": 143,
+          "id": 417,
+          "modulo": 51
+        },
+        {
+          "id": 418,
+          "modulo": 51,
+          "stableId": "52be23d6-2e4a-4984-a430-7b003d826e10",
+          "title": "text 2.2",
+          "type": "text",
+          "unidad": 144
+        },
+        {
+          "unidad": 144,
+          "id": 419,
+          "modulo": 51,
+          "stableId": "fd83546a-dc23-4cd7-9b89-8bb139c29b56",
+          "title": "pdf 2.2",
+          "type": "pdf"
+        },
+        {
+          "id": 420,
+          "modulo": 51,
+          "stableId": "69d55913-d085-4228-8079-59e9525f71a9",
+          "title": "quiz 2.2",
+          "type": "quiz",
+          "unidad": 144
+        },
+        {
+          "id": 421,
+          "modulo": 51,
+          "stableId": "aff57a6c-30e7-4f86-bb44-89d71f091210",
+          "title": "text 2.3",
+          "type": "text",
+          "unidad": 145
+        },
+        {
+          "id": 422,
+          "modulo": 51,
+          "stableId": "9796fab2-bfd3-4adf-93c1-97c933b0b1db",
+          "title": "pdf 2.3",
+          "type": "pdf",
+          "unidad": 145
+        },
+        {
+          "modulo": 51,
+          "stableId": "de06e6e4-ab00-4e0a-a0dd-45cec79915e1",
+          "title": "quiz 2.3",
+          "type": "quiz",
+          "unidad": 145,
+          "id": 423
+        },
+        {
+          "modulo": 52,
+          "stableId": "3179f722-e6ca-466f-b78f-81a0904f1bee",
+          "title": "text 3.1",
+          "type": "text",
+          "unidad": 146,
+          "id": 424
+        },
+        {
+          "title": "pdf 3.1",
+          "type": "pdf",
+          "unidad": 146,
+          "id": 425,
+          "modulo": 52,
+          "stableId": "f01efb10-c921-42ea-897b-b5175f453c5d"
+        },
+        {
+          "modulo": 52,
+          "stableId": "c8dce9b7-91bc-4c2f-992f-87466d1a7429",
+          "title": "quiz 3.1",
+          "type": "quiz",
+          "unidad": 146,
+          "id": 426
+        },
+        {
+          "stableId": "78574397-15a4-4fd8-8ecd-864371d3fd04",
+          "title": "text 3.2",
+          "type": "text",
+          "unidad": 147,
+          "id": 427,
+          "modulo": 52
+        },
+        {
+          "modulo": 52,
+          "stableId": "d3befffc-6ae5-405a-8529-d167870341b2",
+          "title": "pdf 3.2",
+          "type": "pdf",
+          "unidad": 147,
+          "id": 428
+        },
+        {
+          "title": "quiz 3.2",
+          "type": "quiz",
+          "unidad": 147,
+          "id": 429,
+          "modulo": 52,
+          "stableId": "22ec22b9-cdb6-4f01-83d6-5e1d48dffc4e"
+        },
+        {
+          "id": 430,
+          "modulo": 52,
+          "stableId": "88db3046-3eee-4e9f-83e9-5a4a8fb7042f",
+          "title": "text 3.3",
+          "type": "text",
+          "unidad": 148
+        },
+        {
+          "id": 431,
+          "modulo": 52,
+          "stableId": "fec87e24-ccaa-426e-b460-894adc3f9e41",
+          "title": "pdf 3.3",
+          "type": "pdf",
+          "unidad": 148
+        },
+        {
+          "modulo": 52,
+          "stableId": "38f96ad8-3f40-4218-88c1-1cebc4cf1793",
+          "title": "quiz 3.3",
+          "type": "quiz",
+          "unidad": 148,
+          "id": 432
+        }
+      ],
+      "slug": "ent2-c15",
+      "titulo": "Curso ent2-c15",
+      "unidades": [
+        {
+          "id": 140,
+          "stableId": "5d45991c-c4ff-4268-9fab-b3f3d27dfec1"
+        },
+        {
+          "id": 141,
+          "stableId": "6a832113-69bd-419e-9ce7-b6c648d4f4b8"
+        },
+        {
+          "id": 142,
+          "stableId": "0b4e34ac-69eb-401c-b66f-06c6244c7341"
+        },
+        {
+          "id": 143,
+          "stableId": "f20459e9-c898-4baa-835c-c3b7122c61b7"
+        },
+        {
+          "id": 144,
+          "stableId": "dbc3a458-0d5b-48f8-8992-85e5aa80995f"
+        },
+        {
+          "id": 145,
+          "stableId": "d04243bb-c9e1-4de8-9b1b-aca4f8b6353b"
+        },
+        {
+          "id": 146,
+          "stableId": "45adc3bf-b500-4b08-96fa-12a20d71427f"
+        },
+        {
+          "id": 147,
+          "stableId": "176f00ba-8aef-4464-8b27-ecdc85ab9717"
+        },
+        {
+          "id": 148,
+          "stableId": "42f0be35-0860-4625-b7bb-d00fd9855594"
+        }
+      ],
+      "id": 20,
+      "indice": 15
+    },
+    {
+      "modulos": [
+        {
+          "id": 53,
+          "stableId": "8d14b9a0-6521-4151-9f6b-bff22f723311"
+        },
+        {
+          "id": 54,
+          "stableId": "b772f5ea-34e9-40ca-89d3-9a7971ddf656"
+        },
+        {
+          "id": 55,
+          "stableId": "7b35bbc5-4274-48b4-aa11-b3899ee26437"
+        }
+      ],
+      "quizzes": [
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 145,
+          "resourceId": 435
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 146,
+          "resourceId": 438
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 147,
+          "resourceId": 441
+        },
+        {
+          "id": 148,
+          "resourceId": 444,
+          "correctas": [
+            1,
+            0,
+            0
+          ]
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 149,
+          "resourceId": 447
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 150,
+          "resourceId": 450
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 151,
+          "resourceId": 453
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 152,
+          "resourceId": 456
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 153,
+          "resourceId": 459
+        }
+      ],
+      "recursos": [
+        {
+          "modulo": 53,
+          "stableId": "8cc56849-a331-4e3d-b8c1-40f40802d64b",
+          "title": "text 1.1",
+          "type": "text",
+          "unidad": 149,
+          "id": 433
+        },
+        {
+          "id": 434,
+          "modulo": 53,
+          "stableId": "9882aae9-0969-404c-b913-4db575179fd5",
+          "title": "pdf 1.1",
+          "type": "pdf",
+          "unidad": 149
+        },
+        {
+          "id": 435,
+          "modulo": 53,
+          "stableId": "3ab90104-9748-4daf-a552-9a33c8c92c66",
+          "title": "quiz 1.1",
+          "type": "quiz",
+          "unidad": 149
+        },
+        {
+          "type": "text",
+          "unidad": 150,
+          "id": 436,
+          "modulo": 53,
+          "stableId": "52f33272-5785-4b66-a2ef-a3bcd1ff038b",
+          "title": "text 1.2"
+        },
+        {
+          "stableId": "68a88fe0-d919-45df-a724-81811a078b4c",
+          "title": "pdf 1.2",
+          "type": "pdf",
+          "unidad": 150,
+          "id": 437,
+          "modulo": 53
+        },
+        {
+          "id": 438,
+          "modulo": 53,
+          "stableId": "3037e9b8-1e32-47a8-a5f1-1e14e54d898e",
+          "title": "quiz 1.2",
+          "type": "quiz",
+          "unidad": 150
+        },
+        {
+          "unidad": 151,
+          "id": 439,
+          "modulo": 53,
+          "stableId": "3a19ab9b-8d0d-49ab-94e0-74e2c1c763b6",
+          "title": "text 1.3",
+          "type": "text"
+        },
+        {
+          "id": 440,
+          "modulo": 53,
+          "stableId": "893cd8b6-8849-4ce2-8aa0-4d0df58b9869",
+          "title": "pdf 1.3",
+          "type": "pdf",
+          "unidad": 151
+        },
+        {
+          "id": 441,
+          "modulo": 53,
+          "stableId": "656475ff-540d-4512-8c10-839c1a5de112",
+          "title": "quiz 1.3",
+          "type": "quiz",
+          "unidad": 151
+        },
+        {
+          "stableId": "31c626d5-2326-43bf-bd6a-ddcde6f01b6b",
+          "title": "text 2.1",
+          "type": "text",
+          "unidad": 152,
+          "id": 442,
+          "modulo": 54
+        },
+        {
+          "id": 443,
+          "modulo": 54,
+          "stableId": "d5aa73b4-3a4a-4a00-b53e-77d2b599af32",
+          "title": "pdf 2.1",
+          "type": "pdf",
+          "unidad": 152
+        },
+        {
+          "unidad": 152,
+          "id": 444,
+          "modulo": 54,
+          "stableId": "670a14c0-5c1a-4ec4-94b4-3343a3f9ec9e",
+          "title": "quiz 2.1",
+          "type": "quiz"
+        },
+        {
+          "id": 445,
+          "modulo": 54,
+          "stableId": "2911c019-e1bb-4225-bf3f-3a97eecb0217",
+          "title": "text 2.2",
+          "type": "text",
+          "unidad": 153
+        },
+        {
+          "unidad": 153,
+          "id": 446,
+          "modulo": 54,
+          "stableId": "72d48946-21ab-45c6-a4db-db884ece1ce5",
+          "title": "pdf 2.2",
+          "type": "pdf"
+        },
+        {
+          "id": 447,
+          "modulo": 54,
+          "stableId": "29b9b308-11c1-4b3c-9970-a5bb08d3f948",
+          "title": "quiz 2.2",
+          "type": "quiz",
+          "unidad": 153
+        },
+        {
+          "id": 448,
+          "modulo": 54,
+          "stableId": "cea7e7b1-53de-495a-acbd-c43574750701",
+          "title": "text 2.3",
+          "type": "text",
+          "unidad": 154
+        },
+        {
+          "modulo": 54,
+          "stableId": "345b1ea4-24ce-44c2-9d70-67bcd819dfbb",
+          "title": "pdf 2.3",
+          "type": "pdf",
+          "unidad": 154,
+          "id": 449
+        },
+        {
+          "unidad": 154,
+          "id": 450,
+          "modulo": 54,
+          "stableId": "2f6a304c-a13f-49f6-9e03-4496fc728598",
+          "title": "quiz 2.3",
+          "type": "quiz"
+        },
+        {
+          "unidad": 155,
+          "id": 451,
+          "modulo": 55,
+          "stableId": "75d99587-42ee-4188-a28e-c1495bb7048c",
+          "title": "text 3.1",
+          "type": "text"
+        },
+        {
+          "unidad": 155,
+          "id": 452,
+          "modulo": 55,
+          "stableId": "8fd5ee99-9018-4963-a5c6-c47d295ed8ae",
+          "title": "pdf 3.1",
+          "type": "pdf"
+        },
+        {
+          "title": "quiz 3.1",
+          "type": "quiz",
+          "unidad": 155,
+          "id": 453,
+          "modulo": 55,
+          "stableId": "32c89989-4066-4b38-852c-8f6069986d98"
+        },
+        {
+          "type": "text",
+          "unidad": 156,
+          "id": 454,
+          "modulo": 55,
+          "stableId": "cf7ba79b-05d4-4ca2-a2a1-c837fada6e2e",
+          "title": "text 3.2"
+        },
+        {
+          "id": 455,
+          "modulo": 55,
+          "stableId": "b09d4124-25c2-4431-b718-2ee1c0d9d316",
+          "title": "pdf 3.2",
+          "type": "pdf",
+          "unidad": 156
+        },
+        {
+          "type": "quiz",
+          "unidad": 156,
+          "id": 456,
+          "modulo": 55,
+          "stableId": "3eeaf773-68ce-4ce6-bc31-e077c51a104b",
+          "title": "quiz 3.2"
+        },
+        {
+          "id": 457,
+          "modulo": 55,
+          "stableId": "c19d1ed2-d26b-47a3-80bc-3d00a0fbe906",
+          "title": "text 3.3",
+          "type": "text",
+          "unidad": 157
+        },
+        {
+          "id": 458,
+          "modulo": 55,
+          "stableId": "26fcf34e-0326-4058-a594-1167653f3703",
+          "title": "pdf 3.3",
+          "type": "pdf",
+          "unidad": 157
+        },
+        {
+          "type": "quiz",
+          "unidad": 157,
+          "id": 459,
+          "modulo": 55,
+          "stableId": "cdd1ff17-5daf-43e0-ab54-92524a281944",
+          "title": "quiz 3.3"
+        }
+      ],
+      "slug": "ent2-c16",
+      "titulo": "Curso ent2-c16",
+      "unidades": [
+        {
+          "id": 149,
+          "stableId": "57d0cfab-a424-4115-9869-ae8e90336bb0"
+        },
+        {
+          "id": 150,
+          "stableId": "04f5ee17-7b45-4567-a236-1d0422c012ac"
+        },
+        {
+          "id": 151,
+          "stableId": "a3bc6eca-5df2-4e6b-9062-5416c7d3259f"
+        },
+        {
+          "id": 152,
+          "stableId": "fe03f06d-738c-4136-ae55-0c96b6d3cc15"
+        },
+        {
+          "id": 153,
+          "stableId": "935998c5-a786-431e-841d-0a86958b8db7"
+        },
+        {
+          "id": 154,
+          "stableId": "a28704f2-cf2c-431c-8049-b1d6528d224c"
+        },
+        {
+          "id": 155,
+          "stableId": "93becb39-63cc-4686-bbfa-d8c8eaf59308"
+        },
+        {
+          "id": 156,
+          "stableId": "22daea95-1b37-42dc-916b-19918780a0c6"
+        },
+        {
+          "id": 157,
+          "stableId": "5919107a-0349-4bc3-b105-ed5b70b91bd2"
+        }
+      ],
+      "id": 21,
+      "indice": 16
+    },
+    {
+      "indice": 17,
+      "modulos": [
+        {
+          "id": 56,
+          "stableId": "77c124a3-08ef-415e-b137-c349d6ad3518"
+        },
+        {
+          "id": 57,
+          "stableId": "e6f0a578-2835-45f3-9032-3e08d6d5ce19"
+        },
+        {
+          "id": 58,
+          "stableId": "a9d803bd-9e9f-45b7-ba5e-41754361c0b3"
+        }
+      ],
+      "quizzes": [
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 154,
+          "resourceId": 462
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 155,
+          "resourceId": 465
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 156,
+          "resourceId": 468
+        },
+        {
+          "resourceId": 471,
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 157
+        },
+        {
+          "id": 158,
+          "resourceId": 474,
+          "correctas": [
+            1,
+            0,
+            0
+          ]
+        },
+        {
+          "id": 159,
+          "resourceId": 477,
+          "correctas": [
+            1,
+            0,
+            0
+          ]
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 160,
+          "resourceId": 480
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 161,
+          "resourceId": 483
+        },
+        {
+          "id": 162,
+          "resourceId": 486,
+          "correctas": [
+            1,
+            0,
+            0
+          ]
+        }
+      ],
+      "recursos": [
+        {
+          "unidad": 158,
+          "id": 460,
+          "modulo": 56,
+          "stableId": "669bbca0-b509-447e-90de-856709f330d3",
+          "title": "text 1.1",
+          "type": "text"
+        },
+        {
+          "id": 461,
+          "modulo": 56,
+          "stableId": "aa5965b1-83bc-4d4b-9dd0-42f0adb60488",
+          "title": "pdf 1.1",
+          "type": "pdf",
+          "unidad": 158
+        },
+        {
+          "id": 462,
+          "modulo": 56,
+          "stableId": "7c89aafa-3026-4cb5-b3ec-dc77bf88023c",
+          "title": "quiz 1.1",
+          "type": "quiz",
+          "unidad": 158
+        },
+        {
+          "id": 463,
+          "modulo": 56,
+          "stableId": "3f75b714-ec3e-4430-913b-40d3c44b9c51",
+          "title": "text 1.2",
+          "type": "text",
+          "unidad": 159
+        },
+        {
+          "stableId": "ee645e2d-2e51-4e9f-a5d2-90d9f60474f5",
+          "title": "pdf 1.2",
+          "type": "pdf",
+          "unidad": 159,
+          "id": 464,
+          "modulo": 56
+        },
+        {
+          "title": "quiz 1.2",
+          "type": "quiz",
+          "unidad": 159,
+          "id": 465,
+          "modulo": 56,
+          "stableId": "e7578186-bdb2-4f18-9a06-3ab95c43f064"
+        },
+        {
+          "id": 466,
+          "modulo": 56,
+          "stableId": "0e6c30ee-90ed-4c9e-a65f-595118546b9e",
+          "title": "text 1.3",
+          "type": "text",
+          "unidad": 160
+        },
+        {
+          "id": 467,
+          "modulo": 56,
+          "stableId": "cbec9f4d-f404-4d92-8e9a-89633ff2dbac",
+          "title": "pdf 1.3",
+          "type": "pdf",
+          "unidad": 160
+        },
+        {
+          "id": 468,
+          "modulo": 56,
+          "stableId": "e8b863a5-dc36-49ed-9d76-abc13ab39fa5",
+          "title": "quiz 1.3",
+          "type": "quiz",
+          "unidad": 160
+        },
+        {
+          "id": 469,
+          "modulo": 57,
+          "stableId": "715cb0d8-4249-444f-94b8-120741a24f09",
+          "title": "text 2.1",
+          "type": "text",
+          "unidad": 161
+        },
+        {
+          "id": 470,
+          "modulo": 57,
+          "stableId": "7f364ed3-4f7b-4cff-aede-d5ec56c91741",
+          "title": "pdf 2.1",
+          "type": "pdf",
+          "unidad": 161
+        },
+        {
+          "title": "quiz 2.1",
+          "type": "quiz",
+          "unidad": 161,
+          "id": 471,
+          "modulo": 57,
+          "stableId": "cf2c3123-83a1-4f0c-a65f-4d6851f8722d"
+        },
+        {
+          "unidad": 162,
+          "id": 472,
+          "modulo": 57,
+          "stableId": "15c1a482-7246-4ec4-9c4d-71423a5b7f42",
+          "title": "text 2.2",
+          "type": "text"
+        },
+        {
+          "id": 473,
+          "modulo": 57,
+          "stableId": "b799e892-b526-4dba-98c5-d6fae560b39e",
+          "title": "pdf 2.2",
+          "type": "pdf",
+          "unidad": 162
+        },
+        {
+          "unidad": 162,
+          "id": 474,
+          "modulo": 57,
+          "stableId": "a1f1e646-0f41-48cb-a684-4aae3965f958",
+          "title": "quiz 2.2",
+          "type": "quiz"
+        },
+        {
+          "type": "text",
+          "unidad": 163,
+          "id": 475,
+          "modulo": 57,
+          "stableId": "27c3864f-00ba-48b7-9ffa-6ef14a4b3c3a",
+          "title": "text 2.3"
+        },
+        {
+          "id": 476,
+          "modulo": 57,
+          "stableId": "ef42e8ea-96d7-44fe-99b0-3cb87a29eeaf",
+          "title": "pdf 2.3",
+          "type": "pdf",
+          "unidad": 163
+        },
+        {
+          "unidad": 163,
+          "id": 477,
+          "modulo": 57,
+          "stableId": "686fea50-0910-4bd0-ba90-3a9828c19ee4",
+          "title": "quiz 2.3",
+          "type": "quiz"
+        },
+        {
+          "id": 478,
+          "modulo": 58,
+          "stableId": "e2b512b8-5980-4d3b-9920-728344f3b983",
+          "title": "text 3.1",
+          "type": "text",
+          "unidad": 164
+        },
+        {
+          "modulo": 58,
+          "stableId": "00ffc22e-3ff0-4bd7-aa32-97c0c731689d",
+          "title": "pdf 3.1",
+          "type": "pdf",
+          "unidad": 164,
+          "id": 479
+        },
+        {
+          "id": 480,
+          "modulo": 58,
+          "stableId": "b1dff38c-88d5-4cd9-b9b7-954ba1f224e6",
+          "title": "quiz 3.1",
+          "type": "quiz",
+          "unidad": 164
+        },
+        {
+          "modulo": 58,
+          "stableId": "b546421c-56c1-42e4-a566-2c270cc1527d",
+          "title": "text 3.2",
+          "type": "text",
+          "unidad": 165,
+          "id": 481
+        },
+        {
+          "unidad": 165,
+          "id": 482,
+          "modulo": 58,
+          "stableId": "e890d4e5-f5bb-42dc-9575-464e1cfb0ec0",
+          "title": "pdf 3.2",
+          "type": "pdf"
+        },
+        {
+          "title": "quiz 3.2",
+          "type": "quiz",
+          "unidad": 165,
+          "id": 483,
+          "modulo": 58,
+          "stableId": "df36e733-1041-4710-882e-acb0d70be8e0"
+        },
+        {
+          "type": "text",
+          "unidad": 166,
+          "id": 484,
+          "modulo": 58,
+          "stableId": "ef9c8986-f367-474a-8abd-6f241aa57730",
+          "title": "text 3.3"
+        },
+        {
+          "unidad": 166,
+          "id": 485,
+          "modulo": 58,
+          "stableId": "fbc4a3d3-721f-4e85-9552-f9f6156bdaca",
+          "title": "pdf 3.3",
+          "type": "pdf"
+        },
+        {
+          "stableId": "56dfffb5-fe22-4612-bde9-9c757d1cea14",
+          "title": "quiz 3.3",
+          "type": "quiz",
+          "unidad": 166,
+          "id": 486,
+          "modulo": 58
+        }
+      ],
+      "slug": "ent2-c17",
+      "titulo": "Curso ent2-c17",
+      "unidades": [
+        {
+          "stableId": "93ba2cbb-661f-4246-afa9-eda62f589e3f",
+          "id": 158
+        },
+        {
+          "id": 159,
+          "stableId": "e6962945-3470-41a9-be27-78d028b9d679"
+        },
+        {
+          "id": 160,
+          "stableId": "1d5b9aa5-7135-42a1-8c99-4bea1c268740"
+        },
+        {
+          "id": 161,
+          "stableId": "f22d5dec-51d9-4491-a92f-e3b03a783b23"
+        },
+        {
+          "id": 162,
+          "stableId": "3c09f881-c482-4e49-b40e-50f066ee3f05"
+        },
+        {
+          "id": 163,
+          "stableId": "f22aafbc-b633-4d25-91ad-b62ead078537"
+        },
+        {
+          "id": 164,
+          "stableId": "caf212f9-3831-4ddc-9c1d-5772aa93f811"
+        },
+        {
+          "id": 165,
+          "stableId": "c994e0f6-5f26-4928-9251-e55a41643cc6"
+        },
+        {
+          "id": 166,
+          "stableId": "dd931d43-e827-4396-bab9-09a22c75c8c9"
+        }
+      ],
+      "id": 22
+    },
+    {
+      "quizzes": [
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 163,
+          "resourceId": 489
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 164,
+          "resourceId": 492
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 165,
+          "resourceId": 495
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 166,
+          "resourceId": 498
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 167,
+          "resourceId": 501
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 168,
+          "resourceId": 504
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 169,
+          "resourceId": 507
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 170,
+          "resourceId": 510
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 171,
+          "resourceId": 513
+        }
+      ],
+      "recursos": [
+        {
+          "type": "text",
+          "unidad": 167,
+          "id": 487,
+          "modulo": 59,
+          "stableId": "4a1e8ac5-a5b8-475b-aa11-c01b4c4f226f",
+          "title": "text 1.1"
+        },
+        {
+          "unidad": 167,
+          "id": 488,
+          "modulo": 59,
+          "stableId": "b39dd9aa-71c0-4523-b0f2-cd6bb281eaeb",
+          "title": "pdf 1.1",
+          "type": "pdf"
+        },
+        {
+          "id": 489,
+          "modulo": 59,
+          "stableId": "a97cad61-15bc-4ab3-844b-96ff4b411b8f",
+          "title": "quiz 1.1",
+          "type": "quiz",
+          "unidad": 167
+        },
+        {
+          "id": 490,
+          "modulo": 59,
+          "stableId": "81627533-7761-4fed-91fb-f261ed231c03",
+          "title": "text 1.2",
+          "type": "text",
+          "unidad": 168
+        },
+        {
+          "unidad": 168,
+          "id": 491,
+          "modulo": 59,
+          "stableId": "8624dd1a-88bf-4dc1-b336-382556a33ff4",
+          "title": "pdf 1.2",
+          "type": "pdf"
+        },
+        {
+          "id": 492,
+          "modulo": 59,
+          "stableId": "22dcf699-6f4c-4212-a409-416db6eb33d1",
+          "title": "quiz 1.2",
+          "type": "quiz",
+          "unidad": 168
+        },
+        {
+          "unidad": 169,
+          "id": 493,
+          "modulo": 59,
+          "stableId": "4b8f400b-3c2d-4c47-ac5e-1f280120059a",
+          "title": "text 1.3",
+          "type": "text"
+        },
+        {
+          "stableId": "0fe49723-7911-4a71-ad40-cee22e343bc9",
+          "title": "pdf 1.3",
+          "type": "pdf",
+          "unidad": 169,
+          "id": 494,
+          "modulo": 59
+        },
+        {
+          "modulo": 59,
+          "stableId": "e87ee437-26be-4749-b4cf-4a047a3776cd",
+          "title": "quiz 1.3",
+          "type": "quiz",
+          "unidad": 169,
+          "id": 495
+        },
+        {
+          "modulo": 60,
+          "stableId": "4cdb1555-ba4b-42b3-8175-4251663530f8",
+          "title": "text 2.1",
+          "type": "text",
+          "unidad": 170,
+          "id": 496
+        },
+        {
+          "type": "pdf",
+          "unidad": 170,
+          "id": 497,
+          "modulo": 60,
+          "stableId": "a7cdfee4-d9ca-4572-9504-41b9d79a652e",
+          "title": "pdf 2.1"
+        },
+        {
+          "modulo": 60,
+          "stableId": "95e02a52-2ea7-4f50-a5a5-eb0603ae9af4",
+          "title": "quiz 2.1",
+          "type": "quiz",
+          "unidad": 170,
+          "id": 498
+        },
+        {
+          "id": 499,
+          "modulo": 60,
+          "stableId": "04b89c5a-a8e7-497d-9b60-75f25c5424dc",
+          "title": "text 2.2",
+          "type": "text",
+          "unidad": 171
+        },
+        {
+          "id": 500,
+          "modulo": 60,
+          "stableId": "7ff663bf-dc06-4215-9d9c-35f6e7892e97",
+          "title": "pdf 2.2",
+          "type": "pdf",
+          "unidad": 171
+        },
+        {
+          "type": "quiz",
+          "unidad": 171,
+          "id": 501,
+          "modulo": 60,
+          "stableId": "108d7ef2-025c-447e-91cc-2ecdf21144c7",
+          "title": "quiz 2.2"
+        },
+        {
+          "id": 502,
+          "modulo": 60,
+          "stableId": "5aa62262-87ae-42b5-a2ab-5ff3de245769",
+          "title": "text 2.3",
+          "type": "text",
+          "unidad": 172
+        },
+        {
+          "id": 503,
+          "modulo": 60,
+          "stableId": "b6856afa-ec7f-47d6-bc76-e999ddb83dfb",
+          "title": "pdf 2.3",
+          "type": "pdf",
+          "unidad": 172
+        },
+        {
+          "unidad": 172,
+          "id": 504,
+          "modulo": 60,
+          "stableId": "7ff05c9a-70e7-49ab-9529-fb63878ea843",
+          "title": "quiz 2.3",
+          "type": "quiz"
+        },
+        {
+          "id": 505,
+          "modulo": 61,
+          "stableId": "a12c9b43-98c5-490d-9e12-348fa657208e",
+          "title": "text 3.1",
+          "type": "text",
+          "unidad": 173
+        },
+        {
+          "stableId": "ea418533-4562-4158-a470-0f8fea79cd7c",
+          "title": "pdf 3.1",
+          "type": "pdf",
+          "unidad": 173,
+          "id": 506,
+          "modulo": 61
+        },
+        {
+          "id": 507,
+          "modulo": 61,
+          "stableId": "f2d09978-447f-43b1-940a-1368e5ea3e0e",
+          "title": "quiz 3.1",
+          "type": "quiz",
+          "unidad": 173
+        },
+        {
+          "id": 508,
+          "modulo": 61,
+          "stableId": "3e55c50a-4bb8-42ac-b7ac-3b38c83cc6fc",
+          "title": "text 3.2",
+          "type": "text",
+          "unidad": 174
+        },
+        {
+          "stableId": "d5b4fe84-d669-4b73-b14f-7a69914dbe53",
+          "title": "pdf 3.2",
+          "type": "pdf",
+          "unidad": 174,
+          "id": 509,
+          "modulo": 61
+        },
+        {
+          "type": "quiz",
+          "unidad": 174,
+          "id": 510,
+          "modulo": 61,
+          "stableId": "e9247be2-b19c-4fd2-89bd-5977b416afce",
+          "title": "quiz 3.2"
+        },
+        {
+          "type": "text",
+          "unidad": 175,
+          "id": 511,
+          "modulo": 61,
+          "stableId": "550b453c-7c83-41c7-9037-a5018cd83db8",
+          "title": "text 3.3"
+        },
+        {
+          "id": 512,
+          "modulo": 61,
+          "stableId": "3a6464eb-27d1-4eb1-a67d-0d7a2a6679c3",
+          "title": "pdf 3.3",
+          "type": "pdf",
+          "unidad": 175
+        },
+        {
+          "type": "quiz",
+          "unidad": 175,
+          "id": 513,
+          "modulo": 61,
+          "stableId": "ec62e4c2-eb1c-4752-bf24-d5c45462f259",
+          "title": "quiz 3.3"
+        }
+      ],
+      "slug": "ent2-c18",
+      "titulo": "Curso ent2-c18",
+      "unidades": [
+        {
+          "id": 167,
+          "stableId": "c40227a8-69d1-4f12-aca8-4456682f193b"
+        },
+        {
+          "id": 168,
+          "stableId": "1145cc82-e18a-4753-b0b4-b1018866c398"
+        },
+        {
+          "id": 169,
+          "stableId": "83ceee7a-8362-4975-90b8-9804450077dd"
+        },
+        {
+          "id": 170,
+          "stableId": "26552c54-6ab7-4edb-a0e5-d532d87ff4b1"
+        },
+        {
+          "id": 171,
+          "stableId": "1154a06c-edd8-4676-967f-57ad4e03ed50"
+        },
+        {
+          "stableId": "cee73112-e3be-4965-b568-93c03e948f18",
+          "id": 172
+        },
+        {
+          "id": 173,
+          "stableId": "43bb0083-c670-4ff2-96aa-cc81d12f3476"
+        },
+        {
+          "id": 174,
+          "stableId": "b43b6b6d-4758-445a-92d8-9046d31cd29e"
+        },
+        {
+          "stableId": "3fe60d54-5be1-4c88-89ea-ca28c1e76f9d",
+          "id": 175
+        }
+      ],
+      "id": 23,
+      "indice": 18,
+      "modulos": [
+        {
+          "id": 59,
+          "stableId": "5be10759-67ff-41ed-80c3-586c5f5f86fa"
+        },
+        {
+          "id": 60,
+          "stableId": "bb20780b-1c5d-4695-801b-ef0226ed4bed"
+        },
+        {
+          "stableId": "b457c211-64f4-47ce-a824-6e0396ea0c9e",
+          "id": 61
+        }
+      ]
+    },
+    {
+      "modulos": [
+        {
+          "id": 62,
+          "stableId": "6928114b-9377-45f3-83f9-f3570b356b3d"
+        },
+        {
+          "id": 63,
+          "stableId": "4adb8dd8-db44-4ad0-ac60-f087897207df"
+        },
+        {
+          "stableId": "9a86dd2d-afba-43be-b80f-a13b0db8a4f6",
+          "id": 64
+        }
+      ],
+      "quizzes": [
+        {
+          "resourceId": 516,
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 172
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 173,
+          "resourceId": 519
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 174,
+          "resourceId": 522
+        },
+        {
+          "resourceId": 525,
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 175
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 176,
+          "resourceId": 528
+        },
+        {
+          "resourceId": 531,
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 177
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 178,
+          "resourceId": 534
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 179,
+          "resourceId": 537
+        },
+        {
+          "correctas": [
+            1,
+            0,
+            0
+          ],
+          "id": 180,
+          "resourceId": 540
+        }
+      ],
+      "recursos": [
+        {
+          "id": 514,
+          "modulo": 62,
+          "stableId": "80568a86-0f1c-4d76-b46d-52a6b6dbe9fe",
+          "title": "text 1.1",
+          "type": "text",
+          "unidad": 176
+        },
+        {
+          "type": "pdf",
+          "unidad": 176,
+          "id": 515,
+          "modulo": 62,
+          "stableId": "5aacc40b-9bb9-4059-9ce0-a0ea03d7c475",
+          "title": "pdf 1.1"
+        },
+        {
+          "id": 516,
+          "modulo": 62,
+          "stableId": "c858170c-b24e-44d2-a327-0cea255873b2",
+          "title": "quiz 1.1",
+          "type": "quiz",
+          "unidad": 176
+        },
+        {
+          "id": 517,
+          "modulo": 62,
+          "stableId": "f7e8ab6d-d25b-470e-8989-fcea9f67e74b",
+          "title": "text 1.2",
+          "type": "text",
+          "unidad": 177
+        },
+        {
+          "title": "pdf 1.2",
+          "type": "pdf",
+          "unidad": 177,
+          "id": 518,
+          "modulo": 62,
+          "stableId": "51a03ae1-dab4-46e5-ade1-73a692ce5b85"
+        },
+        {
+          "modulo": 62,
+          "stableId": "2e544452-f100-4ded-b5de-ab1c35710efb",
+          "title": "quiz 1.2",
+          "type": "quiz",
+          "unidad": 177,
+          "id": 519
+        },
+        {
+          "type": "text",
+          "unidad": 178,
+          "id": 520,
+          "modulo": 62,
+          "stableId": "53e79b06-73cc-49ae-bf2d-6d4704f92f35",
+          "title": "text 1.3"
+        },
+        {
+          "id": 521,
+          "modulo": 62,
+          "stableId": "d4af48ee-abad-4ea6-a9f0-023667f26a77",
+          "title": "pdf 1.3",
+          "type": "pdf",
+          "unidad": 178
+        },
+        {
+          "id": 522,
+          "modulo": 62,
+          "stableId": "ad0e706c-3c60-42c5-9903-0c1b4cc39cfd",
+          "title": "quiz 1.3",
+          "type": "quiz",
+          "unidad": 178
+        },
+        {
+          "type": "text",
+          "unidad": 179,
+          "id": 523,
+          "modulo": 63,
+          "stableId": "dc9a9e45-d125-4b85-befc-1b7e3a934227",
+          "title": "text 2.1"
+        },
+        {
+          "title": "pdf 2.1",
+          "type": "pdf",
+          "unidad": 179,
+          "id": 524,
+          "modulo": 63,
+          "stableId": "bd4fb80c-eeca-4ffe-a174-f1d1e73e33db"
+        },
+        {
+          "title": "quiz 2.1",
+          "type": "quiz",
+          "unidad": 179,
+          "id": 525,
+          "modulo": 63,
+          "stableId": "ac6bb4f6-094d-4a11-987a-a3140092cc82"
+        },
+        {
+          "id": 526,
+          "modulo": 63,
+          "stableId": "6cfd3592-b564-479d-8444-03d0a2ea11c8",
+          "title": "text 2.2",
+          "type": "text",
+          "unidad": 180
+        },
+        {
+          "type": "pdf",
+          "unidad": 180,
+          "id": 527,
+          "modulo": 63,
+          "stableId": "a36f5b41-f3b2-468b-b493-b4c943f158fe",
+          "title": "pdf 2.2"
+        },
+        {
+          "stableId": "322979fd-8655-414e-a2d8-b760f1aa172a",
+          "title": "quiz 2.2",
+          "type": "quiz",
+          "unidad": 180,
+          "id": 528,
+          "modulo": 63
+        },
+        {
+          "id": 529,
+          "modulo": 63,
+          "stableId": "f928e6c2-9ec5-4e7a-abd0-07fdec2711e4",
+          "title": "text 2.3",
+          "type": "text",
+          "unidad": 181
+        },
+        {
+          "stableId": "be2d1f00-9127-4176-8254-1b9dfe509ab6",
+          "title": "pdf 2.3",
+          "type": "pdf",
+          "unidad": 181,
+          "id": 530,
+          "modulo": 63
+        },
+        {
+          "unidad": 181,
+          "id": 531,
+          "modulo": 63,
+          "stableId": "04a9e02a-be6b-4ea9-8023-16b4f7341856",
+          "title": "quiz 2.3",
+          "type": "quiz"
+        },
+        {
+          "id": 532,
+          "modulo": 64,
+          "stableId": "221e517f-c53f-47bf-9f2a-bacb1e501f76",
+          "title": "text 3.1",
+          "type": "text",
+          "unidad": 182
+        },
+        {
+          "id": 533,
+          "modulo": 64,
+          "stableId": "5a80543b-211e-4275-bc63-04b04906d4e1",
+          "title": "pdf 3.1",
+          "type": "pdf",
+          "unidad": 182
+        },
+        {
+          "stableId": "167f6f0a-3487-4f7f-bae8-7b3b92d7f4c9",
+          "title": "quiz 3.1",
+          "type": "quiz",
+          "unidad": 182,
+          "id": 534,
+          "modulo": 64
+        },
+        {
+          "id": 535,
+          "modulo": 64,
+          "stableId": "b19e825e-4f1c-44b7-8b72-b289ca3ae540",
+          "title": "text 3.2",
+          "type": "text",
+          "unidad": 183
+        },
+        {
+          "title": "pdf 3.2",
+          "type": "pdf",
+          "unidad": 183,
+          "id": 536,
+          "modulo": 64,
+          "stableId": "e56618ec-98e5-4dd0-9cc4-f4884df68e99"
+        },
+        {
+          "stableId": "39b04f8e-b01d-44bc-aad6-e94aae556051",
+          "title": "quiz 3.2",
+          "type": "quiz",
+          "unidad": 183,
+          "id": 537,
+          "modulo": 64
+        },
+        {
+          "title": "text 3.3",
+          "type": "text",
+          "unidad": 184,
+          "id": 538,
+          "modulo": 64,
+          "stableId": "a94b3034-a53d-47c9-a822-70206acbff6d"
+        },
+        {
+          "modulo": 64,
+          "stableId": "0efb0f1a-8169-4bc7-9b95-5011e738e815",
+          "title": "pdf 3.3",
+          "type": "pdf",
+          "unidad": 184,
+          "id": 539
+        },
+        {
+          "unidad": 184,
+          "id": 540,
+          "modulo": 64,
+          "stableId": "9f1fadf8-6f48-44b1-add9-e34ea67f0be1",
+          "title": "quiz 3.3",
+          "type": "quiz"
+        }
+      ],
+      "slug": "ent2-c19",
+      "titulo": "Curso ent2-c19",
+      "unidades": [
+        {
+          "id": 176,
+          "stableId": "b64afc6d-7669-4236-8a5a-867da3553cc4"
+        },
+        {
+          "id": 177,
+          "stableId": "cda55248-71c3-47ed-9e82-3b4dfde460d3"
+        },
+        {
+          "id": 178,
+          "stableId": "7a9574e3-26dc-4c22-8292-cc488782364e"
+        },
+        {
+          "id": 179,
+          "stableId": "79a62beb-fb5e-4b48-b800-f8972a6bd86b"
+        },
+        {
+          "id": 180,
+          "stableId": "8bdb5a7b-7f3a-40bf-a1e7-b43222e6cff5"
+        },
+        {
+          "stableId": "d51549a7-afb2-4353-9018-16809fc253fb",
+          "id": 181
+        },
+        {
+          "stableId": "da65970f-31e4-434c-9675-70fd8efa633f",
+          "id": 182
+        },
+        {
+          "id": 183,
+          "stableId": "c6afa1a3-90c9-404a-9472-8e52cbadf4ae"
+        },
+        {
+          "id": 184,
+          "stableId": "316b2d7c-4bed-4b55-86f0-c40e2edcc733"
+        }
+      ],
+      "id": 24,
+      "indice": 19
+    }
+  ],
+  "forma": {
+    "minRequiredPct": 80,
+    "modules": 3,
+    "resourcesPerUnit": [
+      "text",
+      "pdf",
+      "quiz"
+    ],
+    "unitsPerModule": 3
+  },
+  "generadoEn": "2026-09-27T01:03:51.380Z"
+}

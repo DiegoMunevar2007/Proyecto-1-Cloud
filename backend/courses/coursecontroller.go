@@ -87,6 +87,7 @@ func SetupCourseRoutes(router *gin.RouterGroup, db *gorm.DB, rdb *redis.Client) 
 	router.PUT("/resources/:id", requireAuthor, h.UpdateResource)
 	router.DELETE("/resources/:id", requireAuthor, h.DeleteResource)
 	router.POST("/resources/:id/upload-url", requireAuthor, h.UploadURL)
+	router.GET("/resources/:id", requireAuth, h.GetResource)
 	router.GET("/resources/:id/download-url", requireAuth, h.DownloadURL)
 }
 
@@ -705,10 +706,65 @@ func (h *Handler) UploadURL(c *gin.Context) {
 	c.JSON(200, gin.H{"upload_url": url, "task_id": taskID, "resource": r})
 }
 
+// autorizaRecurso decide si quien llama puede ver un recurso concreto y, si no
+// puede, escribe la respuesta de error.
+//
+// La comparten la consulta de un recurso y la de su URL de descarga: son las dos
+// puertas de entrada al mismo contenido y mantener la regla en un solo sitio
+// evita que con el tiempo una deje pasar lo que la otra rechaza.
+func (h *Handler) autorizaRecurso(c *gin.Context, r *Resource, course *Course) bool {
+	uid, role := currentUser(h.DB, c)
+	if IsOwnerOrAdmin(course, uid, role) {
+		return true
+	}
+	// Estudiante: curso publicado, recurso visible e inscripción activa.
+	if course.Status != CourseStatusPublished || !r.IsVisible {
+		c.JSON(403, gin.H{"error": "sin derecho de acceso"})
+		return false
+	}
+	var m Matricula
+	if err := h.DB.Where("student_id = ? AND course_id = ?", uid, course.ID).First(&m).Error; err != nil || !m.Inscrito {
+		c.JSON(403, gin.H{"error": "se requiere inscripción"})
+		return false
+	}
+	return true
+}
+
+// GetResource retorna un recurso concreto.
+//
+//	@Summary		Consulta de un recurso
+//	@Description	Devuelve el recurso con su estado (scan_status, processing_status, hls_key, object_key) tras verificar acceso: autor o admin, o bien curso publicado con recurso visible e inscripción activa. Es la vía para seguir una carga sin releer el árbol completo del curso.
+//	@Tags			Cursos
+//	@Produce		json
+//	@Param			Authorization	header		string	true	"Bearer <token>"
+//	@Param			id				path		int		true	"ID del recurso"
+//	@Security		BearerAuth
+//	@Success		200	{object}	ResourceEnvelope	"Recurso encontrado"
+//	@Failure		400	{object}	utils.ErrorResponse	"ID inválido"
+//	@Failure		403	{object}	utils.ErrorResponse	"Sin derecho de acceso"
+//	@Failure		404	{object}	utils.ErrorResponse	"Recurso no encontrado"
+//	@Router			/api/v1/resources/{id} [get]
+func (h *Handler) GetResource(c *gin.Context) {
+	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil || id == 0 {
+		c.JSON(400, gin.H{"error": "id de recurso inválido"})
+		return
+	}
+	r, course, _, err := LocateResource(h.DB, uint(id))
+	if err != nil {
+		writeErr(c, ErrNotFound)
+		return
+	}
+	if !h.autorizaRecurso(c, r, course) {
+		return
+	}
+	c.JSON(200, ResourceEnvelope{Resource: *r})
+}
+
 // DownloadURL entrega la URL de consumo de un recurso tras verificar acceso.
 //
 //	@Summary		URL de descarga
-//	@Description	Verifica propiedad o inscripción y curso publicado con recurso visible. Si hay HLS listo retorna su URL pública; si no, una URL firmada de 15 min.
+//	@Description	Verifica propiedad o inscripción y curso publicado con recurso visible. Si hay HLS listo retorna su URL pública; si no, una URL firmada de 15 min. Devuelve 404 si el recurso no tiene archivo asociado, que es el caso de los recursos de texto, PDF o quiz.
 //	@Tags			Cursos
 //	@Produce		json
 //	@Param			Authorization	header		string	true	"Bearer <token>"
@@ -725,22 +781,10 @@ func (h *Handler) DownloadURL(c *gin.Context) {
 		writeErr(c, ErrNotFound)
 		return
 	}
-	uid, role := currentUser(h.DB, c)
-	allowed := IsOwnerOrAdmin(course, uid, role)
-	if !allowed {
-		// Estudiante: curso publicado, recurso visible e inscripción activa.
-		if course.Status != CourseStatusPublished || !r.IsVisible {
-			c.JSON(403, gin.H{"error": "sin derecho de acceso"})
-			return
-		}
-		var m Matricula
-		if err := h.DB.Where("student_id = ? AND course_id = ?", uid, course.ID).First(&m).Error; err != nil || !m.Inscrito {
-			c.JSON(403, gin.H{"error": "se requiere inscripción"})
-			return
-		}
-		allowed = true
+	if !h.autorizaRecurso(c, r, course) {
+		return
 	}
-	if !allowed || storageClient == nil {
+	if storageClient == nil {
 		c.JSON(403, gin.H{"error": "sin derecho de acceso"})
 		return
 	}
@@ -750,6 +794,14 @@ func (h *Handler) DownloadURL(c *gin.Context) {
 		bucket = storage.BucketHLS
 		key = r.HLSKey
 		c.JSON(200, gin.H{"url": storageClient.PublicURL(bucket, key), "hls": true})
+		return
+	}
+	// Un recurso de texto, PDF o quiz no tiene objeto: no hay archivo que
+	// servir. Antes se llamaba a PresignedGet con la clave vacía y el cliente de
+	// almacenamiento respondía 500 con "Object name cannot be empty", lo que
+	// convertía una consulta de contenido legítima en un error del servidor.
+	if strings.TrimSpace(key) == "" {
+		c.JSON(404, gin.H{"error": "el recurso no tiene archivo asociado"})
 		return
 	}
 	url, err := storageClient.PresignedGet(bucket, key, 0)

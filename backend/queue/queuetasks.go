@@ -17,15 +17,12 @@ type TranscodePayload struct {
 	IdempotencyKey string `json:"idempotency_key"`
 }
 
-func decodeJSON[T any](data []byte) (T, error) {
+// Decode deserializa un payload de tarea. Genérico porque la API publica el
+// tipo y el worker lo consume: un wrapper por tipo solo añadiría reenvíos.
+func Decode[T any](data []byte) (T, error) {
 	var p T
 	err := json.Unmarshal(data, &p)
 	return p, err
-}
-
-// DecodeTranscode deserializa un payload de transcodificación.
-func DecodeTranscode(data []byte) (TranscodePayload, error) {
-	return decodeJSON[TranscodePayload](data)
 }
 
 // ScanPayload es el payload para el escaneo antimalware de un objeto.
@@ -34,9 +31,4 @@ type ScanPayload struct {
 	ResourceID   uint   `json:"resource_id"`
 	ObjectKey    string `json:"object_key"`
 	TranscodeKey string `json:"transcode_key"`
-}
-
-// DecodeScan deserializa un payload de escaneo antimalware.
-func DecodeScan(data []byte) (ScanPayload, error) {
-	return decodeJSON[ScanPayload](data)
 }

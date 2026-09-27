@@ -52,6 +52,10 @@ services:
       - .env
     expose:
       - "8080"
+    # Solo loopback: el Ops Agent de la VM scrapea /metrics por aquí y así el
+    # puerto no queda alcanzable desde la red ni desde Internet.
+    ports:
+      - "127.0.0.1:8080:8080"
 
   # Frontend Next.js existente (opcional).
   frontend:
@@ -90,6 +94,12 @@ services:
       - .env
     environment:
       CLAMAV_HOST: clamav:3310
+      # Puerto del /metrics del worker, solo en loopback para el Ops Agent.
+      METRICS_ADDR: "${METRICS_ADDR:-:9101}"
+    expose:
+      - "9101"
+    ports:
+      - "127.0.0.1:9101:9101"
     depends_on:
       - redis
       - clamav

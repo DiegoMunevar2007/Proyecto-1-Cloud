@@ -1,0 +1,33 @@
+meta {
+  name: GetResource
+  type: http
+  seq: 14
+}
+
+get {
+  url: {{baseUrl}}/api/v1/resources/{{fileResourceId}}
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{professorToken}}
+}
+
+tests {
+  expect(res.status).to.equal(200);
+  expect(res.body.resource).to.be.an("object");
+
+  // fileResourceId viene de AddResourcePdf (variable de runtime) cuando corre la
+  // colección, y del entorno cuando se ejecuta este archivo suelto. Se leen las
+  // dos formas para que valga en ambos casos; si no hay valor, la aserción
+  // falla en vez de pasar en vacío.
+  var pedido = bru.getEnvVar("fileResourceId") || bru.getVar("fileResourceId");
+  expect(Number(pedido)).to.be.a("number");
+  expect(res.body.resource.id).to.equal(Number(pedido));
+
+  // El estado de procesamiento es lo que hace útil este endpoint: permite seguir
+  // una carga sin releer el árbol completo del curso.
+  expect(res.body.resource).to.have.property("processing_status");
+  expect(res.body.resource).to.have.property("scan_status");
+  expect(res.body.resource).to.have.property("stable_id");
+}

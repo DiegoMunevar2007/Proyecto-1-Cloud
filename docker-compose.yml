@@ -128,6 +128,11 @@ services:
       <<: *common-env
       CLAMAV_HOST: clamav:3310
       WORKER_CONCURRENCY: 10
+      # /metrics del worker. En la nube se publica solo en loopback para el
+      # Ops Agent; en local se deja accesible para desarrollar y depurar.
+      METRICS_ADDR: ":9101"
+    ports:
+      - "127.0.0.1:9101:9101"
     command: [ "./worker" ]
     # Escalamiento horizontal (stateless, idempotente): docker compose up --scale worker=2
 

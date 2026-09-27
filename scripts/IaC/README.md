@@ -10,7 +10,8 @@ plataforma MOOC:
 | Servicio administrado de base de datos relacional | `google_sql_database_instance` (Cloud SQL PostgreSQL, IP privada) |
 | Servicio administrado de almacenamiento de objetos | 3 × `google_storage_bucket` (interoperabilidad S3) |
 | Red virtual privada, subredes y firewall | `google_compute_network` / `_subnetwork` / `_firewall` + Cloud NAT |
-| Cola de mensajería (Redis/asynq) | Contenedor en Worker Server (según el enunciado, no administrado) |
+| Colmena de mensajería (Redis/asynq) | Contenedor en Worker Server (según el enunciado, no administrado) |
+| Telemetría | Ops Agent de Google Cloud en cada VM → Cloud Monitoring / Managed Service for Prometheus |
 
 Cada VM, en su arranque, **instala Docker, clona el repositorio** y levanta sus
 contenedores. Los secretos se inyectan desde Secret Manager mediante la cuenta
@@ -93,6 +94,111 @@ Ajustes relevantes de `terraform.tfvars`:
 | `deploy_frontend` | Desplegar el frontend Next.js existente | `false` |
 | `db_tier` | Tier de Cloud SQL | `db-f1-micro` |
 | `worker_concurrency` | Concurrencia de asynq | `10` |
+| `install_ops_agent` | Instalar el Ops Agent en las VM | `true` |
+| `metrics_scrape_interval` | Intervalo de métricas del host y de `/metrics` | `30s` |
+
+## Telemetría y medición de capacidad
+
+No se despliega ningún servidor Prometheus. La recolección la hace el **Ops
+Agent** de Google Cloud, que corre en cada VM y reporta a **Cloud Monitoring**:
+las métricas del host (CPU, memoria, disco, red) y las del endpoint `/metrics` de
+cada contenedor. Se consulta con PromQL y se correlaciona en un mismo panel con
+las métricas de Cloud SQL y Cloud Storage, que son de sistema y no se cobran.
+
+Lo hace así porque es la opción nativa que **no compite por los recursos de la VM
+que se está midiendo**: no hay un Prometheus de 200–300 MB en la misma máquina de
+2 GiB, ni una VM adicional de instrumentación.
+
+| Componente | Endpoint de métricas | Publicado en |
+|---|---|---|
+| API (Web Server) | `http://127.0.0.1:8080/metrics` | solo loopback |
+| Worker (Worker Server) | `http://127.0.0.1:9101/metrics` | solo loopback |
+
+Ambos puertos se publican en `127.0.0.1` porque el agente corre en el host, y así
+no hay que abrir nada al firewall.
+
+- El agente se instala y configura con
+  `scripts/IaC/scripts/install_ops_agent.sh`, invocado al final del arranque de
+  cada VM y **best effort**: si falla, la aplicación queda desplegada sin
+  telemetría en vez de abortar.
+- La configuración fuerza `collection_interval: 30s` porque el defecto del agente
+  (60s) es demasiado grueso para separar una degradación de un pico.
+- No hizo falta tocar `iam.tf`: `monitoring.googleapis.com` ya estaba habilitada y
+  la cuenta de servicio de las VMs ya tiene `roles/monitoring.metricWriter`.
+
+Verificar que la ingesta está correcta:
+
+```bash
+# cuenta las series de la aplicación ya ingeridas
+curl -s --get \
+  --header "Authorization: Bearer $(gcloud auth print-access-token)" \
+  --data-urlencode 'query=count({__name__=~"mooc_.*"})' \
+  "https://monitoring.googleapis.com/v1/projects/<PROJECT_ID>/location/global/prometheus/api/v1/query"
+```
+
+El detalle de las métricas, las consultas PromQL útiles y la estimación de costo
+están en [`docs/entrega2/telemetria.md`](../../docs/entrega2/telemetria.md).
+
+## Correr las pruebas de carga contra el despliegue
+
+El generador es k6 y vive en [`capacity-planning/`](../../capacity-planning).
+El Taskfile resuelve la URL desde Terraform, así que no hay que copiarla a mano:
+
+```bash
+export ENV=gcp
+export ADMIN_PASS='...' SEED_PASSWORD='...'
+
+task -d ../../capacity-planning gcp:wait   # espera a que las VM terminen de arrancar
+task -d ../../capacity-planning gcp:seed   # siembra el corpus
+task -d ../../capacity-planning gcp:all    # escenario 1, integridad y escenario 2
+```
+
+`gcp:wait` comprueba dos cosas antes de sondear `/health`: que Terraform devuelva
+`app_url` y que el state tenga máquinas virtuales. Un **state parcial** es peor que
+uno vacío, porque la IP reservada existe y parece válida mientras ninguna VM la
+atiende; sin esa comprobación habría que esperar quince minutos para descubrirlo.
+
+El corpus se genera contra el entorno que se indique y cada dataset guarda su
+`baseUrl`. Si se cambia de local a GCP sin volver a sembrar, los guiones fallan
+con un mensaje que lo explica en vez de producir errores que parecen defectos de
+la plataforma.
+
+Este runbook es también la referencia de las pruebas de carga: no hay output de
+Terraform que lo duplique.
+
+### Generador dentro de la nube
+
+Por defecto las pruebas corren desde donde se invoque el Taskfile. Para las
+mediciones de transferencia eso tiene un problema: el enlace de subida de una
+conexión doméstica se convierte en el techo del escenario 2 y lo que se mide es
+la conexión, no el sistema.
+
+```bash
+# en terraform.tfvars
+deploy_loadgen = true
+```
+
+Eso aprovisiona una tercera máquina, **de pruebas y no de la aplicación**,
+en la misma subred y sin IP pública, que instala k6 en la versión fijada en
+`k6_version`, ffmpeg y el repositorio. Se administra por IAP SSH y su tráfico
+sale por el Cloud NAT ya configurado.
+
+```bash
+gcloud compute ssh mooc-loadgen --zone=us-central1-a --tunnel-through-iap
+# dentro de la VM:
+cd /opt/mooc/capacity-planning
+export ENV=gcp BASE_URL=... ADMIN_PASS='...' SEED_PASSWORD='...' INSECURE_TLS=true
+k6 run k6/esc2_carga_directa.js
+```
+
+Las credenciales no viajan por metadatos ni se escriben en el repositorio: se
+exportan en la sesión. El enunciado exige que el generador corra fuera de las dos
+VM de la aplicación, y esta tercera máquina es infraestructura de pruebas, igual
+que lo sería un portátil: no forma parte del despliegue evaluado.
+
+> **Costo:** la máquina de carga se factura mientras está encendida. Apágala
+> (`gcloud compute instances stop mooc-loadgen`) entre corridas, y recuerda
+> destruirla al terminar.
 
 ## Estructura
 
@@ -105,7 +211,7 @@ scripts/IaC/
 ├── storage.tf      # Buckets, claves HMAC, CORS, lifecycle
 ├── iam.tf          # APIs, cuenta de servicio, Secret Manager
 ├── outputs.tf
-├── scripts/        # startup de cada VM (Docker + clone + compose up)
+├── scripts/        # startup de cada VM e instalación del Ops Agent
 └── deploy/         # docker-compose.cloud.yml y plantilla de entorno
 ```
 

@@ -18,6 +18,7 @@ import (
 
 // retryDelay es el backoff exponencial de reintentos (DLQ tras MaxRetry): 30s, 2m, 8m.
 func retryDelay(n int, _ error, _ *asynq.Task) time.Duration {
+	jobs.RetryScheduled()
 	switch n {
 	case 1:
 		return 30 * time.Second
@@ -70,8 +71,8 @@ func main() {
 	srv := asynq.NewServer(redisOpt, asynq.Config{
 		Concurrency: concurrency,
 		Queues: map[string]int{
-			"media":   6,
-			"default": 3,
+			queue.MediaQueue: 6,
+			"default":        3,
 		},
 		RetryDelayFunc: retryDelay,
 		ErrorHandler: asynq.ErrorHandlerFunc(func(ctx context.Context, task *asynq.Task, err error) {
@@ -82,10 +83,16 @@ func main() {
 	})
 
 	mux := asynq.NewServeMux()
-	mux.HandleFunc(queue.TypeMediaScan, h.HandleScan)
-	mux.HandleFunc(queue.TypeMediaTranscode, h.HandleTranscode)
+	mux.HandleFunc(queue.TypeMediaScan, instrumentar(h.HandleScan))
+	mux.HandleFunc(queue.TypeMediaTranscode, instrumentar(h.HandleTranscode))
 
-	log.Printf("worker: escuchando colas media/default (concurrency=%d)", concurrency)
+	// Telemetría del worker, cancelada con el contexto para no dejar el servidor
+	// de métricas vivo si el servidor asynq devuelve.
+	metricsCtx, stopMetrics := context.WithCancel(context.Background())
+	defer stopMetrics()
+	go serveMetrics(metricsCtx, metricsAddr())
+
+	log.Printf("worker: escuchando colas %s/default (concurrency=%d)", queue.MediaQueue, concurrency)
 	if err := srv.Run(mux); err != nil {
 		log.Fatalf("worker: %v", err)
 		os.Exit(1)

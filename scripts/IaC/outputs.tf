@@ -1,3 +1,6 @@
+# Solo valores del despliegue. El runbook de las pruebas de carga, los comandos de
+# SSH por IAP y la consulta PromQL de verificación de la ingesta viven en README.md:
+# un output es un valor que un script consume, no documentación.
 output "project_id" {
   description = "Proyecto de GCP donde se desplegó la plataforma"
   value       = var.project_id
@@ -33,16 +36,6 @@ output "worker_internal_ip" {
   value       = google_compute_address.worker_internal.address
 }
 
-output "ssh_web" {
-  description = "Comando SSH a Web Server mediante IAP"
-  value       = "gcloud compute ssh ${google_compute_instance.web.name} --zone=${var.zone} --tunnel-through-iap"
-}
-
-output "ssh_worker" {
-  description = "Comando SSH a Worker Server mediante IAP"
-  value       = "gcloud compute ssh ${google_compute_instance.worker.name} --zone=${var.zone} --tunnel-through-iap"
-}
-
 output "postgres_private_ip" {
   description = "IP privada de la instancia administrada de PostgreSQL"
   value       = google_sql_database_instance.postgres.private_ip_address
@@ -69,6 +62,24 @@ output "bucket_public" {
 }
 
 output "service_account_email" {
-  description = "Cuenta de servicio de runtime de las VM"
+  description = "Cuenta de servicio de runtime de las VMs"
   value       = google_service_account.app.email
+}
+
+output "metrics_scrape_interval" {
+  description = "Intervalo de recolección de métricas del Ops Agent en cada VM"
+  value       = var.metrics_scrape_interval
+}
+
+output "metrics_targets" {
+  description = "Endpoint /metrics que el Ops Agent scrapea en cada VM, solo en loopback"
+  value = {
+    web    = "127.0.0.1:8080/metrics"
+    worker = "127.0.0.1:9101/metrics"
+  }
+}
+
+output "loadgen_internal_ip" {
+  description = "IP privada del generador de carga (vacío si deploy_loadgen está en false)"
+  value       = var.deploy_loadgen ? google_compute_instance.loadgen[0].network_interface[0].network_ip : ""
 }

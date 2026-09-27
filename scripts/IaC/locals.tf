@@ -53,6 +53,8 @@ locals {
     "mooc-bucket-hls"               = google_storage_bucket.hls.name
     "mooc-bucket-public"            = google_storage_bucket.public.name
     "mooc-worker-concurrency"       = tostring(var.worker_concurrency)
+    "mooc-install-ops-agent"        = tostring(var.install_ops_agent)
+    "mooc-metrics-scrape-interval"  = var.metrics_scrape_interval
     "mooc-secret-postgres-password" = local.secret_postgres_password
     "mooc-secret-jwt"               = local.secret_jwt
     "mooc-secret-redis-password"    = local.secret_redis_password

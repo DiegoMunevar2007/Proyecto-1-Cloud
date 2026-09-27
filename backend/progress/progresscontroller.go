@@ -28,7 +28,7 @@ func SetupProgressRoutes(router *gin.RouterGroup, db *gorm.DB, rdb *redis.Client
 	requireAuth := auth.RequireRole(rdb)
 	g := router.Group("/progress")
 	{
-		g.POST("/heartbeat", requireAuth, auth.RateLimit(10, 20), h.Heartbeat)
+		g.POST("/heartbeat", requireAuth, h.Heartbeat)
 		g.GET("/position/:stable_id", requireAuth, h.Position)
 		g.GET("/:course_id", requireAuth, h.Summary)
 	}

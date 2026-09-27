@@ -52,6 +52,9 @@ func SetupAdminRoutes(router *gin.RouterGroup, db *gorm.DB, rdb *redis.Client) {
 		// Auditoría
 		admin.GET("/audit", h.ListAudit)
 		admin.GET("/stats", h.Stats)
+
+		// Observabilidad de la cola asíncrona (análisis de capacidad)
+		admin.GET("/queue", h.QueueStats)
 	}
 }
 

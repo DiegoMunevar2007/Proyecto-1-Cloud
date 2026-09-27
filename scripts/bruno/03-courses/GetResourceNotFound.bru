@@ -1,0 +1,18 @@
+meta {
+  name: GetResourceNotFound
+  type: http
+  seq: 15
+}
+
+get {
+  url: {{baseUrl}}/api/v1/resources/99999999
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{professorToken}}
+}
+
+tests {
+  expect(res.status).to.equal(404);
+}

@@ -21,7 +21,7 @@ func SetupAuthRoutes(router *gin.RouterGroup, db *gorm.DB, rdb *redis.Client) {
 	authGroup := router.Group("/auth")
 	{
 		authGroup.POST("/register", h.Register)
-		authGroup.POST("/login", RateLimit(5, 10), h.Login)
+		authGroup.POST("/login", h.Login)
 		authGroup.POST("/logout", RequireRole(rdb), h.Logout)
 		authGroup.GET("/me", RequireRole(rdb), h.Me)
 		authGroup.POST("/revoke-session", h.RevokeSession)

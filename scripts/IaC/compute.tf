@@ -40,6 +40,9 @@ resource "google_compute_instance" "web" {
     "mooc-role"             = "web"
     "mooc-domain"           = local.web_domain
     "mooc-compose-services" = var.deploy_frontend ? "backend frontend caddy mailpit" : "backend caddy mailpit"
+    # El backend publica el puerto solo en loopback: el Ops Agent corre en el
+    # host y lo alcanza por ahí, sin abrir nada a la red.
+    "mooc-metrics-target" = "127.0.0.1:8080"
   })
 
   metadata_startup_script = file("${path.module}/scripts/web_startup.sh")
@@ -88,6 +91,9 @@ resource "google_compute_instance" "worker" {
   metadata = merge(local.common_metadata, {
     "mooc-role"             = "worker"
     "mooc-compose-services" = "redis clamav worker"
+    # El worker expone su propio /metrics con el conteo de ffmpeg en curso, que
+    # es la métrica que distingue si el cuello es ffmpeg o ClamAV.
+    "mooc-metrics-target" = "127.0.0.1:9101"
   })
 
   metadata_startup_script = file("${path.module}/scripts/worker_startup.sh")
@@ -101,5 +107,55 @@ resource "google_compute_instance" "worker" {
     google_secret_manager_secret_version.redis_password,
     google_secret_manager_secret_version.s3_access,
     google_secret_manager_secret_version.s3_secret,
+  ]
+}
+
+# Generador de carga. No forma parte de la aplicación: es la máquina de pruebas
+# desde la que se ejecuta k6. Comparte subred para que la comunicación interna
+# esté permitida por la regla existente, y no tiene IP pública: se administra por
+# IAP SSH. Su salida a Internet va por el Cloud NAT ya configurado, que es lo que
+# usa para hablar con la API y con el almacenamiento de objetos.
+resource "google_compute_instance" "loadgen" {
+  count = var.deploy_loadgen ? 1 : 0
+
+  name         = "${var.name_prefix}-loadgen"
+  machine_type = var.loadgen_machine_type
+  zone         = var.zone
+  tags         = [local.common_tag]
+  labels       = merge(local.labels, { role = "loadgen" })
+
+  allow_stopping_for_update = true
+
+  boot_disk {
+    initialize_params {
+      image = data.google_compute_image.boot.self_link
+      size  = var.boot_disk_size_gb
+      type  = var.boot_disk_type
+    }
+  }
+
+  network_interface {
+    network    = google_compute_network.main.id
+    subnetwork = google_compute_subnetwork.app.id
+    # Sin access_config: sin IP pública. El SSH entra por IAP.
+  }
+
+  service_account {
+    email  = google_service_account.app.email
+    scopes = ["cloud-platform"]
+  }
+
+  metadata = merge(local.common_metadata, {
+    "mooc-role"       = "loadgen"
+    "mooc-k6-version" = var.k6_version
+    "mooc-target-url" = "https://${local.web_domain}"
+  })
+
+  metadata_startup_script = file("${path.module}/scripts/loadgen_startup.sh")
+
+  depends_on = [
+    google_project_service.enabled,
+    google_compute_address.web,
+    google_compute_router_nat.main,
   ]
 }

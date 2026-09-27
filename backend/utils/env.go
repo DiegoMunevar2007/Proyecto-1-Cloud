@@ -2,8 +2,6 @@ package utils
 
 import (
 	"os"
-
-	"github.com/redis/go-redis/v9"
 )
 
 // GetEnv obtiene el valor de una variable de entorno. Si no está definida, devuelve el valor por defecto.
@@ -33,17 +31,14 @@ func GetJWTSecret() string {
 	return GetEnv("JWT_SECRET", "dev-jwt-secret-change-in-prod")
 }
 
-func GetRedisOptions() *redis.Options {
-	// Construye las opciones de conexión para Redis a partir de variables de entorno.
-	addr := GetEnv("REDIS_ADDR", "localhost:6379")
-	password := GetEnv("REDIS_PASSWORD", "")
-	db := 0 // use default DB
+// RedisAddr y RedisPassword son la conexión a Redis que comparten go-redis (API)
+// y asynq (API y worker): se leen una sola vez para que ambos no puedan divergir.
+func RedisAddr() string {
+	return GetEnv("REDIS_ADDR", "localhost:6379")
+}
 
-	return &redis.Options{
-		Addr:     addr,
-		Password: password,
-		DB:       db,
-	}
+func RedisPassword() string {
+	return GetEnv("REDIS_PASSWORD", "")
 }
 
 func GetSMTPConfig() (host, port, user string) {

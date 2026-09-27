@@ -97,6 +97,53 @@ variable "worker_concurrency" {
   default     = 10
 }
 
+variable "install_ops_agent" {
+  description = "Instalar el Ops Agent de Google Cloud en las VM para enviar métricas a Cloud Monitoring"
+  type        = bool
+  default     = true
+}
+
+variable "metrics_scrape_interval" {
+  description = <<-EOT
+    Intervalo de recolección de métricas: tanto el hostmetrics del Ops Agent
+    como el scrape de /metrics. El valor por defecto del agente es 60s, demasiado
+    grueso para separar una degradación de un pico. Más corto da más resolución
+    y más muestras facturadas.
+  EOT
+  type        = string
+  default     = "30s"
+
+  validation {
+    condition     = can(regex("^[0-9]+(ms|s|m)$", var.metrics_scrape_interval))
+    error_message = "metrics_scrape_interval debe ser una duración de Prometheus, por ejemplo 15s, 30s o 1m."
+  }
+}
+
+variable "deploy_loadgen" {
+  description = <<-EOT
+    Aprovisiona una tercera máquina, de pruebas y no de la aplicación, para
+    ejecutar k6 desde dentro de la región. El enunciado exige que el generador
+    corra fuera de las dos VM de la aplicación y que se verifique que no limita
+    los resultados: desde un enlace doméstico, la subida de los archivos del
+    escenario 2 mide la conexión del portátil y no el sistema. Apagado por
+    defecto: sólo se enciende para las corridas de capacidad.
+  EOT
+  type        = bool
+  default     = false
+}
+
+variable "loadgen_machine_type" {
+  description = "Tipo de máquina del generador de carga. k6 no necesita mucho; el límite suele ser la red"
+  type        = string
+  default     = "e2-small"
+}
+
+variable "k6_version" {
+  description = "Versión de k6 que se instala en el generador (etiqueta de release, con la v)"
+  type        = string
+  default     = "v2.3.0"
+}
+
 variable "db_version" {
   description = "Versión de PostgreSQL del servicio administrado"
   type        = string

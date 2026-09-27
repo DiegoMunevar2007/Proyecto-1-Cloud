@@ -1,0 +1,405 @@
+# Pruebas de carga de la entrega 2, con k6.
+#
+# Cada nivel de carga es una corrida independiente y repetible, que es lo que
+# permite comparar entre niveles y repetir la medición cercana al límite. Este
+# archivo sustituye a los scripts de shell: cada tarea es un `k6 run` con sus
+# variables explícitas y su carpeta de resultados.
+#
+# Uso habitual:
+#   task seed:all
+#   task esc1:all
+#   task esc2:all
+#
+# Contra el despliegue de GCP:
+#   task gcp:wait && task gcp:seed
+#
+# Las variables de entorno (ADMIN_USER, ADMIN_PASS, SEED_PASSWORD) salen del
+# entorno y nunca se versionan. Con ENV=gcp la URL se toma de Terraform.
+
+version: '3'
+
+vars:
+  ENV:
+    sh: echo "${ENV:-local}"
+  # Con ENV=gcp la URL sale del propio Terraform, para no copiarla a mano ni
+  # arriesgarse a apuntar a la IP equivocada. Si el despliegue no está aplicado,
+  # `terraform output` devuelve vacío; gcp:wait lo detecta y explica qué falta.
+  BASE_URL:
+    sh: |
+      if [ -n "${BASE_URL}" ]; then echo "${BASE_URL}";
+      elif [ "${ENV:-local}" = "gcp" ]; then
+        terraform -chdir="${IAC_DIR:-../scripts/IaC}" output -raw app_url 2>/dev/null;
+      else echo "https://localhost:8080"; fi
+  IAC_DIR:
+    sh: echo "${IAC_DIR:-../scripts/IaC}"
+  # URL del despliegue de GCP. Se resuelve aparte de BASE_URL porque las tareas
+  # gcp:* tienen que fijarla como variable de la tarea llamada: `env:` no influye
+  # al evaluar un `sh:`, así que poner ENV=gcp en el env de la tarea resolvía
+  # BASE_URL contra el valor por defecto (localhost) sin avisar.
+  GCP_BASE_URL:
+    sh: |
+      if [ -n "${BASE_URL}" ]; then echo "${BASE_URL}";
+      else terraform -chdir="{{.IAC_DIR}}" output -raw app_url 2>/dev/null; fi
+  RUN_ID:
+    sh: echo "${RUN_ID:-r$(date +%s)}"
+  STUDENT_COUNT:
+    sh: echo "${STUDENT_COUNT:-500}"
+  COURSE_COUNT:
+    sh: echo "${COURSE_COUNT:-20}"
+  PROFESSOR_COUNT:
+    sh: echo "${PROFESSOR_COUNT:-4}"
+  THINK_MIN:
+    sh: echo "${THINK_MIN:-1}"
+  THINK_MAX:
+    sh: echo "${THINK_MAX:-5}"
+  MEDIA_WAIT_MIN:
+    sh: echo "${MEDIA_WAIT_MIN:-20}"
+  PREMATRICULA_LOTE:
+    sh: echo "${PREMATRICULA_LOTE:-250}"
+  TUS_HABILITADO:
+    sh: echo "${TUS_HABILITADO:-true}"
+  INSECURE_TLS:
+    sh: echo "${INSECURE_TLS:-true}"
+  # Credenciales: solo de entorno, nunca en el repositorio. Task no expande
+  # ${VAR:-def} dentro de cmds, así que se resuelven aquí una sola vez.
+  ADMIN_USER:
+    sh: echo "${ADMIN_USER:-admin1}"
+  ADMIN_PASS:
+    sh: echo "${ADMIN_PASS:-}"
+  ADMIN_EMAIL:
+    sh: echo "${ADMIN_EMAIL:-admin1@carga.test}"
+  SEED_PASSWORD:
+    sh: echo "${SEED_PASSWORD:-${ADMIN_PASS:-}}"
+  # common se aplica a todas las corridas medidas. BASE_URL y RUN_ID se repiten
+  # aquí a propósito: cada `k6 run` debe quedar reproducible con lo que muestra
+  # el log de la tarea.
+  common: >-
+    -e ENV={{.ENV}}
+    -e BASE_URL={{.BASE_URL}}
+    -e RUN_ID={{.RUN_ID}}
+    -e STUDENT_COUNT={{.STUDENT_COUNT}}
+    -e COURSE_COUNT={{.COURSE_COUNT}}
+    -e PROFESSOR_COUNT={{.PROFESSOR_COUNT}}
+    -e THINK_MIN={{.THINK_MIN}}
+    -e THINK_MAX={{.THINK_MAX}}
+    -e PREMATRICULA_LOTE={{.PREMATRICULA_LOTE}}
+    -e INSECURE_TLS={{.INSECURE_TLS}}
+
+env:
+  BASE_URL: '{{.BASE_URL}}'
+  RUN_ID: '{{.RUN_ID}}'
+  ENV: '{{.ENV}}'
+
+tasks:
+  # -------------------------------------------------------------------------
+  # Datos sintéticos
+  #
+  # Cada seed es idempotente: si su corpus ya existe, se reutiliza en vez de
+  # volver a crearlo. Sin esa guarda, encadenar los seeds falla porque
+  # courses.slug y attempts.idempotency_key tienen índice único, y una corrida
+  # parcial deja slugs ocupados. Para regenerar desde cero, borrar datasets/.
+  # -------------------------------------------------------------------------
+  seed:students:
+    desc: Crea profesores y estudiantes y deja sus sesiones en datasets/
+    cmds:
+      - k6 run --quiet
+        -e BASE_URL={{.BASE_URL}}
+        -e RUN_ID={{.RUN_ID}}
+        -e STUDENT_COUNT={{.STUDENT_COUNT}}
+        -e PROFESSOR_COUNT={{.PROFESSOR_COUNT}}
+        -e ENV={{.ENV}}
+        -e INSECURE_TLS={{.INSECURE_TLS}}
+        -e ADMIN_USER={{.ADMIN_USER}}
+        -e ADMIN_PASS={{.ADMIN_PASS}}
+        -e ADMIN_EMAIL={{.ADMIN_EMAIL}}
+        -e SEED_PASSWORD={{.SEED_PASSWORD}}
+        --summary-export=results/seed-estudiantes-summary.json
+        k6/seed_students.js
+
+  seed:courses:
+    desc: Crea y publica cursos, y un borrador por profesor para las cargas
+    cmds:
+      - task: seed:students
+      - k6 run --quiet
+        -e ENV={{.ENV}}
+        -e BASE_URL={{.BASE_URL}}
+        -e RUN_ID={{.RUN_ID}}
+        -e COURSE_COUNT={{.COURSE_COUNT}}
+        -e INSECURE_TLS={{.INSECURE_TLS}}
+        --summary-export=results/seed-cursos-summary.json
+        k6/seed_courses.js
+
+  seed:media:
+    desc: Sube los archivos multimedia y espera a que queden available
+    cmds:
+      - task: seed:courses
+      - k6 run --quiet
+        -e ENV={{.ENV}}
+        -e BASE_URL={{.BASE_URL}}
+        -e RUN_ID={{.RUN_ID}}
+        -e MEDIA_WAIT_MIN={{.MEDIA_WAIT_MIN}}
+        -e INSECURE_TLS={{.INSECURE_TLS}}
+        --summary-export=results/seed-media-summary.json
+        k6/seed_media.js
+
+  seed:all:
+    desc: 'Corpus completo: identidad, contenido y multimedia'
+    cmds:
+      - task: seed:media
+
+  seed:reset:
+    desc: Borra el corpus sembrado para regenerarlo (no toca la base de datos)
+    cmds:
+      - rm -f datasets/estudiantes.json datasets/cursos.json datasets/media.json
+      - echo "corpus eliminado; la siguiente tarea seed:* lo regenera."
+
+  # -------------------------------------------------------------------------
+  # Medios de prueba
+  # -------------------------------------------------------------------------
+  media:generate:
+    desc: Genera los cuatro perfiles con ffmpeg (no se versionan los binarios)
+    cmds:
+      - mkdir -p media
+      # 480p, 30s. El worker no sube de 720p ni hace upscale, así que este
+      # perfil se mantiene en 480p.
+      - >-
+        ffmpeg -y -loglevel error -f lavfi -i
+        testsrc=size=854x480:rate=24:duration=30
+        -f lavfi -i sine=frequency=440:duration=30
+        -c:v libx264 -preset veryfast -crf 28 -pix_fmt yuv420p
+        -c:a aac -b:a 128k -shortest media/p1-small.mp4
+      # 720p, 60s.
+      - >-
+        ffmpeg -y -loglevel error -f lavfi -i
+        testsrc=size=1280x720:rate=24:duration=60
+        -f lavfi -i sine=frequency=440:duration=60
+        -c:v libx264 -preset veryfast -crf 26 -pix_fmt yuv420p
+        -c:a aac -b:a 128k -shortest media/p2-medium.mp4
+      # 1080p, 120s: el worker lo baja a 720p. Sirve para demostrar que no hay
+      # upscale y que la rendición esperada es una sola.
+      - >-
+        ffmpeg -y -loglevel error -f lavfi -i
+        testsrc=size=1920x1080:rate=24:duration=120
+        -f lavfi -i sine=frequency=440:duration=120
+        -c:v libx264 -preset veryfast -crf 24 -pix_fmt yuv420p
+        -c:a aac -b:a 128k -shortest media/p3-large.mp4
+      # Solo audio, 180s.
+      - >-
+        ffmpeg -y -loglevel error -f lavfi -i
+        sine=frequency=440:duration=180
+        -c:a aac -b:a 128k media/a1-audio.m4a
+      - ls -lh media/
+
+  # -------------------------------------------------------------------------
+  # Escenario 1: actividad académica
+  # -------------------------------------------------------------------------
+  esc1:level:
+    desc: Corre un nivel del escenario 1 (LEVEL=L0..L4, repetir L3 para comprobar estabilidad)
+    requires:
+      vars: [LEVEL]
+    cmds:
+      - k6 run {{.common}}
+        -e LEVEL={{.LEVEL}}
+        --summary-trend-stats='p(50),p(90),p(95),p(99),max,min,avg'
+        --summary-export=results/esc1-{{.LEVEL}}-summary.json
+        --out json=results/esc1-{{.LEVEL}}.json
+        k6/esc1_academico.js
+
+  esc1:all:
+    desc: Línea base, tres niveles crecientes y la repetición de L3
+    cmds:
+      - task: esc1:level
+        vars: { LEVEL: L0 }
+      - task: esc1:level
+        vars: { LEVEL: L1 }
+      - task: esc1:level
+        vars: { LEVEL: L2 }
+      - task: esc1:level
+        vars: { LEVEL: L3 }
+      - task: esc1:level
+        vars: { LEVEL: L4 }
+      - task: esc1:level
+        vars: { LEVEL: L3 }
+
+  esc1:burst:
+    desc: Variante separada de ráfaga de inicios de sesión
+    cmds:
+      - k6 run {{.common}}
+        --summary-trend-stats='p(50),p(90),p(95),p(99),max,min,avg'
+        --summary-export=results/esc1-login-summary.json
+        --out json=results/esc1-login.json
+        k6/esc1_login_burst.js
+
+  # -------------------------------------------------------------------------
+  # Escenario 2: carga, procesamiento y consumo
+  # -------------------------------------------------------------------------
+  esc2:carga:
+    desc: Carga directa al almacenamiento, un nivel (LEVEL=M0..M2)
+    requires:
+      vars: [LEVEL]
+    cmds:
+      - k6 run {{.common}}
+        -e LEVEL={{.LEVEL}}
+        --summary-trend-stats='p(50),p(90),p(95),p(99),max,min,avg'
+        --summary-export=results/esc2-carga-{{.LEVEL}}-summary.json
+        --out json=results/esc2-carga-{{.LEVEL}}.json
+        k6/esc2_carga_directa.js
+
+  esc2:tus:
+    desc: 'Sub-escenario TUS: los bytes atraviesan la API'
+    cmds:
+      - k6 run {{.common}}
+        -e LEVEL=${LEVEL:-M0}
+        -e TUS_HABILITADO={{.TUS_HABILITADO}}
+        --summary-trend-stats='p(50),p(90),p(95),p(99),max,min,avg'
+        --summary-export=results/esc2-tus-summary.json
+        --out json=results/esc2-tus.json
+        k6/esc2_tus.js
+
+  esc2:consumo:
+    desc: Consumo HLS a cadencia de reproducción (PATRON=reproduccion|burst)
+    cmds:
+      - k6 run {{.common}}
+        -e PATRON=${PATRON:-reproduccion}
+        -e VUS=${VUS:-10}
+        --summary-trend-stats='p(50),p(90),p(95),p(99),max,min,avg'
+        --summary-export=results/esc2-consumo-summary.json
+        --out json=results/esc2-consumo.json
+        k6/esc2_consumo.js
+
+  esc2:drenaje:
+    desc: Observa la cola hasta que drene y verifica el estado de cada objeto
+    cmds:
+      - k6 run {{.common}}
+        -e DURACION=${DURACION:-20m}
+        -e DURACION_MIN=${DURACION_MIN:-20}
+        --summary-trend-stats='p(50),p(95),p(99),max'
+        --summary-export=results/esc2-drenaje-summary.json
+        --out json=results/esc2-drenaje.json
+        k6/esc2_drenaje.js
+
+  esc2:all:
+    desc: Carga directa por nivel, TUS, consumo y drenaje
+    cmds:
+      - task: esc2:carga
+        vars: { LEVEL: M0 }
+      - task: esc2:carga
+        vars: { LEVEL: M1 }
+      - task: esc2:carga
+        vars: { LEVEL: M2 }
+      - task: esc2:tus
+      - task: esc2:consumo
+      - task: esc2:drenaje
+
+  # -------------------------------------------------------------------------
+  # Invariantes
+  # -------------------------------------------------------------------------
+  integridad:
+    desc: Comprueba idempotencia, doble calificación y progreso
+    cmds:
+      - k6 run {{.common}}
+        --summary-export=results/integridad-summary.json
+        --out json=results/integridad.json
+        k6/integridad.js
+
+  # -------------------------------------------------------------------------
+  # Despliegue en GCP
+  #
+  # Estas tareas exigen ENV=gcp en el entorno y lo comprueban. No se usan `vars:`
+  # ni `env:` para inyectarlo: el entorno de una tarea no interviene al evaluar
+  # los `sh:` de las variables, y las variables no se propagan en cadena
+  # (a -> b -> c las pierde). Intentarlo daba una corrida apuntando a localhost
+  # sin ningún aviso. Fallar aquí es preferible a medir el entorno equivocado.
+  # -------------------------------------------------------------------------
+  gcp:url:
+    desc: Muestra la URL pública que Terraform expone para la aplicación
+    cmds:
+      - |
+        if [ "${ENV:-local}" != "gcp" ]; then
+          echo "Requiere ENV=gcp en el entorno:  export ENV=gcp"; exit 1
+        fi
+        if [ -z "{{.BASE_URL}}" ]; then
+          echo "Terraform no devuelve app_url: ¿está aplicado el despliegue?"
+          echo "  cd {{.IAC_DIR}} && terraform apply"
+          exit 1
+        fi
+        echo "BASE_URL de GCP = {{.BASE_URL}}"
+
+  gcp:wait:
+    desc: Espera a que el arranque asíncrono de las VM termine y /health responda
+    vars:
+      ESPERA_MAX:
+        sh: echo "${ESPERA_MAX:-60}"
+    cmds:
+      - |
+        if [ "${ENV:-local}" != "gcp" ]; then
+          echo "Requiere ENV=gcp en el entorno:  export ENV=gcp"; exit 1
+        fi
+        if [ -z "{{.BASE_URL}}" ]; then
+          echo "Terraform no devuelve app_url: ¿está aplicado el despliegue?"
+          echo "  cd {{.IAC_DIR}} && terraform apply"
+          echo "o exporta BASE_URL explícitamente."
+          exit 1
+        fi
+      # Un state parcial es peor que uno vacío: la IP reservada existe y parece
+      # válida mientras ninguna VM la atiende. El sondeo de /health tardaría
+      # quince minutos en decirlo, así que se comprueba primero.
+      - |
+        if ! terraform -chdir="{{.IAC_DIR}}" state list 2>/dev/null | grep -q "^google_compute_instance\."; then
+          echo "El despliegue está incompleto: no hay máquinas virtuales en el state de Terraform."
+          echo "La URL {{.BASE_URL}} existe pero nada la atiende."
+          echo "Complétalo con:"
+          echo "  cd {{.IAC_DIR}} && terraform apply"
+          exit 1
+        fi
+      # El apply devuelve el control antes de que el arranque de las VM termine:
+      # clona el repositorio, compila las imágenes y levanta los contenedores.
+      - |
+        for i in $(seq 1 {{.ESPERA_MAX}}); do
+          if curl -sk -m 5 "{{.BASE_URL}}/health" 2>/dev/null | grep -q '"status":"ok"'; then
+            echo "la aplicación responde en {{.BASE_URL}}"; exit 0
+          fi
+          sleep 15
+        done
+        echo "la aplicación no respondió en el tiempo esperado: revisa el arranque de las VM:"
+        echo "  gcloud compute ssh mooc-web --zone=us-central1-a --tunnel-through-iap \\"
+        echo "    --command 'sudo tail -50 /var/log/mooc-startup.log'"
+        exit 1
+
+  gcp:seed:
+    desc: Siembra el corpus completo contra el despliegue de GCP (requiere ENV=gcp)
+    cmds:
+      - task: gcp:wait
+      - task: seed:all
+
+  gcp:all:
+    desc: Escenario 1, integridad y escenario 2 contra GCP (requiere ENV=gcp)
+    cmds:
+      - task: gcp:wait
+      - task: esc1:all
+      - task: esc1:burst
+      - task: integridad
+      - task: esc2:all
+
+  # -------------------------------------------------------------------------
+  # Comprobaciones
+  # -------------------------------------------------------------------------
+  check:
+    desc: Valida sintaxis y carga de datos de todos los guiones sin medir
+    cmds:
+      - for f in k6/*.js k6/lib/*.js; do k6 inspect "$f" >/dev/null && echo "ok $f"; done
+
+  info:
+    desc: Muestra la configuración que se usaría en una corrida
+    cmds:
+      - echo "BASE_URL   = {{.BASE_URL}}"
+      - echo "RUN_ID     = {{.RUN_ID}}"
+      - echo "estudiantes= {{.STUDENT_COUNT}}"
+      - echo "cursos     = {{.COURSE_COUNT}}"
+      - echo "profesores = {{.PROFESSOR_COUNT}}"
+      - echo "think time = {{.THINK_MIN}}-{{.THINK_MAX}} s"
+
+
+
+
+

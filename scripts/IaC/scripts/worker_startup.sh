@@ -87,4 +87,13 @@ cd "${APP_DIR}"
 # shellcheck disable=SC2086
 docker compose --project-directory "${APP_DIR}" -f scripts/IaC/deploy/docker-compose.cloud.yml up -d --build ${COMPOSE_SERVICES}
 
+# Telemetría del worker. El agente reporta las métricas del host y scrapea el
+# /metrics del worker, que publica el conteo de ffmpeg en curso.
+if [[ "$(get_meta mooc-install-ops-agent)" == "true" ]]; then
+	echo "==> [${ROLE}] instalando Ops Agent"
+	bash "${APP_DIR}/scripts/IaC/scripts/install_ops_agent.sh" \
+		"$(get_meta mooc-metrics-target)" \
+		"$(get_meta mooc-metrics-scrape-interval)"
+fi
+
 echo "==> [${ROLE}] arranque completado"

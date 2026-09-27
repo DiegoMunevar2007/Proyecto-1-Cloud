@@ -132,4 +132,14 @@ cd "${APP_DIR}"
 # shellcheck disable=SC2086
 docker compose --project-directory "${APP_DIR}" -f scripts/IaC/deploy/docker-compose.cloud.yml up -d --build ${COMPOSE_SERVICES}
 
+# Telemetría. Se instala después de levantar los contenedores porque el agente
+# scrapea el /metrics de la API, y es best effort: un fallo aquí no debe dejar
+# la aplicación sin desplegar.
+if [[ "$(get_meta mooc-install-ops-agent)" == "true" ]]; then
+	echo "==> [${ROLE}] instalando Ops Agent"
+	bash "${APP_DIR}/scripts/IaC/scripts/install_ops_agent.sh" \
+		"$(get_meta mooc-metrics-target)" \
+		"$(get_meta mooc-metrics-scrape-interval)"
+fi
+
 echo "==> [${ROLE}] arranque completado"

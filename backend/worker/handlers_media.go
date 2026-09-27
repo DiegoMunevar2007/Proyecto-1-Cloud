@@ -30,7 +30,7 @@ type MediaHandler struct {
 // multimedia, encadena el transcode. Fail-closed: sin clamd → error,
 // reintentos con backoff y DLQ (nada infectado llega a publicarse).
 func (h *MediaHandler) HandleScan(ctx context.Context, t *asynq.Task) error {
-	p, err := queue.DecodeScan(t.Payload())
+	p, err := queue.Decode[queue.ScanPayload](t.Payload())
 	if err != nil {
 		return fmt.Errorf("payload inválido: %w", err)
 	}
@@ -99,7 +99,7 @@ func (h *MediaHandler) enqueueTranscodeIfMedia(r *courses.Resource, transcodeKey
 
 // HandleTranscode descarga el original, genera HLS sin upscaling y conserva el original.
 func (h *MediaHandler) HandleTranscode(ctx context.Context, t *asynq.Task) error {
-	p, err := queue.DecodeTranscode(t.Payload())
+	p, err := queue.Decode[queue.TranscodePayload](t.Payload())
 	if err != nil {
 		return fmt.Errorf("payload inválido: %w", err)
 	}
@@ -156,6 +156,10 @@ func (h *MediaHandler) HandleTranscode(ctx context.Context, t *asynq.Task) error
 	cmdCtx, cancel := context.WithTimeout(ctx, 25*time.Minute)
 	defer cancel()
 	cmd = exec.CommandContext(cmdCtx, cmd.Path, cmd.Args[1:]...)
+	// ffmpeg es lo que satura los 2 vCPU del worker, así que su concurrencia
+	// real es la métrica que explica la cola del escenario de carga multimedia.
+	jobs.FFmpegStarted()
+	defer jobs.FFmpegFinished()
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		h.markFailed(&r, fmt.Sprintf("ffmpeg: %v %.500s", err, string(out)))

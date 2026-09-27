@@ -16,8 +16,8 @@ type Client struct {
 // RedisOpt construye la conexión asynq a Redis desde env (compartida API/worker).
 func RedisOpt() asynq.RedisClientOpt {
 	return asynq.RedisClientOpt{
-		Addr:     utils.GetEnv("REDIS_ADDR", "localhost:6379"),
-		Password: utils.GetEnv("REDIS_PASSWORD", ""),
+		Addr:     utils.RedisAddr(),
+		Password: utils.RedisPassword(),
 		DB:       0,
 	}
 }
@@ -44,7 +44,7 @@ func (c *Client) enqueue(taskType string, payload interface{}, timeout time.Dura
 	opts := []asynq.Option{
 		asynq.MaxRetry(3),
 		asynq.Timeout(timeout),
-		asynq.Queue("media"),
+		asynq.Queue(MediaQueue),
 		asynq.Unique(24 * time.Hour),
 	}
 	if idempotencyKey != "" {
