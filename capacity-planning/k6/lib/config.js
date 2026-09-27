@@ -99,11 +99,11 @@ export const ESC1_LEVELS = [
 // no se reduce sola. La progresión es geométrica para que el codo caiga dentro de
 // la serie en lugar de entre dos niveles.
 export const ESC1_ESCALADA = [
-  { id: 'T1', rate: 40, hold: '2m', maxVUs: 300 },
-  { id: 'T2', rate: 80, hold: '2m', maxVUs: 600 },
-  { id: 'T3', rate: 160, hold: '2m', maxVUs: 1200 },
-  { id: 'T4', rate: 320, hold: '2m', maxVUs: 2400 },
-  { id: 'T5', rate: 640, hold: '2m', maxVUs: 4800 },
+  { id: 'T1', rate: 40, hold: '2m' },
+  { id: 'T2', rate: 80, hold: '2m' },
+  { id: 'T3', rate: 160, hold: '2m' },
+  { id: 'T4', rate: 320, hold: '2m' },
+  { id: 'T5', rate: 640, hold: '2m' },
 ];
 
 // Niveles del escenario 2. La concurrencia de los workers se mantiene fija en 10
@@ -129,13 +129,16 @@ export function escenarioPorNiveles(niveles, etiqueta) {
   // carga y nunca se llega a la rodilla del servidor. La tasa de llegada fija
   // req/s y deja que la latencia crezca, que es lo que revela el límite.
   if (nivel.rate) {
+    // El número de VUs lo fija la ley de Little: VUs = tasa x duración del
+    // ciclo. Sin pausa el ciclo son unas decenas de milisegundos, así que el
+    // tope de VUs queda holgado con el doble de la tasa.
     return {
       executor: 'constant-arrival-rate',
       rate: nivel.rate,
       timeUnit: '1s',
       duration: nivel.hold,
-      preAllocatedVUs: Math.max(50, Math.ceil(nivel.rate * 2)),
-      maxVUs: nivel.maxVUs || Math.ceil(nivel.rate * 6),
+      preAllocatedVUs: Math.max(20, Math.ceil(nivel.rate / 4)),
+      maxVUs: nivel.maxVUs || Math.max(100, Math.ceil(nivel.rate * 2)),
       gracefulStop: '30s',
       exec: etiqueta,
       tags: {
@@ -161,7 +164,14 @@ export function escenarioPorNiveles(niveles, etiqueta) {
 
 // Espera de acción simulada. El enunciado pide declarar las pausas entre
 // acciones, y sin ellas los VUs serían un open loop artificial.
+//
+// Con SIN_PAUSA=true la pausa se omite. Sólo se usa en la escalada por tasa de
+// llegada, donde la carga la fija el planificador y no el bucle del VU: la pausa
+// no cambia la tasa, solo obliga a tener más VUs vivos para sostenerla. Con una
+// pausa de 1 a 5 segundos harían falta unos 1 920 VUs para 640 operaciones por
+// segundo, que no caben en la VM generadora de 2 GB.
 export function think() {
+  if (__ENV.SIN_PAUSA === 'true') return;
   const span = Math.max(THINK_MAX - THINK_MIN, 0);
   sleep(THINK_MIN + Math.random() * span);
 }

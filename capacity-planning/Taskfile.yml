@@ -46,6 +46,11 @@ vars:
   # contra la pública. Vacío significa que coinciden.
   CORPUS_BASE_URL:
     sh: echo "${CORPUS_BASE_URL:-}"
+  # Omite la pausa entre acciones. Solo para la escalada por tasa de llegada,
+  # donde la carga la fija el planificador y la pausa solo obligaría a tener más
+  # VUs vivos para sostenerla.
+  SIN_PAUSA:
+    sh: echo "${SIN_PAUSA:-false}"
   RUN_ID:
     sh: echo "${RUN_ID:-r$(date +%s)}"
   STUDENT_COUNT:
@@ -83,6 +88,7 @@ vars:
     -e ENV={{.ENV}}
     -e BASE_URL={{.BASE_URL}}
     -e CORPUS_BASE_URL={{.CORPUS_BASE_URL}}
+    -e SIN_PAUSA={{.SIN_PAUSA}}
     -e RUN_ID={{.RUN_ID}}
     -e STUDENT_COUNT={{.STUDENT_COUNT}}
     -e COURSE_COUNT={{.COURSE_COUNT}}
@@ -235,18 +241,18 @@ tasks:
   # latencia crezca. Deben correr desde mooc-loadgen, contra la IP privada, para
   # no medir el piso de red del portátil.
   esc1:escalada:
-    desc: Escalada por tasa de llegada (40 a 640 req/s) para encontrar el codo del backend
+    desc: Escalada por tasa de llegada (40 a 640 op/s) para encontrar el codo del backend
     cmds:
       - task: esc1:level
-        vars: { LEVEL: T1 }
+        vars: { LEVEL: T1, SIN_PAUSA: "true" }
       - task: esc1:level
-        vars: { LEVEL: T2 }
+        vars: { LEVEL: T2, SIN_PAUSA: "true" }
       - task: esc1:level
-        vars: { LEVEL: T3 }
+        vars: { LEVEL: T3, SIN_PAUSA: "true" }
       - task: esc1:level
-        vars: { LEVEL: T4 }
+        vars: { LEVEL: T4, SIN_PAUSA: "true" }
       - task: esc1:level
-        vars: { LEVEL: T5 }
+        vars: { LEVEL: T5, SIN_PAUSA: "true" }
 
   esc1:burst:
     desc: Variante separada de ráfaga de inicios de sesión
