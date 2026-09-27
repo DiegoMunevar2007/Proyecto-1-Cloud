@@ -1,171 +1,79 @@
 # Arquitectura desplegada (Entrega 2)
 
-Diagramas de la solución tal como quedó desplegada en Google Cloud. El código fuente de cada diagrama es el bloque Mermaid, que se renderiza directamente en GitHub y en cualquier visor compatible.
+Plataforma MOOC sobre Google Cloud. Este documento describe lo que quedó desplegado y en qué se diferencia de la entrega anterior. Los dos diagramas están en la raíz del repositorio: `Diagrama Componentes Proyecto 2.png` y `Diagrama Despliegue Proyecto 2.png`.
 
 ## Componentes
 
-Diagrama de componentes UML. Las interfaces provistas se dibujan como lollipops junto al componente que las ofrece, y cada flecha es una dependencia con el nombre de la interfaz que consume. El código fuente es `diagramas/componentes.puml` y se regenera con PlantUML.
+El diagrama de componentes muestra las piezas de la aplicación y sus interfaces. El usuario entra por Caddy, que es el único punto público. Caddy hace de proxy inverso y termina el TLS, y detrás está la API, que es un monolito modular en Go.
 
-![Modelo de componentes](diagramas/componentes.svg)
+Los módulos de la API son `auth`, `admin`, `courses`, `enroll`, `quiz`, `progress`, `badges`, `uploads`, `storage`, `mail`, `queue` y `telemetry`. Cada uno expone su grupo de rutas y comparte la misma conexión a la base de datos, el mismo cliente de Redis y el mismo cliente de almacenamiento. No son servicios independientes: viven en un solo proceso y se comunican por llamadas directas, no por red.
 
-La API es un monolito modular en Go. Los módulos son `auth`, `admin`, `courses`, `enroll`, `quiz`, `progress`, `badges`, `uploads`, `storage`, `mail`, `queue` y `telemetry`. El frontend Next.js se reutiliza de la entrega anterior y Caddy lo sirve junto con la API bajo el mismo origen, lo que evita configurar CORS.
+La base de datos es Cloud SQL para PostgreSQL. Guarda cuentas, estructura académica, recursos y metadatos, inscripciones, intentos, calificaciones, progreso y los trabajos de multimedia. La API la consulta por SQL sobre la IP privada.
 
-Las comunicaciones síncronas son HTTP entre el navegador y Caddy, y HTTP interno entre Caddy y la API o el frontend. El worker habla con PostgreSQL y con Cloud Storage. Las asíncronas pasan por Redis con asynq, y son las dos únicas tareas de la aplicación, `media:scan` y `media:transcode`.
+La cola de mensajería es Redis, con la biblioteca asynq. Redis es el único camino asíncrono del sistema y tiene dos tipos de tarea, `media:scan` y `media:transcode`. La API encola y el Go Worker consume. Esa relación es la que el diagrama marca como *event driven*: la API no espera al worker, responde cuando el trabajo queda encolado y el estado del recurso se consulta después.
+
+El worker tiene dos dependencias de proceso. ClamAV escanea el archivo original antes de que pueda publicarse, y ffmpeg genera los derivados HLS. También escribe el estado del recurso en PostgreSQL, para que la API lo pueda consultar.
+
+El almacenamiento de objetos es Cloud Storage y lo usan los dos lados. La API lo usa para emitir URLs firmadas de subida y de descarga; el worker lo usa para leer el original y para escribir los segmentos generados. El diagrama separa las dos flechas hacia el mismo bucket justamente por eso: no es la misma operación ni el mismo permiso.
+
+El servidor SMTP es Mailpit y solo existe para las pruebas. La API le entrega el correo de verificación de cuenta y de recuperación. En esta entrega no hay proveedor de correo real porque el enunciado no lo pide y el alcance es el despliegue.
+
+Las comunicaciones síncronas son HTTP entre el usuario y Caddy, y entre Caddy y la API. El worker habla con PostgreSQL y con Cloud Storage. La única comunicación asíncrona es la cola.
 
 ## Despliegue
 
-```mermaid
-flowchart TB
-  INTERNET(("Internet"))
+El diagrama de despliegue muestra dónde vive cada pieza. Todo está en `us-central1`, zona `us-central1-a`, sobre una VPC con una subred, `10.10.1.0/24`.
 
-  subgraph gcp["Google Cloud · proyecto proyecto-2-cloud-509714 · us-central1-a"]
-    subgraph vpc["VPC mooc-vpc · subred mooc-app-subnet 10.10.1.0/24"]
-      FW_WEB["Firewall mooc-allow-web<br/>0.0.0.0/0 → 80,443"]
-      FW_INT["Firewall mooc-allow-internal<br/>10.10.1.0/24 → todo"]
-      FW_IAP["Firewall mooc-allow-iap-ssh<br/>35.235.240.0/20 → 22"]
+Hay dos máquinas de aplicación y una de pruebas. Las dos de aplicación son `e2-small`, con 2 vCPU, 2 GiB de RAM y 30 GiB de disco `pd-balanced`.
 
-      subgraph vmweb["VM mooc-web · e2-small · 2 vCPU 1976 MB · 30 GiB pd-balanced"]
-        C1["caddy"]
-        C2["frontend"]
-        C3["backend"]
-        C4["mailpit"]
-      end
+En `mooc-web` corren Caddy, la API y Mailpit como contenedores. Esta máquina es la única con IP pública, y por eso el firewall `mooc-allow-web` deja entrar `0.0.0.0/0` a los puertos 80 y 443.
 
-      subgraph vmworker["VM mooc-worker · e2-small · sin IP pública"]
-        C5["redis"]
-        C6["worker"]
-        C7["clamav"]
-      end
+En `mooc-worker` corren el worker, Redis y ClamAV. No tiene IP pública. Redis y ClamAV quedan accesibles solo por la red privada, que es lo que pide el enunciado para la cola y para los servicios internos. La regla `mooc-allow-internal` abre el tráfico dentro de `10.10.1.0/24`, y `mooc-allow-iap-ssh` permite la administración por túnel de Identity-Aware Proxy sin abrir el 22 a Internet.
 
-      subgraph vmload["VM mooc-loadgen · e2-small · sin IP pública"]
-        K6["k6 v2.3.0"]
-      end
+`mooc-loadgen` es la tercera máquina y no forma parte de la aplicación. Existe para ejecutar k6 desde dentro de la región y no medir el enlace del portátil. Se aprovisiona con las pruebas y se puede apagar cuando no se mide.
 
-      NAT["Cloud NAT mooc-router-nat"]
-      IAP["Identity-Aware Proxy<br/>túnel SSH"]
-    end
+La base de datos administrada es Cloud SQL para PostgreSQL en `db-f1-micro` con 20 GiB de almacenamiento, en una sola zona y sin réplica de lectura. Tiene la IPv4 deshabilitada y solo se llega a ella por la IP privada.
 
-    SQL[("Cloud SQL mooc-postgres<br/>PostgreSQL 17 · db-f1-micro · 20 GiB<br/>solo IP privada 10.179.0.3")]
-    B1[("Bucket originals")]
-    B2[("Bucket hls")]
-    B3[("Bucket public")]
-    SM["Secret Manager"]
-  end
+El almacenamiento de objetos son tres buckets de Cloud Storage, todos en la clase Standard y en la misma región: uno para los originales, uno para los derivados HLS y uno para los archivos públicos y las miniaturas.
 
-  INTERNET -->|"443 HTTPS"| FW_WEB
-  FW_WEB --> vmweb
-  INTERNET -->|"SSH por túnel"| IAP
-  IAP --> FW_IAP
-  FW_IAP --> vmweb
-  FW_IAP --> vmworker
-  vmweb <-->|"privado"| FW_INT
-  vmworker <-->|"privado"| FW_INT
-  FW_INT --> SQL
-  vmload -.->|"egreso a Internet"| NAT
-  vmweb -.->|"egreso a Internet"| NAT
-  vmworker -.->|"egreso a Internet"| NAT
-  vmworker --> B1
-  vmworker --> B2
-  vmweb --> B1
-  vmweb --> B3
-  vmweb -->|"credenciales"| SM
-  vmworker -->|"credenciales"| SM
-```
+Los volúmenes persistentes son los discos de arranque de cada máquina más el volumen de Docker donde Redis guarda su `appendonly`. El disco de arranque es lo que hace que un recurso de la máquina sobreviva a un reinicio, y es también lo que explica que una máquina detenida siga costando.
 
-La IP pública la tiene solo el Web Server, que es el punto de entrada. El Worker Server y el generador no tienen IP pública y se administran por SSH a través de IAP. Cloud SQL no acepta conexiones desde Internet porque tiene la IPv4 deshabilitada y solo expone la IP privada. Las tres máquinas salen a Internet por Cloud NAT para instalar dependencias. Los volúmenes persistentes son los discos de arranque de cada VM, con `redis_data` como volumen Docker para el `appendonly` de Redis.
-
-## Carga directa de un archivo
-
-```mermaid
-sequenceDiagram
-  autonumber
-  participant P as Profesor (navegador)
-  participant A as API Go
-  participant R as Redis (asynq)
-  participant G as Cloud Storage originals
-  participant W as Worker Go
-  participant C as ClamAV
-  participant F as ffmpeg
-
-  P->>A: POST /api/v1/resources/{id}/upload-url
-  Note over A,R: La API autoriza y encola el escaneo<br/>en la misma petición
-  A->>R: enqueue media:scan
-  A-->>P: URL prefirmada
-  R-->>W: toma media:scan
-  W->>G: GET objeto
-  Note over W,G: El objeto todavía no existe:<br/>el cliente aún no ha subido nada.<br/>El primer intento falla y asynq reintenta a los 30 s
-  P->>G: PUT del archivo (transferencia directa)
-  R-->>W: reintento de media:scan
-  W->>G: GET objeto
-  G-->>W: bytes del original
-  W->>C: escanear
-  C-->>W: limpio
-  W->>R: enqueue media:transcode
-  R-->>W: toma media:transcode
-  W->>F: transcodificar a HLS
-  F-->>W: manifiesto y segmentos
-  W->>G: PUT derivados al bucket hls
-  W->>A: processing_status = ready
-  Note over W,A: La API refresca el estado en PostgreSQL
-```
-
-Este es el flujo que el informe documenta con una condición de carrera. El encolado del escaneo ocurre antes de que el objeto exista, así que el primer intento falla por clave inexistente y el trabajo se resuelve en el reintento. La corrección consiste en separar la autorización de la confirmación, con un endpoint de confirmación que encole el escaneo una vez terminada la subida.
-
-## Consumo de contenido
-
-```mermaid
-sequenceDiagram
-  autonumber
-  participant E as Estudiante (navegador)
-  participant A as API Go
-  participant G as Cloud Storage hls
-
-  E->>A: GET /api/v1/resources/{id}/download-url
-  A-->>E: URL firmada del manifiesto
-  E->>G: GET index.m3u8
-  G-->>E: manifiesto
-  loop Un segmento por intervalo de reproducción
-    E->>G: GET seg00N.ts
-    G-->>E: segmento
-  end
-```
-
-El contenido multimedia no pasa por la API. El navegador lo pide directo a Cloud Storage con una URL firmada, y el tráfico de control contra la API se limita a autorizar la descarga.
-
-## Ciclo de vida del recurso
-
-```mermaid
-stateDiagram-v2
-  [*] --> pending: se crea el recurso
-  pending --> processing: el worker toma media:scan
-  processing --> processing: reintento tras fallo de escaneo
-  processing --> ready: escaneo limpio y HLS generado
-  processing --> failed: agota reintentos
-  failed --> [*]: queda diagnosticable en la cola
-  ready --> [*]: disponible para el estudiante
-```
-
-Un recurso en `failed` no se publica. El sistema lo conserva en lugar de perderlo, que es lo que el enunciado pide verificar en el drenaje.
+Cloud NAT da salida a Internet a las tres máquinas, que la necesitan para instalar dependencias. No hay balanceador de carga, ni escalado automático, ni réplicas entre máquinas, porque el enunciado delimita el alcance y deja esas piezas para la arquitectura objetivo.
 
 ## Decisiones y adaptaciones
 
-```mermaid
-flowchart LR
-  subgraph entrega1["Entrega anterior"]
-    E1["Redis y asynq<br/>contenedor local"]
-    E2["MinIO<br/>almacenamiento local"]
-    E3["PostgreSQL<br/>contenedor local"]
-  end
-  subgraph entrega2["Entrega 2"]
-    F1["Redis y asynq<br/>contenedor en Worker Server<br/>exigido por el enunciado"]
-    F2["Cloud Storage<br/>tres buckets + interoperabilidad S3"]
-    F3["Cloud SQL PostgreSQL 17<br/>IP privada"]
-  end
-  E1 --> F1
-  E2 --> F2
-  E3 --> F3
-```
+Los cambios frente a la entrega anterior son tres, y los tres vienen del enunciado.
 
-Los cambios frente a la entrega anterior son tres. Redis se mantiene en contenedor y se mueve al Worker Server, porque el enunciado exige que el sistema de mensajería viva en un contenedor de esa máquina. El almacenamiento local se reemplaza por Cloud Storage, conservando la organización lógica de los objetos y los flujos de carga directa y URL firmada. PostgreSQL sale del contenedor y pasa a Cloud SQL, con la conexión restringida a la IP privada.
+Redis se queda en contenedor y se muda al Worker Server. El enunciado pide que el sistema de mensajería se despliegue en un contenedor en esa máquina y que sea accesible por la red privada, así que la co-localización con el worker no fue una elección de diseño sino un requisito. La consecuencia práctica es que comparten CPU y memoria, y que la concurrencia del worker está limitada por lo que sobre después de ClamAV y Redis.
 
-Del modelo de despliegue básico del enunciado quedan fuera el escalado automático, el balanceador de carga, las réplicas entre máquinas y la alta disponibilidad. La configuración de cómputo es fija durante las corridas de capacidad, que es lo que permite comparar niveles entre sí.
+El almacenamiento local se reemplaza por Cloud Storage. Se conservó la organización lógica de los objetos y los dos flujos que ya existían: carga directa desde el cliente y acceso por URL firmada. Lo que cambió es el destino. La carga directa significa que el archivo nunca pasa por la API, lo que descarga a la máquina que también sirve el API y el proxy.
+
+PostgreSQL sale del contenedor y pasa a Cloud SQL. La conexión es por IP privada y con reglas limitadas a las máquinas que la necesitan. La ganancia es que los respaldos y las actualizaciones dejan de ser responsabilidad del equipo, y el costo es que aparece un componente administrado que hay que recordar eliminar al terminar.
+
+La configuración del worker también cambió, y no por una decisión de arquitectura sino por un fallo medido. Con concurrencia 10 el contenedor no cabía en los 2 GiB de la máquina: diez ffmpeg de 1080p más clamd y el proceso de Go sumaban unos 2 297 MB frente a 1 976 disponibles, y el gestor de memoria mataba los procesos de codificación a mitad. Se bajó a 4 y se dejó declarado de forma explícita en lugar de heredarlo de un valor por defecto. El detalle y la medición están en el informe de capacidad.
+
+Frente a la arquitectura objetivo del proyecto, faltan el balanceador de carga, el escalado automático, la réplica entre zonas y la CDN. El procesamiento tampoco escala: hoy hay una sola máquina de worker y una concurrencia fija. Son las piezas que la entrega deja explícitamente fuera de alcance.
+
+## Operación y recuperación
+
+El aprovisionamiento es con Terraform y vive en `scripts/IaC`. La única variable obligatoria es el identificador del proyecto. El despliegue de la aplicación dentro de las máquinas lo hacen los guiones de arranque, que clonan el repositorio, construyen las imágenes y levantan los contenedores. Los propios contenedores se definen en `scripts/IaC/deploy/docker-compose.cloud.yml`.
+
+No hay ningún secreto en el repositorio. Las contraseñas de PostgreSQL, de Redis, la clave del JWT y las credenciales de interoperabilidad de Cloud Storage se guardan en Secret Manager y los procesos las leen al arrancar. El archivo de variables de Terraform está fuera del control de versiones, y del lado de las pruebas las credenciales se inyectan en la sesión y nunca se pasan por metadatos de la máquina.
+
+La verificación más simple es el endpoint de salud, que responde en el Web Server y además comprueba la conexión con PostgreSQL y con Redis. Si la base de datos no responde, devuelve 500 con un mensaje que lo dice, y eso fue lo que permitió diagnosticar el incidente de memoria descrito en el informe de capacidad.
+
+Para reiniciar basta con reiniciar los contenedores en la máquina correspondiente, y las políticas de reinicio los vuelven a levantar. Un reinicio del worker no pierde la cola, porque Redis guarda su estado en el volumen `appendonly`; sí pierde las transcodificaciones que estuvieran a medio hacer, que vuelven a la cola como fallidas y reintentadas.
+
+La migración desde el almacenamiento anterior fue subir los objetos a los buckets conservando la organización lógica, y en esta entrega el corpus de prueba se genera de nuevo con `task seed:all`, que deja los archivos y sus referencias en la base de datos. Eso hace que la reconstrucción del entorno no dependa de arrastrar binarios.
+
+El respaldo tiene dos partes. La base de datos administrada tiene respaldos automáticos activados, y por el lado propio lo que hay que conservar es el corpus sintético y los guiones, que están en `capacity-planning/`. Con eso se puede reconstruir el entorno desde cero. La instancia de Cloud SQL debe eliminarse al terminar la entrega, porque es el único recurso que sigue cobrando con las máquinas apagadas.
+
+## Capacidad, costo y limitaciones
+
+La configuración exacta es de dos máquinas `e2-small` con 2 vCPU, 2 GiB de RAM y 30 GiB de disco balanceado, una instancia de Cloud SQL `db-f1-micro` con 20 GiB, tres buckets de Cloud Storage y una pasarela de Cloud NAT. El detalle de los tipos, las cantidades y los precios está en `docs/entrega2/costos.md`, con los valores recogidos del despliegue real.
+
+El consumo observado durante las pruebas fue de 4,55 GB en Cloud Storage, 31 388 peticiones a la API en el escenario académico, 388 subidas directas aceptadas en el nivel más alto del escenario multimedia y 7 571 descargas de segmentos. La estimación mensual con las máquinas encendidas de forma permanente queda alrededor de 61 dólares, y ese número es un techo: las máquinas estuvieron apagadas la mayor parte del tiempo y el enunciado pide justamente apagarlas cuando no se usan.
+
+Los puntos únicos de falla son varios y conviene enumerarlos. El Web Server es el único con IP pública, así que si se cae no hay entrada a la plataforma. El Worker Server concentra el worker, la cola y el antimalware, de modo que una falla de esa máquina detiene todo el procesamiento y además tumba Redis, y con Redis se cae la autenticación de toda la plataforma porque las sesiones viven ahí. Esa dependencia cruzada ya se manifestó una vez, cuando el agotamiento de memoria de ClamAV dejó a Redis sin responder comandos y las sesiones del Web Server dejaron de validarse. La base de datos está en una sola zona y sin réplica, así que una falla de la zona afecta a todo el sistema.
+
+Los cambios que acercarían esto a una aplicación elástica son tres. Separar el antimalware de la máquina que transcodifica, porque ClamAV retiene entre 320 y 850 MB de forma permanente para servir un escaneo que ocurre una sola vez por archivo, y ese consumo es la razón de que la concurrencia sea 4 y no 10. Sacar Redis del Worker Server, o al menos aislarlo, porque hoy comparte destino con los transcodificadores y su caída arrastra la autenticación. Y pasar la cola a un modelo con más de un worker, porque hoy el procesamiento tiene un techo fijo de cuatro trabajos simultáneos y la cola crece más rápido de lo que se vacía. Las mediciones que sostienen cada uno de esos cambios están en `capacity-planning/pruebas_de_carga_entrega2.md`.
