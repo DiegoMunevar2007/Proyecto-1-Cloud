@@ -105,12 +105,19 @@ services:
       - caddy_config:/config
 
   # Workers en Go con ffmpeg (Worker Server).
+  # El límite del worker va por encima de su uso normal, no ajustado a él. Los
+  # procesos ffmpeg son hijos del worker y cuentan contra este mismo límite: con
+  # 512m, cinco transcodificaciones simultáneas de 1080p (unos 130 MB cada una)
+  # lo superaban y el cgroup las mataba con "signal: killed", dejando el recurso
+  # en processing_status=failed. 1024m deja pasar la tanda y sigue sirviendo de
+  # contención: con clamd resident (~850 MB) el tope del host sigue siendo el
+  # backstop real.
   worker:
     build:
       context: ./backend
       dockerfile: worker/Dockerfile
     restart: unless-stopped
-    mem_limit: 512m
+    mem_limit: 1024m
     env_file:
       - .env
     environment:
