@@ -2,9 +2,11 @@
 
 Plataforma MOOC sobre Google Cloud. Este documento describe la solución que quedó efectivamente desplegada y los cambios frente a la entrega anterior. Está pensado para que otra persona del equipo pueda entender qué se construyó, por qué se tomaron ciertas decisiones y qué habría que tocar para llevarlo a la arquitectura objetivo.
 
-Los dos diagramas están en `docs/entrega2/diagramas/`. El de componentes muestra las piezas de la aplicación y cómo se hablan entre ellas. El de despliegue muestra en qué máquina vive cada pieza y qué reglas de red las separan.
+Los dos diagramas se incluyen más abajo, cada uno en su sección. El de componentes muestra las piezas de la aplicación y cómo se hablan entre ellas. El de despliegue muestra en qué máquina vive cada pieza y qué reglas de red las separan. Los archivos están en `docs/entrega2/diagramas/`.
 
 ## Componentes
+
+![Diagrama de componentes](diagramas/componentes.png)
 
 El usuario entra siempre por Caddy, que es el único punto público de la plataforma. Caddy termina el TLS y hace de proxy inverso, de modo que la API nunca queda expuesta directamente a Internet. Detrás de Caddy está la API, un monolito modular escrito en Go.
 
@@ -25,6 +27,8 @@ El servidor SMTP es Mailpit y existe solo para las pruebas. La API le entrega el
 Las comunicaciones síncronas del sistema son HTTP entre el usuario y Caddy, y HTTP interno entre Caddy y la API. La única comunicación asíncrona es la cola, y es también la única que sobrevive a que el cliente se desconecte.
 
 ## Despliegue
+
+![Diagrama de despliegue](diagramas/despliegue.png)
 
 Todo está en `us-central1`, en la zona `us-central1-a`, sobre una red virtual privada con una subred, `10.10.1.0/24`. Una sola zona y una sola subred bastan porque el enunciado pide un despliegue básico sin alta disponibilidad y sin réplicas entre zonas.
 
