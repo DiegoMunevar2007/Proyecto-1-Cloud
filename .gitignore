@@ -80,6 +80,9 @@ Temporary Items
 # Logs
 logs
 *.log
+# La evidencia de la entrega 2 se versiona aunque sea .log: es el respaldo del
+# incidente de memoria del worker y el enunciado la pide en el repositorio.
+!docs/entrega2/evidencia/*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*

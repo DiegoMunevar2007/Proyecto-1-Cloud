@@ -1,0 +1,12 @@
+Total de respuestas en el log: 43995
+bucket         2xx     4xx     5xx   total
+2xx          41567       0       0   41567
+<50ms            0    2259       0    2259
+50-500ms         0       3       0       3
+2-10s            0     149      14     163
+>10s             0       3       0       3
+
+Codigos no-2xx con latencia > 2s (la firma de la caída de Redis):
+  401: 149
+  500: 14
+  401: 3

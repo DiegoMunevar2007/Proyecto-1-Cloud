@@ -1,0 +1,6 @@
+[  538.547784] haveged invoked oom-killer: gfp_mask=0x140cca(GFP_HIGHUSER_MOVABLE|__GFP_COMP), order=0, oom_score_adj=0
+[  541.819161] oom-kill:constraint=CONSTRAINT_NONE,nodemask=(null),cpuset=haveged.service,mems_allowed=0,global_oom,task_memcg=/system.slice/docker-f36aae5fd3329de990c0710178edacca9989dfad6e711a449bb6f041f4346238.scope,task=clamd,pid=6395,uid=100
+[  542.028087] Out of memory: Killed process 6395 (clamd) total-vm:966332kB, anon-rss:913700kB, file-rss:0kB, shmem-rss:0kB, UID:100 pgtables:1900kB oom_score_adj:0
+2026-09-27T02:29:15.457774+00:00 mooc-worker kernel: [  538.547784] haveged invoked oom-killer: gfp_mask=0x140cca(GFP_HIGHUSER_MOVABLE|__GFP_COMP), order=0, oom_score_adj=0
+2026-09-27T02:29:15.461284+00:00 mooc-worker kernel: [  541.819161] oom-kill:constraint=CONSTRAINT_NONE,nodemask=(null),cpuset=haveged.service,mems_allowed=0,global_oom,task_memcg=/system.slice/docker-f36aae5fd3329de990c0710178edacca9989dfad6e711a449bb6f041f4346238.scope,task=clamd,pid=6395,uid=100
+2026-09-27T02:29:15.461285+00:00 mooc-worker kernel: [  542.028087] Out of memory: Killed process 6395 (clamd) total-vm:966332kB, anon-rss:913700kB, file-rss:0kB, shmem-rss:0kB, UID:100 pgtables:1900kB oom_score_adj:0
