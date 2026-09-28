@@ -51,11 +51,17 @@ vars:
   # VUs vivos para sostenerla.
   SIN_PAUSA:
     sh: echo "${SIN_PAUSA:-false}"
-  # Duración del VU observador que muestrea la cola durante la corrida. Por
-  # defecto acompaña a la corrida más larga; en la escalada se iguala a la
-  # meseta para no alargar cada nivel veinte minutos.
+  # Duración del VU observador que muestrea la cola durante la corrida. Se
+  # iguala a la meseta de un nivel para que cada corrida dure lo que dura su
+  # carga. Estaba en veinte minutos y era el motivo de que cada nivel tardara
+  # veinte veces más de lo que se mide.
   OBSERVACION_DURACION:
-    sh: echo "${OBSERVACION_DURACION:-20m}"
+    sh: echo "${OBSERVACION_DURACION:-2m}"
+  # Con SIN_ABORTAR=true el umbral de error funcional se conserva como informe
+  # pero no corta la corrida. Solo se usa en la escalada, cuya finalidad es
+  # provocar la degradacion para localizarla.
+  SIN_ABORTAR:
+    sh: echo "${SIN_ABORTAR:-false}"
   RUN_ID:
     sh: echo "${RUN_ID:-r$(date +%s)}"
   STUDENT_COUNT:
@@ -95,6 +101,7 @@ vars:
     -e CORPUS_BASE_URL={{.CORPUS_BASE_URL}}
     -e SIN_PAUSA={{.SIN_PAUSA}}
     -e OBSERVACION_DURACION={{.OBSERVACION_DURACION}}
+    -e SIN_ABORTAR={{.SIN_ABORTAR}}
     -e RUN_ID={{.RUN_ID}}
     -e STUDENT_COUNT={{.STUDENT_COUNT}}
     -e COURSE_COUNT={{.COURSE_COUNT}}
@@ -250,15 +257,15 @@ tasks:
     desc: Escalada por tasa de llegada (40 a 640 op/s) para encontrar el codo del backend
     cmds:
       - task: esc1:level
-        vars: { LEVEL: T1, SIN_PAUSA: "true", OBSERVACION_DURACION: "2m" }
+        vars: { LEVEL: T1, SIN_PAUSA: "true", OBSERVACION_DURACION: "2m", SIN_ABORTAR: "true" }
       - task: esc1:level
-        vars: { LEVEL: T2, SIN_PAUSA: "true", OBSERVACION_DURACION: "2m" }
+        vars: { LEVEL: T2, SIN_PAUSA: "true", OBSERVACION_DURACION: "2m", SIN_ABORTAR: "true" }
       - task: esc1:level
-        vars: { LEVEL: T3, SIN_PAUSA: "true", OBSERVACION_DURACION: "2m" }
+        vars: { LEVEL: T3, SIN_PAUSA: "true", OBSERVACION_DURACION: "2m", SIN_ABORTAR: "true" }
       - task: esc1:level
-        vars: { LEVEL: T4, SIN_PAUSA: "true", OBSERVACION_DURACION: "2m" }
+        vars: { LEVEL: T4, SIN_PAUSA: "true", OBSERVACION_DURACION: "2m", SIN_ABORTAR: "true" }
       - task: esc1:level
-        vars: { LEVEL: T5, SIN_PAUSA: "true", OBSERVACION_DURACION: "2m" }
+        vars: { LEVEL: T5, SIN_PAUSA: "true", OBSERVACION_DURACION: "2m", SIN_ABORTAR: "true" }
 
   esc1:burst:
     desc: Variante separada de ráfaga de inicios de sesión

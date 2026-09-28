@@ -1,16 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Gráficas del informe de capacidad, a partir del volcado de Cloud Monitoring.
+"""Gráficas del informe de capacidad.
+
+Criterio: una idea por gráfica, un solo eje vertical, escala lineal y sin
+normalizaciones. Cada figura tiene que entenderse sin leer el informe.
 
 Las series se leen de docs/entrega2/evidencia/prometheus/<ventana>/*.csv. Cada CSV
-trae timestamp, el diccionario completo de etiquetas en JSON, y el valor; ese
-diccionario es lo que permite separar por máquina y por estado de CPU, porque
-cpu/utilization llega partido en guest, system, wait e idle y sin ese filtro la
-mezcla de los cuatro produce valores sin sentido.
-
-Convenciones: título corto que dice qué se dibuja; el subtítulo lleva la cifra que
-lo resume; el eje de tiempo se formatea como hora, no como cadena, para que las
-etiquetas no se solapen.
+trae timestamp, el diccionario de etiquetas en JSON y el valor; las etiquetas son
+lo que permite separar por máquina y por estado de CPU, porque
+cpu/utilization llega partido en guest, system, wait e idle.
 
     python3 graficas.py
 """
@@ -34,20 +32,17 @@ PROM = os.path.join(RAIZ, "..", "docs", "entrega2", "evidencia", "prometheus")
 SALIDA = os.path.join(RAIZ, "graficas")
 
 C_WEB, C_WORKER, C_VIEJO, C_LOADGEN = "#2f6f9f", "#c1573f", "#8c6bb1", "#8a8a8a"
-C_PEND, C_AGE, C_FFMPEG = "#2f6f9f", "#c1573f", "#4f8a5b"
-C_P50, C_P95, C_P99, C_TP = "#9ecae1", "#2f6f9f", "#173f5c", "#c1573f"
-
-# las etiquetas de tiempo se leen en UTC; se declara para que matplotlib no
-# desplace las horas al graficar.
-plt.rcParams["timezone"] = "UTC"
+C_PEND, C_REZAGO = "#2f6f9f", "#c1573f"
+C_CLIENTE, C_SERVIDOR = "#c1573f", "#2f6f9f"
 
 sep_miles = FuncFormatter(lambda v, _: f"{v:,.0f}".replace(",", "."))
+plt.rcParams["timezone"] = "UTC"
 
 INSTANCIAS = {}
 
 
 def mapear_instancias():
-    """id numérico -> nombre de la VM, para no poner números en la leyenda."""
+    """id de instancia a nombre de máquina, para no poner números en la leyenda."""
     salida = subprocess.run(
         ["gcloud", "compute", "instances", "list",
          "--project=proyecto-2-cloud-509714", "--format=value(id,name)"],
@@ -59,11 +54,11 @@ def mapear_instancias():
 
 
 def fecha(texto):
-    """Marca de tiempo ISO del volcado, con o sin fracción de segundo.
+    """Marca de tiempo del volcado, con o sin fracción de segundo.
 
-    Las métricas de compute.googleapis.com llegan como 2026-09-27T06:02:00Z y las
-    de prometheus como 2026-09-27T06:01:33.057Z; el mismo formateador no sirve
-    para las dos, y descartar en silencio una de las dos deja la gráfica vacía.
+    Las métricas de compute.googleapis.com llegan como 2026-09-27T23:14:00Z y las
+    de prometheus como 2026-09-27T23:14:33.057Z, así que el mismo formateador no
+    sirve para las dos.
     """
     for formato in ("%Y-%m-%dT%H:%M:%SZ", "%Y-%m-%dT%H:%M:%S.%fZ"):
         try:
@@ -94,7 +89,6 @@ def leer(ventana, archivo):
 
 
 def nombre_vm(etiquetas):
-    """Nombre legible de la máquina a la que pertenece la serie."""
     bruto = etiquetas.get("vm") or etiquetas.get("resource_instance_id") or ""
     if "web" in bruto:
         return "Web Server"
@@ -104,9 +98,6 @@ def nombre_vm(etiquetas):
         return "mooc-loadgen"
     if bruto in INSTANCIAS:
         return INSTANCIAS[bruto]
-    # Un id numérico que ya no existe en el proyecto y que no es web ni
-    # loadgen: en esta sesión es la instancia del Worker anterior a la
-    # reducción de concurrencia, la que murió por OOM.
     if bruto.isdigit():
         return "Worker Server (anterior)"
     return bruto or "(desconocida)"
@@ -123,7 +114,7 @@ def color_vm(nombre):
 
 
 def cpu_por_vm(ventana):
-    """{'Web Server': [(t, uso%)], ...} usando 100 - idle."""
+    """{máquina: [(t, uso%)]} calculado como 100 menos el estado idle."""
     por_vm = {}
     for t, v, e in leer(ventana, "agent.googleapis.com_cpu_utilization.csv"):
         if e.get("cpu_state") != "idle":
@@ -132,12 +123,35 @@ def cpu_por_vm(ventana):
     return {k: sorted(v) for k, v in por_vm.items()}
 
 
+def cpu_media(ventana, maquina, desde=None):
+    """CPU media de una máquina en una ventana, opcionalmente desde un instante.
+
+    La instancia del worker cambió a mitad de la sesión, así que en el escenario
+    1 aparece como "Worker Server (anterior)". Se agrupa cualquier nombre que
+    empiece por Worker para no dejarlo fuera del gráfico.
+    """
+    por_vm = cpu_por_vm(ventana)
+    if maquina == "Worker Server":
+        pts = [p for k, v in por_vm.items() if k.startswith("Worker") for p in v]
+    else:
+        pts = por_vm.get(maquina, [])
+    if desde:
+        pts = [(t, v) for t, v in pts if t >= desde]
+    return sum(v for _, v in pts) / len(pts) if pts else 0.0
+
+
 def simple(ventana, metrica, sufijo="_gauge.csv"):
     return [(t, v) for t, v, _ in leer(ventana, "prometheus.googleapis.com_" + metrica + sufijo)]
 
 
+def memoria_worker(ventana):
+    # memory/percent_used publica una serie por estado (used, cached, buffered,
+    # slab, free); promediarlas no significa nada, solo importa used.
+    return [(t, v) for t, v, e in leer(ventana, "agent.googleapis.com_memory_percent_used.csv")
+            if nombre_vm(e) == "Worker Server" and e.get("state") == "used"]
+
+
 def eje_tiempo(ax):
-    """Un eje de horas legible, sin solapar etiquetas."""
     ax.xaxis.set_major_locator(mdates.AutoDateLocator(minticks=5, maxticks=9))
     ax.xaxis.set_major_formatter(mdates.DateFormatter("%H:%M"))
 
@@ -145,270 +159,197 @@ def eje_tiempo(ax):
 def terminar(fig, ax_o_axs, subtitulo=None, fechas=True):
     """Cierra la figura: grilla, nota al pie y eje de tiempo si aplica.
 
-    La nota va abajo, no como suptitle: arriba competía con el título del panel y
-    se leía como si fuera parte de él.
-
-    fechas=False para las gráficas de barras, cuyo eje x es categórico: aplicarles
-    el formateador de hora dispara un aviso de matplotlib y no aporta nada.
+    fechas=False para las gráficas de barras, cuyo eje x es categórico.
     """
     axs = ax_o_axs if isinstance(ax_o_axs, (list, tuple)) else [ax_o_axs]
     for ax in axs:
         if fechas:
             eje_tiempo(ax)
-        ax.grid(alpha=0.22)
+        ax.grid(alpha=0.22, axis="y")
     if subtitulo:
         fig.supxlabel(subtitulo, fontsize=8.5, color="#555")
     fig.tight_layout()
+
+
+def texto_num(valor):
+    """Número para poner encima de una barra, sin decimales si es entero.
+
+    No se recortan ceros: 100 tiene que seguir siendo 100 y no 1.
+    """
+    return f"{valor:.0f}" if abs(valor - round(valor)) < 0.05 else f"{valor:.1f}"
+
+
+def barras(ax, categorias, series, ancho=0.36, unidad="", alto=None):
+    """Barras agrupadas, con el valor encima de cada una.
+
+    series es una lista de (etiqueta, color, [valores]).
+    """
+    n = len(series)
+    xs = list(range(len(categorias)))
+    for i, (etiqueta, color, valores) in enumerate(series):
+        pos = [x + (i - (n - 1) / 2) * ancho for x in xs]
+        ax.bar(pos, valores, ancho, color=color, label=etiqueta)
+        for x, v in zip(pos, valores):
+            ax.text(x, v, texto_num(v), ha="center", va="bottom", fontsize=8)
+    ax.set_xticks(xs)
+    ax.set_xticklabels(categorias)
+    ax.set_ylim(0, alto if alto else max(
+        (max(v) for _, _, v in series), default=1) * 1.18)
+    # Leyenda solo si hay más de una serie: con una sola barra no aporta nada.
+    if any(etiqueta for etiqueta, _, _ in series):
+        ax.legend(fontsize=8.5, framealpha=0.9)
 
 
 def guardar(fig, nombre, titulo):
     fig.tight_layout()
     fig.savefig(os.path.join(SALIDA, nombre), dpi=150, bbox_inches="tight")
     plt.close(fig)
-    print(f"  {nombre:<46} {titulo}")
-
-
-def anotar_niveles(ax, niveles):
-    """Rayas verticales con el nombre del nivel de carga."""
-    for nombre, desde, hasta in niveles:
-        ax.axvline(desde, color="#bbb", lw=0.8, ls="--", zorder=0)
+    print(f"  {nombre:<40} {titulo}")
 
 
 # ---------------------------------------------------------------------------
 
-def g1_cpu_esc1():
-    fig, ax = plt.subplots(figsize=(9.5, 4.3))
-    datos = cpu_por_vm("curva-esc1")
-    for vm, pts in datos.items():
-        ax.plot([t for t, _ in pts], [v for _, v in pts], lw=1.5,
-                color=color_vm(vm), label=vm)
-    ax.axhline(100, color="#c00", ls=":", lw=1)
-    ax.set_ylim(0, 108)
-    ax.set_ylabel("CPU en uso (%)")
-    ax.set_xlabel("hora (UTC)")
-    ax.set_title("CPU en uso por máquina · Escenario 1 (actividad académica)", fontsize=11)
-    ax.legend(loc="upper left", fontsize=9, framealpha=0.9)
-    terminar(fig, ax, "El Web Server tiene un pico al 100 % al final, durante la ráfaga de inicios de sesión")
+def g1_cpu_por_corrida():
+    """Una barra por máquina y por corrida: quién se satura y cuándo."""
+    # El drenaje se mide desde las 19:30, que es cuando el sistema queda en
+    # régimen después del reinicio; antes de eso el worker estaba apagado y su
+    # media no describe la corrida.
+    corte = dt.datetime(2026, 9, 27, 19, 30)
+    ventanas = [("curva-esc1", "Escenario 1\nacadémico", None),
+                ("curva-esc2", "Escenario 2\ncarga", None),
+                ("drenaje", "Escenario 2\ndrenaje", corte)]
+    maquinas = ["Web Server", "Worker Server"]
+    categorias = [t for _, t, _ in ventanas]
+    series = [(m, color_vm(m), [cpu_media(v, m, d) for v, _, d in ventanas]) for m in maquinas]
+
+    fig, ax = plt.subplots(figsize=(8.5, 4.3))
+    barras(ax, categorias, series, alto=112)
+    ax.set_ylabel("CPU media en uso (%)")
+    ax.set_title("CPU media por máquina y por corrida", fontsize=11)
+    terminar(fig, ax, "En el escenario 1 ninguna máquina pasa del 10 %. En el escenario 2 el Worker "
+                      "Server llega al 84 % y al 99 % mientras la API queda por debajo del 3 %.",
+             fechas=False)
     return fig
 
 
-def g2_carga_por_escenario():
-    fig, axs = plt.subplots(2, 1, figsize=(9.5, 6.4), sharex=False)
-    for ax, (ventana, titulo) in zip(axs, [
-            ("curva-esc1", "Escenario 1 · actividad académica"),
-            ("curva-esc2", "Escenario 2 · carga multimedia")]):
-        for vm, pts in cpu_por_vm(ventana).items():
-            ax.plot([t for t, _ in pts], [v for _, v in pts], lw=1.5,
-                    color=color_vm(vm), label=vm)
-        ax.axhline(100, color="#c00", ls=":", lw=1)
-        ax.set_ylim(0, 108)
-        ax.set_ylabel("CPU (%)")
-        ax.set_title(titulo, fontsize=10, loc="left")
-        ax.legend(loc="upper left", fontsize=8, framealpha=0.9)
-    axs[1].set_xlabel("hora (UTC)")
-    terminar(fig, list(axs),
-             "En el escenario 2 el Worker Server queda al 100 % y el Web Server ocioso: el límite es la transcodificación")
+def g2_cpu_t1():
+    """La API falló con el Web Server casi ocioso."""
+    datos = cpu_por_vm("escalada-t1")
+    if not datos:
+        return None
+    orden = [m for m in ("Web Server", "Worker Server") if m in datos]
+    medias = [sum(v for _, v in datos[m]) / len(datos[m]) for m in orden]
+    fig, ax = plt.subplots(figsize=(6.5, 4.0))
+    ax.bar(orden, medias, width=0.5, color=[color_vm(m) for m in orden])
+    for i, v in enumerate(medias):
+        ax.text(i, v, texto_num(v), ha="center", va="bottom", fontsize=9)
+    ax.set_ylim(0, 114)
+    ax.grid(alpha=0.22, axis="y")
+    ax.set_ylabel("CPU media en uso (%)")
+    ax.set_title("CPU durante la escalada T1", fontsize=11)
+    terminar(fig, ax, "La API devolvió 56 errores 500 por falta de conexiones a PostgreSQL "
+                      "con el Web Server al 7,6 % de CPU.", fechas=False)
     return fig
 
 
-# El reinicio de las máquinas dejó la cola en un estado transitorio y la
-# antigüedad apuntando a épocas anteriores. La medición del drenaje empieza
-# después de ese escalón, cuando el sistema ya está en régimen.
-CORTE_DRENAJE = dt.datetime(2026, 9, 27, 19, 30)
-
-
-def desde(serie, corte=CORTE_DRENAJE):
-    return [(t, v) for t, v in serie if t >= corte]
-
-
-def g3_drenaje():
-    fig, (ax, ax2) = plt.subplots(2, 1, figsize=(9.5, 5.6), sharex=True)
-    # Se grafica el rezago total (size), no los pendientes sueltos: cuando un
-    # reintento expira pasa de la bolsa de reintentos a la de pendientes y el
-    # conteo de pendientes da un salto que no es trabajo nuevo. Size suma
-    # pendientes, activos y reintentos, y es lo que tiene que llegar a cero.
-    p = desde(simple("drenaje", "mooc_queue_size"))
-    a = desde(simple("drenaje", "mooc_queue_age_seconds"))
-    f = desde(simple("drenaje", "mooc_worker_ffmpeg_active"))
-
-    # panel superior: profundidad de la cola frente a la concurrencia de ffmpeg
-    if p:
-        ax.plot([t for t, _ in p], [v for _, v in p], lw=1.8, color=C_PEND,
-                label="rezago total")
-    ax.set_ylabel("rezago total", color=C_PEND)
-    ax.tick_params(axis="y", labelcolor=C_PEND)
-    ax.yaxis.set_major_formatter(sep_miles)
-    ax.set_ylim(0, max((v for _, v in p), default=600) * 1.15)
-    if f:
-        axb = ax.twinx()
-        axb.step([t for t, _ in f], [v for _, v in f], where="post", lw=1.4,
-                 color=C_FFMPEG, ls="--", label="ffmpeg simultáneos")
-        axb.set_ylabel("ffmpeg", color=C_FFMPEG)
-        axb.set_ylim(0, 8)
-        axb.tick_params(axis="y", labelcolor=C_FFMPEG)
-        lineas = ax.get_lines() + axb.get_lines()
-        ax.legend(lineas, [l.get_label() for l in lineas], loc="center left",
-                  fontsize=8.5, framealpha=0.9)
-    ax.set_title("Drenaje de la cola tras el escenario 2", fontsize=11)
-
-    # panel inferior: antiguedad del trabajo mas viejo
-    if a:
-        ax2.plot([t for t, _ in a], [v for _, v in a], lw=1.6, color=C_AGE)
-    ax2.set_ylabel("antigüedad (s)")
-    ax2.yaxis.set_major_formatter(sep_miles)
-    ax2.set_xlabel("hora (UTC)")
-    ax2.set_title("Antigüedad del trabajo más viejo", fontsize=9, loc="left")
-
-    if p:
-        primera, ultima = p[0], p[-1]
-        minutos = (ultima[0] - primera[0]).total_seconds() / 60
-        tasa = (primera[1] - ultima[1]) / minutos
-        ax.annotate(f"{tasa:.2f} trabajos/min", xy=(ultima[0], ultima[1]),
-                    xytext=(ultima[0] - dt.timedelta(minutes=11), ultima[1] - 90),
-                    fontsize=8.5, color="#333",
-                    arrowprops=dict(arrowstyle="->", color="#888", lw=0.9))
-        nota = (f"El rezago total baja de {primera[1]:.0f} a {ultima[1]:.0f} en "
-                f"{minutos:.0f} min: {tasa:.2f} trabajos/min, con ffmpeg fijo en la "
-                f"concurrencia de 4")
-    else:
-        nota = None
-    terminar(fig, [ax, ax2], nota)
-    return fig
-
-
-def g4_cola_carga():
-    """La cola crece durante la carga: las llegadas superan al procesamiento."""
-    ventana = "curva-esc2"
-    p = simple(ventana, "mooc_queue_pending")
-    act = simple(ventana, "mooc_queue_active")
-    f = simple(ventana, "mooc_worker_ffmpeg_active")
+def g3_cola_carga():
+    """La cola crece durante la carga mientras el worker no da abasto."""
+    p = simple("curva-esc2", "mooc_queue_pending")
     if not p:
         return None
-    fig, ax = plt.subplots(figsize=(9.5, 4.4))
-    ax.plot([t for t, _ in p], [v for _, v in p], lw=1.8, color=C_PEND,
-            label="pendientes")
-    ax.set_ylabel("trabajos pendientes", color=C_PEND)
-    ax.tick_params(axis="y", labelcolor=C_PEND)
+    fig, ax = plt.subplots(figsize=(8.5, 4.3))
+    ax.plot([t for t, _ in p], [v for _, v in p], lw=1.9, color=C_PEND)
+    ax.set_ylim(0, max(v for _, v in p) * 1.15)
     ax.yaxis.set_major_formatter(sep_miles)
-    ax.set_ylim(0, max(v for _, v in p) * 1.18)
-    axb = ax.twinx()
-    if act:
-        axb.plot([t for t, _ in act], [v for _, v in act], lw=1.4, color=C_AGE,
-                 label="activos")
-    if f:
-        axb.step([t for t, _ in f], [v for _, v in f], where="post", lw=1.3,
-                 color=C_FFMPEG, ls="--", label="ffmpeg simultáneos")
-    axb.set_ylabel("activos / ffmpeg", color=C_AGE)
-    axb.set_ylim(0, 10)
-    axb.tick_params(axis="y", labelcolor=C_AGE)
-    lineas = ax.get_lines() + axb.get_lines()
-    ax.legend(lineas, [l.get_label() for l in lineas], loc="upper left",
-              fontsize=8.5, framealpha=0.9)
+    ax.set_ylabel("trabajos pendientes")
     ax.set_xlabel("hora (UTC)")
+    tmax, vmax = max(p, key=lambda x: x[1])
+    ax.annotate(f"{vmax:.0f}", xy=(tmax, vmax), xytext=(tmax, vmax + 45),
+                ha="right", fontsize=9, color="#333")
     ax.set_title("Cola durante la carga del escenario 2", fontsize=11)
-    pico = max(v for _, v in p)
-    terminar(fig, ax,
-             f"Los tres niveles de carga (M0, M1, M2) llevan la cola de 0 a {pico:.0f} pendientes "
-             f"mientras activos y ffmpeg se quedan en el tope de la concurrencia configurada")
+    terminar(fig, ax, f"Los tres niveles de carga llevan la cola de 0 a {vmax:.0f} trabajos pendientes.")
+    return fig
+
+
+def g4_drenaje():
+    """El rezago apenas baja mientras se procesan los trabajos."""
+    corte = dt.datetime(2026, 9, 27, 19, 30)
+    p = [(t, v) for t, v in simple("drenaje", "mooc_queue_size") if t >= corte]
+    if not p:
+        return None
+    primera, ultima = p[0], p[-1]
+    minutos = (ultima[0] - primera[0]).total_seconds() / 60
+    tasa = (primera[1] - ultima[1]) / minutos
+    fig, ax = plt.subplots(figsize=(8.5, 4.3))
+    ax.plot([t for t, _ in p], [v for _, v in p], lw=1.9, color=C_REZAGO)
+    ax.set_ylim(0, max(v for _, v in p) * 1.15)
+    ax.yaxis.set_major_formatter(sep_miles)
+    ax.set_ylabel("trabajos en la cola")
+    ax.set_xlabel("hora (UTC)")
+    ax.annotate(f"{tasa:.2f} trabajos/min", xy=(ultima[0], ultima[1]),
+                xytext=(ultima[0] - dt.timedelta(minutes=12), ultima[1] + 12),
+                fontsize=9, color="#333",
+                arrowprops=dict(arrowstyle="->", color="#888", lw=0.9))
+    ax.set_title("Drenaje de la cola", fontsize=11)
+    terminar(fig, ax, f"El rezago baja de {primera[1]:.0f} a {ultima[1]:.0f} en {minutos:.0f} minutos "
+                      "con cuatro transcodificaciones simultáneas.")
     return fig
 
 
 def g5_consumo():
+    """Los dos patrones de consumo no se parecen en nada."""
     base = os.path.join(RAIZ, "results")
     datos = {}
     for patron in ("reproduccion", "burst"):
         ruta = os.path.join(base, f"esc2-consumo-{patron}-summary.json")
-        if not os.path.exists(ruta):
-            continue
-        with open(ruta) as f:
-            m = json.load(f)["metrics"]
-        datos[patron] = {
-            "seg_p50": m["seg_latency_ms"]["p(50)"], "seg_p95": m["seg_latency_ms"]["p(95)"],
-            "man_p50": m["hls_manifest_ms"]["p(50)"], "man_p95": m["hls_manifest_ms"]["p(95)"],
-            "n": int(m["hls_segment_ok_total"]["count"]),
-            "mb": m["data_received"]["count"] / 1e6,
-            "tasa": m["hls_segment_ok_total"]["rate"],
-        }
+        if os.path.exists(ruta):
+            with open(ruta) as f:
+                m = json.load(f)["metrics"]
+            datos[patron] = int(m["hls_segment_ok_total"]["count"])
     if not datos:
         return None
     patrones = list(datos)
-    fig, axs = plt.subplots(1, 3, figsize=(12, 4.0))
-
-    ax = axs[0]
-    ax.bar(patrones, [datos[p]["n"] for p in patrones], color=[C_P95, C_P99], alpha=0.9)
-    for i, p in enumerate(patrones):
-        ax.text(i, datos[p]["n"], f"{datos[p]['n']:,}".replace(",", "."), ha="center",
-                va="bottom", fontsize=8)
+    valores = [datos[p] for p in patrones]
+    fig, ax = plt.subplots(figsize=(6.5, 4.0))
+    ax.bar(patrones, valores, width=0.5, color=C_PEND)
+    for i, v in enumerate(valores):
+        ax.text(i, v, texto_num(v), ha="center", va="bottom", fontsize=9)
+    ax.set_ylim(0, max(valores) * 1.18)
+    ax.grid(alpha=0.22, axis="y")
     ax.set_ylabel("segmentos descargados")
-    ax.set_title("Volumen", fontsize=10, loc="left")
-    ax.grid(alpha=0.22, axis="y")
-
-    ax = axs[1]
-    ax.bar(patrones, [datos[p]["mb"] for p in patrones], color=[C_P95, C_P99], alpha=0.9)
-    for i, p in enumerate(patrones):
-        ax.text(i, datos[p]["mb"], f"{datos[p]['mb']:.0f} MB", ha="center",
-                va="bottom", fontsize=8)
-    ax.set_ylabel("datos recibidos (MB)")
-    ax.set_title("Transferencia", fontsize=10, loc="left")
-    ax.grid(alpha=0.22, axis="y")
-
-    ax = axs[2]
-    ancho = 0.36
-    xs = range(len(patrones))
-    for j, (clave, etiqueta, color) in enumerate((
-            ("man_p95", "manifiesto p95", C_TP),
-            ("seg_p50", "segmento p50", C_P50),
-            ("seg_p95", "segmento p95", C_P95))):
-        vals = [datos[p][clave] for p in patrones]
-        ax.bar([x + (j - 1) * ancho for x in xs], vals, ancho,
-               label=etiqueta, color=color)
-    ax.set_xticks(list(xs))
-    ax.set_xticklabels(patrones)
-    ax.set_ylabel("latencia (ms)")
-    ax.set_yscale("log")
-    ax.set_title("Latencia", fontsize=10, loc="left")
-    ax.legend(fontsize=7.5, framealpha=0.9)
-    ax.grid(alpha=0.22, axis="y")
-
-    terminar(fig, list(axs), "Descarga de segmentos HLS: el patrón masivo mueve 27 veces más volumen y ninguno de los dos registra errores", fechas=False)
+    ax.set_title("Consumo HLS por patrón", fontsize=11)
+    terminar(fig, ax, "La descarga masiva mueve 27 veces más segmentos que la cadencia de "
+                      "reproducción. Ninguno de los dos registra errores.", fechas=False)
     return fig
 
 
-def g6_ram():
-    # memory/percent_used publica una serie por estado (used, cached, buffered,
-    # slab, free); promediarlas todas no significa nada, solo importa used.
-    d = [(t, v) for t, v, e in leer("drenaje", "agent.googleapis.com_memory_percent_used.csv")
-         if nombre_vm(e) == "Worker Server" and e.get("state") == "used"]
+def g6_ram_worker():
+    """La memoria del worker se queda lejos del límite."""
+    d = memoria_worker("drenaje")
     if not d:
         return None
-    fig, ax = plt.subplots(figsize=(9.5, 4.0))
-    ax.plot([t for t, _ in d], [v for _, v in d], lw=1.6, color=C_WORKER)
-    ax.axhline(100, color="#c00", ls=":", lw=1.1)
-    ax.set_ylim(0, 108)
+    fig, ax = plt.subplots(figsize=(8.5, 4.0))
+    ax.plot([t for t, _ in d], [v for _, v in d], lw=1.9, color=C_WORKER)
+    ax.axhline(100, color="#c00", ls=":", lw=1)
+    ax.set_ylim(0, 112)
     ax.set_ylabel("memoria usada (%)")
     ax.set_xlabel("hora (UTC)")
-    ax.set_title("Memoria del Worker Server · drenaje", fontsize=11)
-    terminar(fig, ax, "Entre 33,3 % y 81,1 % de los 1976 MB, con media 58,4 %: la memoria ya no es el límite, lo es la CPU")
+    ax.set_title("Memoria del Worker Server durante el drenaje", fontsize=11)
+    terminar(fig, ax, f"Entre {min(v for _, v in d):.1f} % y {max(v for _, v in d):.1f} % de los 1976 MB. "
+                      "La corrección del OOM se sostiene.")
     return fig
 
 
-# Ventanas exactas de cada nivel del escenario 1, tomadas de la primera y la
-# ultima marca de tiempo de results/esc1-*.json. No se solapan, que es lo que
-# permite atribuir cada peticion a un nivel. El orden real de ejecucion fue
-# L0, L1, L2, L4, L3: L4 corrio antes que L3.
-NIVELES_ESC1 = {
-    "L0": ("03:12:48", "03:17:07"),
-    "L1": ("03:17:09", "03:21:58"),
-    "L2": ("03:21:59", "03:26:47"),
-    "L3": ("03:36:58", "03:42:02"),
-    "L4": ("03:31:53", "03:36:56"),
-}
-LOG_GIN = os.path.join(RAIZ, "..", "docs", "entrega2", "evidencia", "api-gin.log")
-IP_GENERADOR = "186.29.35.28"
-
+_LOG_GIN = os.path.join(RAIZ, "..", "docs", "entrega2", "evidencia", "api-gin.log")
+_IP_GENERADOR = "186.29.35.28"
 _RE_GIN = re.compile(
     r'\[GIN\] (\S+) - (\d\d:\d\d:\d\d) \|\s*(\d+) \|\s*([0-9.]+)(µs|ms|s) \|'
     r'\s*(\S+) \|\s*(\S+)\s+"([^"]*)"')
+NIVELES_ESC1 = {
+    "L0": ("03:12:48", "03:17:07"), "L1": ("03:17:09", "03:21:58"),
+    "L2": ("03:21:59", "03:26:47"), "L3": ("03:36:58", "03:42:02"),
+    "L4": ("03:31:53", "03:36:56"),
+}
 
 
 def _a_ms(valor, unidad):
@@ -417,133 +358,51 @@ def _a_ms(valor, unidad):
 
 
 def latencia_servidor_por_nivel():
-    """p50/p95/p99 del lado del servidor, leidos del log de acceso de Gin.
-
-    El log de Gin registra la duracion que mide el propio handler, de modo que no
-    incluye el viaje de ida y vuelta desde el cliente. Es la unica forma de ver la
-    degradacion del servidor cuando el piso de red del generador la tapa.
-    """
+    """p95 del lado del servidor por nivel, leído del log de acceso de Gin."""
     acum = {k: [] for k in NIVELES_ESC1}
-    if not os.path.exists(LOG_GIN):
+    if not os.path.exists(_LOG_GIN):
         return {}
-    for linea in open(LOG_GIN, errors="ignore"):
+    for linea in open(_LOG_GIN, errors="ignore"):
         m = _RE_GIN.search(linea)
         if not m:
             continue
         _, hora, status, dur, unidad, ip, _met, _ruta = m.groups()
-        if ip != IP_GENERADOR:
-            continue
-        # solo respuestas exitosas: un 4xx de negocio no es latencia del flujo
-        if not (200 <= int(status) < 300):
+        if ip != _IP_GENERADOR or not (200 <= int(status) < 300):
             continue
         for nivel, (a, b) in NIVELES_ESC1.items():
             if a <= hora <= b:
                 acum[nivel].append(_a_ms(dur, unidad))
                 break
-    return {k: sorted(v) for k, v in acum.items() if v}
-
-
-def percentil(valores, q):
-    if not valores:
-        return 0.0
-    return valores[min(len(valores) - 1, int(round(q * (len(valores) - 1))))]
-
-
-def g8_latencia_servidor():
-    """El servidor si se degrada; el piso de red del cliente lo aplana.
-
-    Panel izquierdo: latencia del servidor en absoluto, que es la cifra real del
-    sistema. Panel derecho: el p95 de cliente y de servidor normalizado contra su
-    propio L0, para que las dos curvas se puedan comparar en el mismo eje sin que
-    la diferencia de escala (5x) haga parecer que una crece más de lo que crece.
-    """
-    servidor = latencia_servidor_por_nivel()
-    if not servidor:
-        return None
-    base = os.path.join(RAIZ, "results")
-    orden = ["L0", "L1", "L2", "L3", "L4"]
-    cliente = {}
-    for n in orden:
-        ruta = os.path.join(base, f"esc1-{n}-summary.json")
-        if os.path.exists(ruta):
-            with open(ruta) as f:
-                m = json.load(f)["metrics"].get("http_req_duration", {})
-            cliente[n] = (m.get("p(50)", 0), m.get("p(95)", 0), m.get("p(99)", 0))
-    srv = {k: (percentil(v, .5), percentil(v, .95), percentil(v, .99))
-           for k, v in servidor.items()}
-
-    fig, axs = plt.subplots(1, 2, figsize=(11, 4.3))
-
-    ax = axs[0]
-    xs = [n for n in orden if n in srv]
-    for i, (etiqueta, color) in enumerate((("p50", C_P50), ("p95", C_P95), ("p99", C_P99))):
-        ax.plot(xs, [srv[n][i] for n in xs], marker="o", lw=1.7, color=color, label=etiqueta)
-    ax.set_yscale("log")
-    ax.set_ylabel("latencia del servidor (ms)")
-    ax.set_xlabel("nivel de carga")
-    ax.set_title("Servidor · escala absoluta", fontsize=10, loc="left")
-    ax.grid(alpha=0.22)
-    ax.legend(fontsize=8, framealpha=0.9)
-
-    ax = axs[1]
-    xs = [n for n in orden if n in cliente and n in srv]
-    for datos, etiqueta, color in ((cliente, "cliente", C_TP), (srv, "servidor", C_P95)):
-        base_val = datos[xs[0]][1]
-        ax.plot(xs, [100.0 * datos[n][1] / base_val for n in xs], marker="o",
-                lw=1.8, color=color, label=etiqueta)
-    ax.axhline(100, color="#bbb", ls=":", lw=1)
-    ax.set_ylabel("p95 relativo a L0 (%)")
-    ax.set_xlabel("nivel de carga")
-    ax.set_title("p95 normalizado contra L0", fontsize=10, loc="left")
-    ax.grid(alpha=0.22)
-    ax.legend(fontsize=8, framealpha=0.9)
-
-    terminar(fig, list(axs),
-             "El p95 del servidor crece un 69 % de L0 a L4 y el del cliente solo un 18 %: la misma degradación, "
-             "amortiguada por los ~100 ms de piso de red del portátil",
-             fechas=False)
-    return fig
+    salida = {}
+    for k, v in acum.items():
+        if v:
+            v.sort()
+            salida[k] = v[min(len(v) - 1, int(round(0.95 * (len(v) - 1))))]
+    return salida
 
 
 def g7_latencia_esc1():
+    """La latencia que ve el usuario es casi toda red, no trabajo del servidor."""
+    servidor = latencia_servidor_por_nivel()
     base = os.path.join(RAIZ, "results")
-    datos = {}
+    cliente = {}
     for n in ("L0", "L1", "L2", "L3", "L4"):
         ruta = os.path.join(base, f"esc1-{n}-summary.json")
-        if not os.path.exists(ruta):
-            continue
-        with open(ruta) as f:
-            m = json.load(f)["metrics"]
-        lat = m.get("http_req_duration", {})
-        datos[n] = (lat.get("p(50)", 0), lat.get("p(95)", 0), lat.get("p(99)", 0),
-                    m.get("http_reqs", {}).get("rate", 0))
-    if len(datos) < 3:
+        if os.path.exists(ruta):
+            with open(ruta) as f:
+                cliente[n] = json.load(f)["metrics"].get("http_req_duration", {}).get("p(95)", 0)
+    niveles = [n for n in ("L0", "L1", "L2", "L3", "L4") if n in cliente]
+    if not niveles:
         return None
-    fig, ax = plt.subplots(figsize=(9, 4.3))
-    xs = list(datos)
-    for i, (etiqueta, color) in enumerate((("p50", C_P50), ("p95", C_P95), ("p99", C_P99))):
-        ax.plot(xs, [datos[n][i] for n in xs], marker="o", lw=1.6,
-                color=color, label=f"latencia {etiqueta}")
-    ax.set_yscale("log")
-    ax.set_ylabel("latencia (ms)")
-    ax.set_xlabel("nivel de carga")
-    ax2 = ax.twinx()
-    ax2.plot(xs, [datos[n][3] for n in xs], marker="s", ls="--", lw=1.4,
-             color=C_TP, label="throughput")
-    ax2.set_ylabel("peticiones/s", color=C_TP)
-    ax2.tick_params(axis="y", labelcolor=C_TP)
-    lineas = ax.get_lines() + ax2.get_lines()
-    ax.legend(lineas, [l.get_label() for l in lineas], fontsize=8,
-              loc="upper left", framealpha=0.9)
-    ax.set_title("Latencia por nivel de carga · Escenario 1", fontsize=11)
-    # La cifra sale de la propia tabla: p95 de L0 a L4, y el throughput del mismo
-    # resumen. Enunciarla aqui evita repetir el error de un subtitulo que afirma
-    # algo que el grafico no muestra.
-    d0, d4 = datos["L0"], datos["L4"]
-    terminar(fig, [ax],
-             f"Al cuadruplicar el throughput ({d0[3]:.1f} a {d4[3]:.1f} req/s) el p95 pasa de "
-             f"{d0[1]:.0f} a {d4[1]:.0f} ms: la plataforma apenas se degrada hasta 91 usuarios virtuales",
-             fechas=False)
+    fig, ax = plt.subplots(figsize=(8.5, 4.3))
+    barras(ax, niveles, [
+        ("medida en el cliente", C_CLIENTE, [cliente[n] for n in niveles]),
+        ("medida en el servidor", C_SERVIDOR, [servidor.get(n, 0) for n in niveles]),
+    ])
+    ax.set_ylabel("latencia p95 (ms)")
+    ax.set_title("Latencia p95 por nivel de carga", fontsize=11)
+    terminar(fig, ax, "El cliente mide entre seis y ocho veces lo que mide el servidor. La diferencia "
+                      "es el piso de red del portátil, no trabajo de la aplicación.", fechas=False)
     return fig
 
 
@@ -552,19 +411,18 @@ def main():
     mapear_instancias()
     print(f"generando graficas en {SALIDA}\n")
     tareas = [
-        (g1_cpu_esc1, "01-cpu-esc1.png", "CPU por máquina en el escenario 1"),
-        (g2_carga_por_escenario, "02-cpu-esc1-vs-esc2.png", "CPU comparada entre escenarios"),
-        (g3_drenaje, "03-drenaje-cola.png", "Cola y antigüedad durante el drenaje"),
-        (g4_cola_carga, "04-cola-carga-esc2.png", "Cola durante la carga del escenario 2"),
+        (g1_cpu_por_corrida, "01-cpu-por-corrida.png", "CPU media por máquina y corrida"),
+        (g2_cpu_t1, "02-cpu-t1.png", "CPU durante la escalada T1"),
+        (g3_cola_carga, "03-cola-carga-esc2.png", "Cola durante la carga del escenario 2"),
+        (g4_drenaje, "04-drenaje-cola.png", "Drenaje de la cola"),
         (g5_consumo, "05-consumo-hls.png", "Consumo HLS por patrón"),
-        (g6_ram, "06-ram-worker.png", "Memoria del Worker Server"),
-        (g8_latencia_servidor, "07-latencia-servidor-vs-cliente.png", "Latencia servidor frente a cliente"),
-        (g7_latencia_esc1, "08-latencia-esc1-detalle.png", "Latencia por nivel, detalle"),
+        (g6_ram_worker, "06-ram-worker.png", "Memoria del Worker Server"),
+        (g7_latencia_esc1, "07-latencia-esc1.png", "Latencia p95 por nivel"),
     ]
     for fn, nombre, titulo in tareas:
         fig = fn()
         if fig is None:
-            print(f"  {nombre:<46} (sin datos)")
+            print(f"  {nombre:<40} (sin datos)")
             continue
         guardar(fig, nombre, titulo)
     return 0

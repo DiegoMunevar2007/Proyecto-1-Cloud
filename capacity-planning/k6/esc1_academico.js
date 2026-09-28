@@ -47,11 +47,16 @@ export const options = {
     carga: escenarioPorNiveles(ESC1_LEVELS.concat(ESC1_ESCALADA), 'actividadAcademica'),
     observacion: escenarioObservacion(),
   },
-  // El único umbral que aborta es el error funcional. Un rechazo de negocio
-  // (intentos agotados, matrícula repetida) no es degradación del sistema.
-  thresholds: {
-    functional_error_rate: ['rate<0.01'],
-  },
+  // El único umbral es el error funcional. Un rechazo de negocio (intentos
+  // agotados, matrícula repetida) no es degradación del sistema.
+  //
+  // En la escalada el umbral se omite por completo. Buscar el codo del servidor
+  // significa provocar que falle, y un umbral incumplido hace que k6 salga con
+  // código 99 aunque no corte la corrida, con lo que la tarea de go-task se da
+  // por fallida y no ejecuta los niveles siguientes. Ya pasó con T1.
+  thresholds: __ENV.SIN_ABORTAR === 'true'
+    ? {}
+    : { functional_error_rate: ['rate<0.01'] },
   summaryTrendStats: ['p(50)', 'p(90)', 'p(95)', 'p(99)', 'max', 'min', 'avg'],
 };
 

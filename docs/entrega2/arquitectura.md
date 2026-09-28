@@ -85,7 +85,7 @@ La configuración exacta es de dos máquinas `e2-small` con 2 vCPU, 2 GiB de mem
 El estimador de precios desglosa cada máquina en dos renglones:
 
 | elemento | estimación mensual |
-|---|---|
+| --- | --- |
 | 2 CPU virtuales + 2 GB de memoria | USD 12,23 |
 | Disco persistente balanceado de 30 GB | USD 3,00 |
 | **total por máquina** | **USD 15,23** |
@@ -97,7 +97,7 @@ Son USD 0,02 por hora, con facturación por segundo y sin pagos por adelantado. 
 Estos son los servicios que no son cómputo, enumerados punto por punto tal como los devuelve el estimador. La columna de cantidad lleva la unidad que usa el propio estimador, y las dos columnas de identificadores sirven para rastrear de dónde sale cada cifra.
 
 | servicio | elemento | cantidad | región | service_id | sku | precio, USD |
-|---|---|---|---|---|---|---|
+| --- | --- | --- | --- | --- | --- | --- |
 | Secret Manager | Secret access operations | 100 | global | EE82-7A5E-871C | EBA7-264F-2D2C | 0,00 |
 | Secret Manager | Secret version replica storage | 3 | global | EE82-7A5E-871C | 7756-ADEF-84F4 | 0,00 |
 | PostgreSQL (Cloud SQL) | Cloud SQL for PostgreSQL: Zonal - Micro instance in Americas | 730 | us-central1 | 9662-B51E-5089 | C2D4-F7DF-B8D0 | 7,665 |
@@ -114,7 +114,7 @@ Cloud Storage se cobra por 100 GB de almacenamiento regional Standard, que es un
 ### Total
 
 | escenario | cómputo | adicionales | total |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | dos máquinas de aplicación | 30,46 | 14,665 | **45,13** |
 | con el generador encendido todo el mes | 45,69 | 14,665 | **60,36** |
 
@@ -137,7 +137,7 @@ Los respaldos de Cloud SQL que excedan el tamaño de la instancia tampoco están
 Sirve para contrastar el supuesto con lo que se midió durante las pruebas:
 
 | concepto | observado |
-|---|---|
+| --- | --- |
 | datos en Cloud Storage | 4,55 GB entre los tres buckets: 3,50 GB de originales, 1,06 GB de derivados HLS y 2,5 KB de archivos públicos |
 | subidas directas aceptadas | 388 en el nivel más alto del escenario multimedia, más 4 del sembrado |
 | segmentos descargados | 272 en el patrón de reproducción y 7 299 en el de descarga masiva |
@@ -158,7 +158,7 @@ La base de datos está en una sola zona y sin réplica, así que una falla de la
 
 ### Hacia una aplicación elástica
 
-Los cambios que acercarían esta configuración a una aplicación elástica son tres, y cada uno tiene una medición que lo respalda.
+Los cambios que acercarían esta configuración a una aplicación elástica son tres, y ca  da uno tiene una medición que lo respalda.
 
 Separar el antimalware de la máquina que transcodifica. ClamAV retiene entre 320 y 850 MB de forma permanente para servir un escaneo que ocurre una sola vez por archivo, y ese consumo es la razón directa de que la concurrencia sea 4 y no 10. Moverlo a un servicio administrado, a un trabajo aislado o a una máquina aparte libera la restricción sin tocar la etapa de codificación.
 

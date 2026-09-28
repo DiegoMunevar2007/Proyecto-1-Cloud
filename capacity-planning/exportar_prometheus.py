@@ -84,6 +84,10 @@ HOST_METRICS = [
 # 2 y 4 minutos, aislarlos deja solo unos pocos puntos por serie, mientras que en
 # la curva completa cada nivel aparece como un escalón y la tendencia es legible.
 WINDOWS = {
+    # Escalada por tasa de llegada. El nivel T1 corrió de 23:15:26 a 23:19:21
+    # UTC; la ventana lleva margen a cada lado para que la CPU se vea entrar y
+    # salir del nivel.
+    "escalada-t1":     ("2026-09-27T23:14:00Z", "2026-09-27T23:21:00Z"),
     "curva-esc1":      ("2026-09-27T03:10:00Z", "2026-09-27T03:46:00Z"),
     "curva-esc2":      ("2026-09-27T05:45:00Z", "2026-09-27T06:02:00Z"),
     "saturacion-worker": ("2026-09-27T06:00:00Z", "2026-09-27T07:10:00Z"),
