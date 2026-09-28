@@ -16,6 +16,12 @@ Los diagramas de componentes y de despliegue están en [`docs/entrega2/diagramas
 
 El informe de capacidad de los dos escenarios está en [`capacity-planning/pruebas_de_carga_entrega2.md`](capacity-planning/pruebas_de_carga_entrega2.md), con las gráficas en [`capacity-planning/graficas/`](capacity-planning/graficas/).
 
+## Sustentación
+
+El video de sustentación está en [youtu.be/WeTkZry5aL4](https://youtu.be/WeTkZry5aL4).
+
+El código y la configuración de esta entrega están identificados con el tag `entrega-2`, que apunta al commit evaluado.
+
 ## Despliegue
 
 La infraestructura se aprovisiona con Terraform desde `scripts/IaC`. La única variable obligatoria es el identificador del proyecto:
@@ -43,7 +49,7 @@ task esc1:all      # escenario 1
 task esc2:all      # escenario 2
 ```
 
-Las corridas deben ejecutarse desde la máquina `mooc-loadgen`, que se aprovisiona con el resto, para no medir el enlace del portátil. Cada corrida deja un resumen y un archivo de muestras en `capacity-planning/results/`, y los resultados de esta entrega están versionados en el repositorio.
+Las corridas conviene ejecutarlas desde la máquina `mooc-loadgen`, que se aprovisiona con el resto, para no medir el enlace del portátil. En esta entrega se corrieron desde un portátil porque el generador no llegó a completarlas, y las razones están en las limitaciones del informe. Cada corrida deja un resumen y un archivo de muestras en `capacity-planning/results/`, y los resultados de esta entrega están versionados en el repositorio.
 
 ## Estructura
 
